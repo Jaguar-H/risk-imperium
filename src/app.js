@@ -8,5 +8,3 @@ export const createApp = () => {
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };
-
-let a = 0
