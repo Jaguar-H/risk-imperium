@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+set -e 
+
+deno task lint
+deno fmt
+deno task test
+deno task coverage
