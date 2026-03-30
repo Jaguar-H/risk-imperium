@@ -2,6 +2,7 @@ import {
   allocateTerritoriesAndTroops,
   mockData,
 } from "../scripts/features/initialTerritoryAllocate.js";
+import { setupListeners } from "./setup_listeners.js";
 
 const getGameState = async () => await mockData;
 
@@ -13,4 +14,6 @@ globalThis.onload = async () => {
     gameState.territories,
     gameState.opponents,
   );
+  setupListeners()
+  allocateTerritoriesAndTroops(gameState);
 };
