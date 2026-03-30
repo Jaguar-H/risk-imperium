@@ -23,7 +23,6 @@ export const renderTerritoriesAndTroops = (
   opponents,
 ) => {
   for (const playerInfo of Object.values({ player, ...opponents })) {
-
     colorTerritories(playerInfo.territories, playerInfo.id, territories);
     allocateTroops(territories);
   }

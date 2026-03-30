@@ -4,5 +4,6 @@ set -e
 
 deno task lint
 deno fmt
+git add .
 deno task test
 deno task coverage
