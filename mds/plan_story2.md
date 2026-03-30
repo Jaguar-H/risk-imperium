@@ -10,7 +10,8 @@
 ## [6] - COMBAT RESOLUTION - RESULT #6
 
 # OBJECTIVES
--> 
+
+->
 
 [#2] | adds InitTerritories method in game class| [Bhargavi/Amisha]
 

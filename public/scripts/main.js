@@ -7,10 +7,10 @@ globalThis.onload = async () => {
   const gameState = await getSetup();
   setupListeners();
   setup(gameState);
-  
+
   renderTerritoriesAndTroops(
     gameState.player,
     gameState.territories,
-    gameState.opponents
+    gameState.opponents,
   );
 };

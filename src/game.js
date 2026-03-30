@@ -57,7 +57,8 @@ export class Game {
         territoryId,
       );
       playerIndex++;
-    }); 0
+    });
+    0;
 
     this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
     return { players: this.#players, territories: this.#territory };
