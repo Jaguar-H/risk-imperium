@@ -36,7 +36,3 @@ export class Game {
     };
   }
 }
-
-{
-  id: ""
-}

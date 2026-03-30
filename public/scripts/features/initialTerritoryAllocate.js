@@ -149,7 +149,9 @@ export const mockData = {
     42: { name: "Eastern Australia", neighbours: [40, 41], troopCount: 12 },
   },
   player: {
-    id: "1", name: "john", territories: [8, 12, 17, 21, 25, 31, 36, 1],
+    id: "1",
+    name: "john",
+    territories: [8, 12, 17, 21, 25, 31, 36, 1],
   },
   opponents: [
     { id: "2", name: "Rob", territories: [10, 15, 19, 23, 29, 34, 40] },
@@ -169,7 +171,7 @@ const colorTerritories = (playerTerritories, playerId, territories) => {
     const territoryElement = document.querySelector(`#${terrName}`);
     territoryElement.dataset.player = playerId;
   });
-}
+};
 
 const allocateTroops = (territories) => {
   const territoryElements = document.querySelectorAll(".territory");
@@ -178,10 +180,14 @@ const allocateTroops = (territories) => {
     const { troopCount } = territories[territoryId];
     const troopCountElement = territory.querySelector(".troop-count");
     troopCountElement.textContent = troopCount;
-  })
-}
+  });
+};
 
-export const allocateTerritoriesAndTroops = (player, territories, opponents) => {
+export const allocateTerritoriesAndTroops = (
+  player,
+  territories,
+  opponents,
+) => {
   for (const playerInfo of Object.values({ player, ...opponents })) {
     colorTerritories(playerInfo.territories, playerInfo.id, territories);
     allocateTroops(territories);
