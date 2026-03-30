@@ -30,21 +30,24 @@ describe("App Handler", () => {
     it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
       const game = new Game();
       const gameState = game.getSetup();
-      gameState.state = STATES.INITIAL_REINFORCEMENT
+      gameState.state = STATES.INITIAL_REINFORCEMENT;
       const app = createApp(game);
       const response = await app.request("/user-actions", {
-        method: 'POST',
-        headers: { 'content-type': 'applications/json' },
-        body: JSON.stringify({ "userActions": 'REINFORCE', data: { territoryId: 37, troopCount: 1 } })
+        method: "POST",
+        headers: { "content-type": "applications/json" },
+        body: JSON.stringify({
+          "userActions": "REINFORCE",
+          data: { territoryId: 37, troopCount: 1 },
+        }),
       });
 
       const { action, data } = await response.json();
 
       assertEquals(response.status, 200);
       assertEquals(response.ok, true);
-      assertEquals(action, 'INITIAL_REINFORCEMENT');
+      assertEquals(action, "INITIAL_REINFORCEMENT");
       assertEquals(data.territoryId, 37);
       assertEquals(data.newTroopCount, 31);
     });
-  })
+  });
 });

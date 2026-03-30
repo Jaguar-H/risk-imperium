@@ -7,7 +7,7 @@ export class Game {
   #players;
   #continents;
   #state;
-  #initialTroopLimit
+  #initialTroopLimit;
 
   constructor(
     players = mockPlayers,
@@ -33,7 +33,7 @@ export class Game {
       id === playerId
     );
 
-    this.#state = STATES.INITIAL_REINFORCEMENT
+    this.#state = STATES.INITIAL_REINFORCEMENT;
     return {
       continents: this.#continents,
       territories: this.#territory,
@@ -49,21 +49,23 @@ export class Game {
     const territory = this.#territory[territoryId];
 
     if (troopCount !== 1) {
-      return { 
-      action: this.#state, 
-      data: { territoryId, newTroopCount: territory.troopCount } };
+      return {
+        action: this.#state,
+        data: { territoryId, newTroopCount: territory.troopCount },
+      };
     }
 
     territory.troopCount++;
     this.#initialTroopLimit--;
-    
-    if(this.#initialTroopLimit === 0) {
+
+    if (this.#initialTroopLimit === 0) {
       this.#state = STATES.REINFORCE;
     }
 
-    return { 
-      action: this.#state, 
-      data: { territoryId, newTroopCount: territory.troopCount } };
+    return {
+      action: this.#state,
+      data: { territoryId, newTroopCount: territory.troopCount },
+    };
   }
 
   reinforce({ territoryId, troopCount }) {
@@ -74,6 +76,9 @@ export class Game {
     const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;
 
-    return { action: this.#state, data: { territoryId, newTroopCount: territory.troopCount } };
+    return {
+      action: this.#state,
+      data: { territoryId, newTroopCount: territory.troopCount },
+    };
   }
 }

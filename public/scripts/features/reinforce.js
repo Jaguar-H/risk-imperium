@@ -10,4 +10,4 @@ export const handleInitialReinforcement = async (territory, gameState) => {
   const { action, data } = await sendPostRequest("/user-actions", reqData);
   gameState.state = action;
   updateTroopCount(territory, data);
-}
+};

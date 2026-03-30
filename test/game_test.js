@@ -29,8 +29,8 @@ describe("Game", () => {
     const expectedTroopCount = gameState.territories[37].troopCount + 1;
     const { action, data } = game.reinforce({ territoryId: 37, troopCount: 1 });
 
-    assertEquals(action, STATES.INITIAL_REINFORCEMENT)
+    assertEquals(action, STATES.INITIAL_REINFORCEMENT);
     assertEquals(data.territoryId, 37);
-    assertEquals(data.newTroopCount, expectedTroopCount)
+    assertEquals(data.newTroopCount, expectedTroopCount);
   });
 });
