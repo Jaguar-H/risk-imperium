@@ -61,3 +61,11 @@ body {
   fill: var(--text-secondary);
   pointer-events: none;
 }
+
+circle {
+  fill: white;
+}
+
+text {
+  font-size: 8px;
+}

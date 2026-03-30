@@ -1,0 +1,43 @@
+Merge remote-tracking branch 'refs/remotes/origin/main'
+[#2] | Solves merge conflict for script files | Bhargavi/Amisha
+
+# Conflicts:
+#	public/scripts/utilities.js
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please run
+#	git update-ref -d MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Committer: Amisha Rawat <amisharawat@Amishas-MacBook-Pro.local>
+#
+# On branch main
+# Your branch and 'origin/main' have diverged,
+# and have 1 and 6 different commits each, respectively.
+#
+# All conflicts fixed but you are still merging.
+#
+# Changes to be committed:
+#	modified:   main.js
+#	modified:   mds/plan_story2.md
+#	new file:   public/scripts/APIS.js
+#	new file:   public/scripts/features/setup.js
+#	modified:   public/scripts/main.js
+#	new file:   public/scripts/server_calls.js
+#	modified:   public/styles/game_ui.css
+#	modified:   public/styles/map.css
+#	modified:   public/styles/players.css
+#	modified:   public/styles/root.css
+#	modified:   src/app.js
+#	new file:   src/config.js
+#	new file:   src/dummy_data.js
+#	new file:   src/game.js
+#	new file:   src/handler.js
+#	modified:   test/app_test.js
+#	new file:   test/game_test.js
+#	new file:   test/handler_test.js
+#
