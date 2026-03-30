@@ -1,4 +1,4 @@
-export const longPool = async (api) => {
+export const olympicSizedPool = async (api) => {
   const res = await fetch(api);
   if (res.status === 204) {
     return longPool(api);
