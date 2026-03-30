@@ -11,8 +11,8 @@ globalThis.onload = async () => {
   const { players, territories } = await sendGetRequest(
     APIs.INITIAL_TERRITORIES,
   );
-  renderTerritoriesAndTroops(
-    players,
-    territories,
-  );
+
+  renderTerritoriesAndTroops(players, territories);
+  getCurrentGameState();
+  startInvasionPhase();
 };
