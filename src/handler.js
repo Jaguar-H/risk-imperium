@@ -7,4 +7,4 @@ export const handleGameSetup = (context) => {
 export const handleInitTerritories = (context) => {
   const game = context.get("game");
   return context.json(game.initTerritories());
-}
+};

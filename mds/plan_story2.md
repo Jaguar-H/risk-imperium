@@ -7,5 +7,6 @@
 3. Allocate one troop to each territory
 4. Display troops count on the respective territories
 
-[#2] | modifies troop count to 0 and modifies function name | [Bhargavi/Amisha]
-Details: -> allocateTroopsAndTerritories to renderTroopsAndTerritories
+[#2] | adds InitTerritories method in game class| [Bhargavi/Amisha]
+
+Details:

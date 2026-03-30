@@ -8,9 +8,11 @@ globalThis.onload = async () => {
   const gameState = await getSetup();
   setupListeners();
   setup(gameState);
-  const { players, territories } = await sendGetRequest(APIs.INITIAL_TERRITORIES);
+  const { players, territories } = await sendGetRequest(
+    APIs.INITIAL_TERRITORIES,
+  );
   renderTerritoriesAndTroops(
     players,
-    territories
+    territories,
   );
 };

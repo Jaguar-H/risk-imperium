@@ -28,7 +28,15 @@ describe("Game", () => {
     const setupData = game.getSetup();
 
     assertEquals(territories, setupData.territories);
-    assertEquals(Object.values(territories).every(({ troopCount }) => troopCount === 1), true);
-    assertEquals(Object.values(players).every(({ territories }) => territories.length === 7), true);
-  })
+    assertEquals(
+      Object.values(territories).every(({ troopCount }) => troopCount === 1),
+      true,
+    );
+    assertEquals(
+      Object.values(players).every(({ territories }) =>
+        territories.length === 7
+      ),
+      true,
+    );
+  });
 });

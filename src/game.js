@@ -38,9 +38,10 @@ export class Game {
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
-      state: this.#state,
+      state: this.#state
     };
   }
+
   #shuffleTerritories(territories) {
     return territories.sort(() => Math.random() - 0.5);
   }
@@ -49,13 +50,16 @@ export class Game {
     const territoryIds = this.#shuffleTerritories(Object.keys(this.#territory));
     let playerIndex = 0;
 
-    territoryIds.forEach(territoryId => {
+    territoryIds.forEach((territoryId) => {
       const territory = this.#territory[territoryId];
       territory.troopCount = 1;
-      this.#players[playerIndex % this.#players.length].territories.push(territoryId);
+      this.#players[playerIndex % this.#players.length].territories.push(
+        territoryId,
+      );
       playerIndex++;
     });
 
+    this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
     return { players: this.#players, territories: this.#territory };
   }
 
