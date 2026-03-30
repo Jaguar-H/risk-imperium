@@ -1,4 +1,4 @@
-export const sendPostRequest = async (url, reqData = {}) =>
+export const sendPostRequest = (url, reqData = {}) =>
   fetch(url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
