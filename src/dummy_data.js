@@ -1,0 +1,3 @@
+// Example
+// export const someDummyData = {
+// }
