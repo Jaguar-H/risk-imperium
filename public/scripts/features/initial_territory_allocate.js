@@ -1,6 +1,4 @@
 const colorTerritories = (playerTerritories, playerId, territories) => {
-
-
   playerTerritories.forEach((tId) => {
     const { name } = territories[tId];
     const terrName = name.toLowerCase().replaceAll(" ", "-");
@@ -25,7 +23,6 @@ export const allocateTerritoriesAndTroops = (
   opponents,
 ) => {
   for (const playerInfo of Object.values({ player, ...opponents })) {
-
     colorTerritories(playerInfo.territories, playerInfo.id, territories);
     allocateTroops(territories);
   }

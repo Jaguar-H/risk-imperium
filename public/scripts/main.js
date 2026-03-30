@@ -3,8 +3,6 @@ import { setupListeners } from "./setup_listeners.js";
 import { allocateTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { getSetup } from "./server_calls.js";
 
-
-
 globalThis.onload = async () => {
   const gameState = await getSetup();
 
@@ -14,7 +12,7 @@ globalThis.onload = async () => {
     gameState.opponents,
   );
 
-  setupListeners();
+  setupListeners(gameState);
 
   setup(gameState);
 };

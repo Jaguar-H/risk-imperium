@@ -6,7 +6,8 @@ export class Game {
   #territory;
   #players;
   #continents;
-  #state
+  #state;
+  #initialTroopLimit
 
   constructor(
     players = mockPlayers,
@@ -18,6 +19,7 @@ export class Game {
     this.#players = players;
     this.#continents = continents;
     this.#state = STATES.WAITING;
+    this.#initialTroopLimit = 13;
   }
 
   getSetup(playerId) {
@@ -27,26 +29,51 @@ export class Game {
     for (const { id, ...details } of opponents) {
       opponentsDetails[id] = { ...details, territories: [] };
     }
-    const currentPlayerDetials = this.#players.find(({ id }) => id === playerId)
+    const currentPlayerDetails = this.#players.find(({ id }) =>
+      id === playerId
+    );
 
+    this.#state = STATES.INITIAL_REINFORCEMENT
     return {
       continents: this.#continents,
       territories: this.#territory,
-      player: { ...currentPlayerDetials, territories: [] },
+      player: { ...currentPlayerDetails, territories: [] },
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
-      state: this.#state
+      state: this.#state,
     };
   }
 
+  initialReinforcement(territoryId, troopCount) {
+    const territory = this.#territory[territoryId];
+
+    if (troopCount !== 1) {
+      return { 
+      action: this.#state, 
+      data: { territoryId, newTroopCount: territory.troopCount } };
+    }
+
+    territory.troopCount++;
+    this.#initialTroopLimit--;
+    
+    if(this.#initialTroopLimit === 0) {
+      this.#state = STATES.REINFORCE;
+    }
+
+    return { 
+      action: this.#state, 
+      data: { territoryId, newTroopCount: territory.troopCount } };
+  }
+
   reinforce({ territoryId, troopCount }) {
-    const territory = this.#territory[territoryId]
+    if (this.#state === STATES.INITIAL_REINFORCEMENT) {
+      return this.initialReinforcement(territoryId, troopCount);
+    }
+
+    const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;
 
-    return {
-      message: "Troops deployed successfully",
-      data: { territoryId, newTroopCount: territory.troopCount }
-    }
+    return { action: this.#state, data: { territoryId, newTroopCount: territory.troopCount } };
   }
 }

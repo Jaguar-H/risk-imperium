@@ -1,6 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
-import { assert } from "@std/assert/assert";
+import { assert, assertEquals } from "@std/assert";
+import { STATES } from "../src/config.js";
 
 describe("Game", () => {
   it("setup method should return data for the single user", () => {
@@ -19,5 +20,17 @@ describe("Game", () => {
     expectedKeys.forEach((expectedKey) => {
       assert(setupDataProperties.some((key) => key === expectedKey));
     });
+  });
+
+  it("reinforce method should return the updated troop count with the territory id", () => {
+    const game = new Game();
+    const gameState = game.getSetup();
+    gameState.state = STATES.INITIAL_REINFORCEMENT;
+    const expectedTroopCount = gameState.territories[37].troopCount + 1;
+    const { action, data } = game.reinforce({ territoryId: 37, troopCount: 1 });
+
+    assertEquals(action, STATES.INITIAL_REINFORCEMENT)
+    assertEquals(data.territoryId, 37);
+    assertEquals(data.newTroopCount, expectedTroopCount)
   });
 });
