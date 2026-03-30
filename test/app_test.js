@@ -47,7 +47,7 @@ describe("App Handler", () => {
       assertEquals(response.ok, true);
       assertEquals(action, "INITIAL_REINFORCEMENT");
       assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, 31);
+      assertEquals(data.newTroopCount, 1);
     });
   });
 });

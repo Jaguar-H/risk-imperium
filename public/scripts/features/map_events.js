@@ -11,5 +11,4 @@ export const onMapAction = async (event, gameState) => {
     const stateToPerform = GAME_STATES[gameState.state];
     await stateToPerform(territory, gameState);
   }
-  // openDialogBox(territory);
 };

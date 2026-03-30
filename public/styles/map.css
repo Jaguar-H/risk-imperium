@@ -48,7 +48,8 @@ body {
 
 .territory-outline {
   fill: var(--color-surface);
-  stroke: none;
+  stroke: var(--color-map-stroke);
+  stroke-width: 2px;
   vector-effect: non-scaling-stroke;
   transition: all 0.3s ease;
 }
@@ -63,7 +64,7 @@ body {
 }
 
 circle {
-  fill: white;
+  fill: hsl(0, 0%, 86%);
 }
 
 text {

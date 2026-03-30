@@ -33,4 +33,22 @@ describe("Game", () => {
     assertEquals(data.territoryId, 37);
     assertEquals(data.newTroopCount, expectedTroopCount);
   });
+
+  it("Init territories method should return the players and territories", () => {
+    const game = new Game();
+    const { players, territories } = game.initTerritories();
+    const setupData = game.getSetup();
+
+    assertEquals(territories, setupData.territories);
+    assertEquals(
+      Object.values(territories).every(({ troopCount }) => troopCount === 1),
+      true,
+    );
+    assertEquals(
+      Object.values(players).every(({ territories }) =>
+        territories.length === 7
+      ),
+      true,
+    );
+  });
 });

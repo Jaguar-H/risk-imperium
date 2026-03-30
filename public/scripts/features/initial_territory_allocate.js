@@ -17,12 +17,11 @@ const allocateTroops = (territories) => {
   });
 };
 
-export const allocateTerritoriesAndTroops = (
-  player,
+export const renderTerritoriesAndTroops = (
+  players,
   territories,
-  opponents,
 ) => {
-  for (const playerInfo of Object.values({ player, ...opponents })) {
+  for (const playerInfo of Object.values(players)) {
     colorTerritories(playerInfo.territories, playerInfo.id, territories);
     allocateTroops(territories);
   }
