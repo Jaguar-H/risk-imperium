@@ -1,8 +1,13 @@
-import { APIs } from "../APIS.js";
-import { sendPostRequest } from "../server_calls.js";
-import { USER_ACTIONS } from "../user_action.js";
 
-const openDialogBox = (territoryId) => {
+import { sendPostRequest } from "../server_calls.js";
+
+const updateTroopCount = (territory, { newTroopCount }) => {
+  const troopCount = territory.querySelector(".troop-count");
+  troopCount.textContent = newTroopCount;
+}
+
+const openDialogBox = (territory) => {
+  const territoryId = Number(territory.dataset.territoryId);
   const dialog = document.querySelector("dialog");
   dialog.showModal();
 
@@ -11,21 +16,18 @@ const openDialogBox = (territoryId) => {
     e.preventDefault();
     const input = form.querySelector("input");
     const troopCount = input.value;
-
     const reqData = {
-      userActions: USER_ACTIONS.REINFORCE,
+      userActions: "REINFORCE",
       data: { territoryId, troopCount: Number(troopCount) },
     };
-
-    await sendPostRequest(APIs.USER_ACTIONS, reqData);
+    const { data } = await sendPostRequest("/user-actions", reqData);
     form.reset();
+    updateTroopCount(territory, data);
     dialog.close();
   };
 };
 
 export const onMapAction = (event) => {
   const territory = event.target.closest("g");
-  const territoryId = Number(territory.dataset.territoryId);
-
-  openDialogBox(territoryId);
+  openDialogBox(territory);
 };

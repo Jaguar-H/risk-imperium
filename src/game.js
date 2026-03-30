@@ -39,4 +39,14 @@ export class Game {
       state: this.#state
     };
   }
+
+  reinforce({ territoryId, troopCount }) {
+    const territory = this.#territory[territoryId]
+    territory.troopCount += troopCount;
+
+    return {
+      message: "Troops deployed successfully",
+      data: { territoryId, newTroopCount: territory.troopCount }
+    }
+  }
 }
