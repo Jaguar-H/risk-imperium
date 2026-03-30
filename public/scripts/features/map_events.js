@@ -1,10 +1,9 @@
-
 import { sendPostRequest } from "../server_calls.js";
 
 const updateTroopCount = (territory, { newTroopCount }) => {
   const troopCount = territory.querySelector(".troop-count");
   troopCount.textContent = newTroopCount;
-}
+};
 
 const openDialogBox = (territory) => {
   const territoryId = Number(territory.dataset.territoryId);

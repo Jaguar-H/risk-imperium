@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import { logger } from "hono/logger";
 import { handleUserActions } from "./handlers/user_actions.js";
-import { handleGameSetup } from "./handler.js";
+import { handleGameSetup, handleInitTerritories } from "./handler.js";
 
 export const createApp = (game) => {
   const app = new Hono();
@@ -14,6 +14,8 @@ export const createApp = (game) => {
   });
 
   app.get("/setup", handleGameSetup);
+
+  app.get("/initial-territories", handleInitTerritories);
 
   app.post("/user-actions", handleUserActions);
 
