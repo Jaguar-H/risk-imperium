@@ -1,11 +1,11 @@
-import { handleReinforce } from "./reinforce.js"
+import { handleReinforce } from "./reinforce.js";
 
 const USER_ACTIONS = {
-  'REINFORCE': handleReinforce,
-}
+  "REINFORCE": handleReinforce,
+};
 
 export const handleUserActions = async (c) => {
   const { userActions, data } = await c.req.json();
-  USER_ACTIONS[userActions](data)
-  return c.json({ msg: "ok" })
-}
+  USER_ACTIONS[userActions](data);
+  return c.json({ msg: "ok" });
+};

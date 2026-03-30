@@ -1,3 +1,3 @@
 export const USER_ACTIONS = {
-  REINFORCE : "REINFORCE" 
-}
+  REINFORCE: "REINFORCE",
+};

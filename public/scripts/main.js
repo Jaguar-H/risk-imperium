@@ -15,6 +15,6 @@ globalThis.onload = async () => {
     gameState.territories,
     gameState.opponents,
   );
-  setupListeners()
+  setupListeners();
   setup(gameState);
 };

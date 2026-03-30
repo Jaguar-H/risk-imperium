@@ -15,7 +15,7 @@ export const createApp = (game) => {
 
   app.get("/setup", handleGameSetup);
 
-  app.post('/user-actions', handleUserActions);
+  app.post("/user-actions", handleUserActions);
 
   app.get("*", serveStatic({ root: "./public" }));
   return app;
