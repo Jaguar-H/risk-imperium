@@ -42,6 +42,27 @@ export class Game {
     };
   }
 
+  #shuffleTerritories(territories) {
+    return territories.sort(() => Math.random() - 0.5);
+  }
+
+  initTerritories() {
+    const territoryIds = this.#shuffleTerritories(Object.keys(this.#territory));
+    let playerIndex = 0;
+
+    territoryIds.forEach((territoryId) => {
+      const territory = this.#territory[territoryId];
+      territory.troopCount = 1;
+      this.#players[playerIndex % this.#players.length].territories.push(
+        territoryId,
+      );
+      playerIndex++;
+    });
+
+    this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
+    return { players: this.#players, territories: this.#territory };
+  }
+
   reinforce({ territoryId, troopCount }) {
     const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;

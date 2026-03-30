@@ -26,6 +26,7 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
     "#current-player-name",
   );
   const currentPlayer = players[currentPlayerId];
+
   currentPlayerNameHolder.textContent = currentPlayer.name;
 };
 

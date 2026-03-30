@@ -16,3 +16,5 @@ export const sendPostRequest = (url, reqData = {}) =>
     headers: { "content-type": "application/json" },
     body: JSON.stringify(reqData),
   }).then((data) => data.json());
+
+export const sendGetRequest = (url) => fetch(url).then((data) => data.json());
