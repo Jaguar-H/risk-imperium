@@ -29,6 +29,7 @@ describe("App Handler", () => {
   describe("POST /user-actions", () => {
     it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
       const game = new Game();
+      game.initTerritories();
       const gameState = game.getSetup();
       gameState.state = STATES.INITIAL_REINFORCEMENT;
       const app = createApp(game);
@@ -47,7 +48,7 @@ describe("App Handler", () => {
       assertEquals(response.ok, true);
       assertEquals(action, "INITIAL_REINFORCEMENT");
       assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, 1);
+      assertEquals(data.newTroopCount, 2);
     });
   });
 });
