@@ -1,3 +1,5 @@
+import { sendPostRequest } from "./server_calls.js";
+
 export const APIs = {
   SETUP: "/setup",
   USER_ACTIONS: "/user-actions",
@@ -9,7 +11,6 @@ export const reinforce = async (data) => {
     userActions: "REINFORCE",
     data,
   };
-
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
 

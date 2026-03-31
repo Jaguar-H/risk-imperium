@@ -1,19 +1,17 @@
 import { reinforce } from "../APIS.js";
 import { SETUP } from "../config.js";
-import { updateTroopCount } from "../utilities.js";
+
+import { renderGameState, updateTroopCount } from "../utilities.js";
 
 const isOwnedByCurrentPlayer = (territoryId, playerTerritoryIds) =>
   playerTerritoryIds.includes(territoryId);
 
 const placeInitialTroops = async (gameState, territory, territoryId) => {
-  const payLoad = {
-    userActions: "REINFORCE",
-    data: { territoryId, troopCount: 1 },
-  };
-
-  const response = await reinforce(payLoad);
+  const data = { territoryId, troopCount: 1 };
+  const response = await reinforce(data);
   const { action: nextState, data: updatedTerritory } = response;
   if (nextState !== gameState.state) {
+    renderGameState(nextState);
     if (nextState in SETUP) {
       SETUP[nextState](gameState);
     }
@@ -31,7 +29,7 @@ const placeInitialTroops = async (gameState, territory, territoryId) => {
 };
 
 export const handleInitialReinforcement = async (territory, gameState) => {
-  const territoryId = territory.dataset.territoryId;
+  const territoryId = Number(territory.dataset.territoryId);
   const territories = gameState.player.territories;
 
   if (!isOwnedByCurrentPlayer(territoryId, territories)) {

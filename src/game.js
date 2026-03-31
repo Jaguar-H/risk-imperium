@@ -48,17 +48,7 @@ export class Game {
       state: this.#state,
     };
   }
-  getGameState() {
-    return {
-      continents: this.#continents,
-      territories: this.#territory,
-      player: { ...currentPlayerDetails },
-      opponents: opponentsDetails,
-      cards: [],
-      currentPlayer: this.#activePlayerId,
-      state: this.#state,
-    };
-  }
+
   #shuffleTerritories(territories) {
     return territories.sort(() => this.#randomFunction() - 0.5);
   }
@@ -167,6 +157,7 @@ export class Game {
     this.#updateTroopCount(attackerTid, defenderTid, combatResult);
     this.#state = "MOVE_IN";
 
+    console.log({ combatResult, attackerTid, defenderTid });
     return {
       action: this.#state,
       data: { attackerDice, defenderDice },
