@@ -1,7 +1,9 @@
+import { handleDefend } from "./defend.js";
 import { handleInitialReinforcement } from "./reinforce.js";
 
 const GAME_STATES = {
   INITIAL_REINFORCEMENT: handleInitialReinforcement,
+  DEFEND: handleDefend,
 };
 
 export const onMapAction = async (event, gameState) => {
