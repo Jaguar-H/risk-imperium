@@ -1,5 +1,5 @@
 import { combat } from "../APIS.js";
-import { showNotification } from "../utilities.js";
+import { renderGameState, showNotification } from "../utilities.js";
 
 const updateTroopsInMap = (territoryId, troopsCount) => {
   const territoryElement = document.querySelector(
@@ -16,7 +16,7 @@ const updateMap = (prevData, data) => {
 };
 
 export const handleCombat = async (prevData, _action, gameState) => {
-  const { action: newAction, data } = await combat(prevData);
+  const { action: newState, data } = await combat(prevData);
   const diceValues = [...data.attackerDice, ...data.defenderDice];
   const dieElements = document.querySelectorAll(".die-slot");
 
@@ -25,6 +25,7 @@ export const handleCombat = async (prevData, _action, gameState) => {
     dice.textContent = diceValues[index];
   });
 
-  gameState.state = newAction;
+  gameState.state = newState;
+  renderGameState(newState);
   updateMap(prevData, data);
 };

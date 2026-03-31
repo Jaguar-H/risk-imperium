@@ -1,31 +1,66 @@
-import { reinforce } from "../APIS.js";
-import { SETUP } from "../config.js";
+import { APIs } from "../APIS.js";
+import { SETUP_TRANSITION } from "../config.js";
+import { sendPostRequest } from "../server_calls.js";
+import { setTroopLimit } from "../transition.js";
+import {
+  displayRemainingTroopsToDeploy,
+  renderGameState,
+  showNotification,
+  updateTroopCount,
+} from "../utilities.js";
 
-import { renderGameState, updateTroopCount } from "../utilities.js";
+const NOTIFY_STATUS = {
+  WARNING: "warning",
+  SUCCESS: "success",
+  INFO: "info",
+};
+
+const setUpNextPhase = (gameState, nextState) => {
+  gameState.state = nextState;
+  if (nextState in SETUP_TRANSITION) {
+    return SETUP_TRANSITION[nextState](gameState);
+  }
+};
 
 const isOwnedByCurrentPlayer = (territoryId, playerTerritoryIds) =>
   playerTerritoryIds.includes(territoryId);
 
-const placeInitialTroops = async (gameState, territory, territoryId) => {
-  const data = { territoryId, troopCount: 1 };
-  const response = await reinforce(data);
+const deployTroops = async (
+  gameState,
+  territory,
+  territoryId,
+  troopCount = 1,
+) => {
+  const payLoad = {
+    userActions: "REINFORCE",
+    data: { territoryId, troopCount },
+  };
+
+  const response = await sendPostRequest(APIs.USER_ACTIONS, payLoad);
   const { action: nextState, data: updatedTerritory } = response;
+
   if (nextState !== gameState.state) {
     renderGameState(nextState);
-    if (nextState in SETUP) {
-      SETUP[nextState](gameState);
-    }
+    setUpNextPhase(gameState, nextState);
   }
-  gameState.state = nextState;
-  updateTroopCount(territory, updatedTerritory);
+
+  const { territoryId: updatedTerritoryId, newTroopCount } = updatedTerritory;
+  updateTroopCount(territory, newTroopCount);
+
+  gameState.territories[updatedTerritoryId].troopCount = newTroopCount;
 
   const playerName = gameState.player.name;
-  const territoryName = gameState.territories[territoryId].name;
-  return {
-    message: `${playerName} deployed 1 troop in ${territoryName}`,
-    status: "success",
-    remainingTroopsToDeploy: updatedTerritory.remainingTroops,
-  };
+  const territoryName = gameState.territories[updatedTerritoryId].name;
+
+  const message =
+    `${playerName} deployed ${troopCount} troop in ${territoryName}`;
+  const remainingTroopsToDeploy = updatedTerritory.remainingTroops;
+
+  if (remainingTroopsToDeploy !== undefined) {
+    displayRemainingTroopsToDeploy(remainingTroopsToDeploy);
+  }
+
+  showNotification(message, NOTIFY_STATUS.SUCCESS);
 };
 
 export const handleInitialReinforcement = async (territory, gameState) => {
@@ -35,11 +70,40 @@ export const handleInitialReinforcement = async (territory, gameState) => {
   if (!isOwnedByCurrentPlayer(territoryId, territories)) {
     const territoryName = gameState.territories[territoryId].name;
 
-    return {
-      message: `${territoryName} isn't under your control`,
-      status: "warning",
-    };
+    const message = `${territoryName} isn't under your control`;
+    return showNotification(message, NOTIFY_STATUS.WARNING);
   }
 
-  return await placeInitialTroops(gameState, territory, territoryId);
+  return await deployTroops(gameState, territory, territoryId);
+};
+
+const placeTroops = (gameState, territory, territoryId) => {
+  const dialog = document.querySelector("dialog");
+  dialog.showModal();
+
+  const form = dialog.querySelector("#deploy-troops-form");
+  form.onsubmit = (event) => {
+    event.preventDefault();
+    const input = form.querySelector("input");
+    const troopCount = Number(input.value);
+    deployTroops(gameState, territory, territoryId, troopCount);
+    const remainingTroopsToDeploy = Number(input.max) - troopCount;
+    setTroopLimit(remainingTroopsToDeploy);
+    form.reset();
+    dialog.close();
+  };
+};
+
+export const handleReinforcement = (territory, gameState) => {
+  const territoryId = Number(territory.dataset.territoryId);
+  const territories = gameState.player.territories;
+
+  if (!isOwnedByCurrentPlayer(territoryId, territories)) {
+    const territoryName = gameState.territories[territoryId].name;
+
+    const message = `${territoryName} isn't under your control`;
+    return showNotification(message, NOTIFY_STATUS.WARNING);
+  }
+
+  return placeTroops(gameState, territory, territoryId);
 };

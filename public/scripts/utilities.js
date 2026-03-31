@@ -6,7 +6,7 @@ export const getOwnedContinents = (player, continents) => {
   });
 };
 
-export const updateTroopCount = (territory, { newTroopCount }) => {
+export const updateTroopCount = (territory, newTroopCount) => {
   const troopCount = territory.querySelector(".troop-count");
   troopCount.textContent = newTroopCount;
 };
@@ -25,13 +25,21 @@ export const showNotification = (message, status = "info", duration = 3000) => {
   }, duration);
 };
 
-export const displayRemainingTroopsToDisplay = (remainingTroops) => {
+export const displayRemainingTroopsToDeploy = (remainingTroops) => {
   const display = document.querySelector("#remaining-troops-to-deploy");
   display.textContent = remainingTroops
     ? `Remaining Troops To Deploy: ${remainingTroops}`
     : "";
 };
 
+export const highlightTerritories = (territories) => {
+  territories.forEach((territory) => {
+    const territoryElement = document.querySelector(
+      `[data-territory-id="${territory}"] > path`,
+    );
+    territoryElement.classList.add("selected");
+  });
+};
 const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
     "#current-player-name",

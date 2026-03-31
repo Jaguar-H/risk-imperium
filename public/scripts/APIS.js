@@ -6,6 +6,15 @@ export const APIs = {
   GET_GAME_STATE: "/get-game-state",
 };
 
+export const invade = async (invasionDetails) => {
+  const reqData = { userActions: "INVADE", data: invasionDetails };
+  try {
+    return await sendPostRequest("/user-actions", reqData);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const reinforce = async (data) => {
   const reqData = {
     userActions: "REINFORCE",

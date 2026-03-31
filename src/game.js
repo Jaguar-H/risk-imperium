@@ -109,17 +109,95 @@ export class Game {
   }
 
   reinforce({ territoryId, troopCount }) {
+    const territory = this.#territory[territoryId];
+
+    if (this.#isValidTroopCount(troopCount)) {
+      return {
+        action: this.#state,
+        data: {
+          territoryId,
+          newTroopCount: territory.troopCount,
+          remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+        },
+      };
+    }
+
     if (this.#state === STATES.INITIAL_REINFORCEMENT) {
       return this.initialReinforcement(territoryId, troopCount);
     }
 
-    const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;
+    this.#stateDetails.remainingTroopsToDeploy -= troopCount;
+
+    if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
+      this.#state = STATES.INVASION;
+    }
 
     return {
       action: this.#state,
-      data: { territoryId, newTroopCount: territory.troopCount },
+      data: {
+        territoryId,
+        newTroopCount: territory.troopCount,
+        remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+      },
     };
+  }
+
+  #isValidTroopCount(troopCount) {
+    return (
+      !troopCount ||
+      troopCount <= 0 ||
+      troopCount > this.#stateDetails.remainingTroopsToDeploy
+    );
+  }
+
+  #setReinforcements() {
+    this.#stateDetails.remainingTroopsToDeploy = 3;
+  }
+
+  setupNextPhase() {
+    if (this.#state === STATES.REINFORCE) {
+      this.#setReinforcements();
+      return {
+        action: this.#state,
+        data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
+      };
+    }
+  }
+
+  #isValidAttacker({ attackerTerritoryId }) {
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    return player.territories.includes(attackerTerritoryId);
+  }
+
+  #validDefender({ attackerTerritoryId, defenderTerritoryId }) {
+    const neighbours = this.#territory[attackerTerritoryId].neighbours;
+
+    const isNeighbour = neighbours.includes(defenderTerritoryId);
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    const isEnemy = !player.territories.includes(defenderTerritoryId);
+    return isNeighbour && isEnemy;
+  }
+
+  #isValidAttackerTroopsCount({ attackerTerritoryId, attackerTroops }) {
+    const availableTroopCount = this.#territory[attackerTerritoryId].troopCount;
+    const isInRange = attackerTroops <= 3 && attackerTroops > 0;
+
+    return availableTroopCount > attackerTroops && isInRange;
+  }
+
+  invade(invadeDetials) {
+    const isValidAttack = this.#isValidAttacker(invadeDetials) &&
+      this.#validDefender(invadeDetials) &&
+      this.#isValidAttackerTroopsCount(invadeDetials);
+
+    if (!isValidAttack) {
+      throw new Error("Invalid Attack");
+    }
+
+    this.#state = STATES.DEFEND;
+    this.#stateDetails = invadeDetials;
+    return { action: this.#state, data: {} };
   }
 
   defend(data) {
