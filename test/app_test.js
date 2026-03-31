@@ -111,56 +111,5 @@ describe("App Handler", () => {
       assertEquals(res.status, 404);
       await res.text();
     });
-
-    // it("Should load the new state when valid state requirement is called", async () => {
-    //   let loadedState;
-    //   const game = {
-    //     loadGameState: (state) => {
-    //       loadedState = state;
-    //     },
-    //   };
-    //   const app = createApp(game, true);
-    //   const res = await app.request("/init-reinforced");
-    //   assertEquals(res.status, 302);
-
-    //   const expectedParameters = [
-    //     "activePlayerId",
-    //     "territory",
-    //     "players",
-    //     "continents",
-    //     "state",
-    //     "stateDetails",
-    //   ];
-    //   const parameters = Object.keys(loadedState);
-    //   assertEquals(expectedParameters.length, parameters.length);
-    //   assert(parameters.every((param) => expectedParameters.includes(param)));
-    // });
-
-    // it("Should load the new state when valid state requirement is called with start-no-setup", async () => {
-    //   let isNewStateLoaded = false;
-    //   const game = {
-    //     loadGameState: (_) => {
-    //       isNewStateLoaded = true;
-    //     },
-    //   };
-    //   const app = createApp(game, true);
-    //   const res = await app.request("/start-no-setup");
-    //   assertEquals(res.status, 302);
-    //   assertFalse(isNewStateLoaded);
-    // });
-
-    // it("Should load the new state when valid state requirement is called with start", async () => {
-    //   let initIsCalled = false;
-    //   const game = {
-    //     initTerritories: () => {
-    //       initIsCalled = true;
-    //     },
-    //   };
-    //   const app = createApp(game, true);
-    //   const res = await app.request("/start");
-    //   assertEquals(res.status, 302);
-
-    //   assert(initIsCalled);
-    // });
   });
 });

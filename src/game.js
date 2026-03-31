@@ -48,17 +48,7 @@ export class Game {
       state: this.#state,
     };
   }
-  getGameState() {
-    return {
-      continents: this.#continents,
-      territories: this.#territory,
-      player: { ...currentPlayerDetails },
-      opponents: opponentsDetails,
-      cards: [],
-      currentPlayer: this.#activePlayerId,
-      state: this.#state,
-    };
-  }
+
   #shuffleTerritories(territories) {
     return territories.sort(() => this.#randomFunction() - 0.5);
   }
