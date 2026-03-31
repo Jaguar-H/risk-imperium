@@ -1,1 +1,13 @@
-export const CONFIG = {};
+import { setup } from "./features/setup.js";
+
+export const STATES = {
+  WAITING: "WAITING",
+  SETUP: "SETUP",
+  START: "START",
+  INITIAL_REINFORCEMENT: "INITIAL_REINFORCEMENT",
+  REINFORCE: "REINFORCE",
+  INITIAL_TERRITORY_ALLOCATION: "INITIAL_TERRITORY_ALLOCATION",
+};
+export const SETUP = {
+  [STATES.SETUP]: (gameState) => setup(gameState),
+};

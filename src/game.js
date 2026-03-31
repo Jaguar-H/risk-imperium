@@ -7,13 +7,12 @@ export class Game {
   #players;
   #continents;
   #state;
-  #initialTroopLimit;
   #randomFunction;
   #stateDetails = {};
 
   constructor(
     randomFunction = Math.random,
-    players = mockPlayers,
+    players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
     continents = CONFIG.CONTINENTS,
   ) {
@@ -22,8 +21,10 @@ export class Game {
     this.#territory = territories;
     this.#players = players;
     this.#continents = continents;
-    this.#state = STATES.WAITING;
-    this.#initialTroopLimit = 13;
+    this.#state = STATES.SETUP;
+    this.#stateDetails = {
+      initialTroopLimit: 13,
+    };
   }
 
   getSetup(playerId) {
@@ -33,11 +34,10 @@ export class Game {
     for (const { id, ...details } of opponents) {
       opponentsDetails[id] = { ...details, id };
     }
-    const currentPlayerDetails = this.#players.find(({ id }) =>
-      id === playerId
+    const currentPlayerDetails = this.#players.find(
+      ({ id }) => id === playerId,
     );
 
-    this.#state = STATES.INITIAL_REINFORCEMENT;
     return {
       continents: this.#continents,
       territories: this.#territory,
@@ -80,7 +80,9 @@ export class Game {
       player.territories.push(Number(territoryId));
     });
 
-    this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
+    this.#state = STATES.INITIAL_REINFORCEMENT;
+    this.#stateDetails.remainingTroopsToDeploy = 13;
+
     return { players: this.#players, territories: this.#territory };
   }
 
@@ -95,15 +97,19 @@ export class Game {
     }
 
     territory.troopCount++;
-    this.#initialTroopLimit--;
+    this.#stateDetails.remainingTroopsToDeploy--;
 
-    if (this.#initialTroopLimit === 0) {
+    if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
       this.#state = STATES.REINFORCE;
     }
 
     return {
       action: this.#state,
-      data: { territoryId, newTroopCount: territory.troopCount },
+      data: {
+        territoryId,
+        newTroopCount: territory.troopCount,
+        remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+      },
     };
   }
 
@@ -156,8 +162,8 @@ export class Game {
   resolveCombat() {
     const { attackerTid, defenderTid, attackerTroops, defenderTroops } =
       this.#state;
-    const attackerDice = rollDice(attackerTroops);
-    const defenderDice = rollDice(defenderTroops);
+    const attackerDice = this.#rollDice(attackerTroops);
+    const defenderDice = this.#rollDice(defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
     this.#updateTroopCount(attackerTid, defenderTid, combatResult);
     this.#state = "MOVE_IN";
@@ -166,5 +172,33 @@ export class Game {
       action: this.#state,
       data: { attackerDice, defenderDice },
     };
+  }
+
+  getSavableGameState() {
+    return {
+      activePlayerId: this.#activePlayerId,
+      territory: this.#territory,
+      players: this.#players,
+      continents: this.#continents,
+      state: this.#state,
+      stateDetails: this.#stateDetails,
+    };
+  }
+
+  loadGameState(gameState) {
+    const {
+      activePlayerId,
+      territory,
+      players,
+      continents,
+      state,
+      stateDetails,
+    } = gameState;
+    this.#activePlayerId = activePlayerId;
+    this.#territory = territory;
+    this.#players = players;
+    this.#continents = continents;
+    this.#state = state;
+    this.#stateDetails = stateDetails;
   }
 }
