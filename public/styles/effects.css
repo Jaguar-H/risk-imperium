@@ -34,16 +34,12 @@ body {
 }
 
 @keyframes roll {
-  30% {
-    color: white;
+  0% {
+    color: transparent;
   }
 
   50% {
     color: transparent;
-  }
-
-  80% {
-    color: rgb(128, 128, 128);
   }
 
   100% {

@@ -1,4 +1,5 @@
 import { combat } from "../APIS.js";
+import { SETUP_TRANSITION } from "../config.js";
 import { renderGameState, showNotification } from "../utilities.js";
 
 const updateTroopsInMap = (territoryId, troopsCount) => {
@@ -12,7 +13,7 @@ const updateTroopsInMap = (territoryId, troopsCount) => {
 const updateMap = (prevData, data) => {
   updateTroopsInMap(prevData.attackerTerritoryId, data.attackerTroops);
   updateTroopsInMap(prevData.defenderTerritoryId, data.defenderTroops);
-  showNotification(data.msg);
+  showNotification(data.msg, "success");
 };
 
 export const handleCombat = async (prevData, _action, gameState) => {
@@ -28,4 +29,5 @@ export const handleCombat = async (prevData, _action, gameState) => {
   gameState.state = newState;
   renderGameState(newState);
   updateMap(prevData, data);
+  SETUP_TRANSITION.REINFORCE(gameState);
 };

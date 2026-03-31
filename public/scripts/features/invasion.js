@@ -1,5 +1,5 @@
 import { invade } from "../APIS.js";
-import { renderGameState } from "../utilities.js";
+import { renderGameState, showNotification } from "../utilities.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -83,6 +83,11 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
   });
 
   gameState.state = action;
+  showNotification(
+    "Please click on the defender territory. Be human. Be kind.",
+    "warning",
+    5000,
+  );
   renderGameState(action);
 
   return {
