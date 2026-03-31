@@ -10,7 +10,7 @@ describe("Api Handler", () => {
     it("Should return the game setup data when called", () => {
       const setupData = { data: "this is the setup Data" };
       const store = {
-        "game": {
+        game: {
           getSetup: () => setupData,
         },
       };
@@ -48,6 +48,27 @@ describe("Api Handler", () => {
 
     it("Should throw an error when the arguments are not given", () => {
       assertRejects(() => handleUserActions());
+    });
+
+    it("SETUP : Should handle user actions when called", async () => {
+      const game = new Game();
+      game.initTerritories();
+      for (let i = 1; i <= 13; i++) {
+        game.reinforce({ territoryId: 37, troopCount: 1 });
+      }
+
+      const context = {
+        get: () => game,
+        req: {
+          json: () => ({ userActions: "SETUP" }),
+        },
+        json: (data) => data,
+      };
+
+      const { action, data } = await handleUserActions(context);
+
+      assertEquals(action, "REINFORCE");
+      assertEquals(data.troopsToReinforce, 3);
     });
   });
 });

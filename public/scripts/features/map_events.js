@@ -1,11 +1,11 @@
 import {
-  displayRemainingTroopsToDisplay,
-  showNotification,
-} from "../utilities.js";
-import { handleInitialReinforcement } from "./reinforce.js";
+  handleInitialReinforcement,
+  handleReinforcement,
+} from "./reinforce.js";
 
 const GAME_STATES = {
   INITIAL_REINFORCEMENT: handleInitialReinforcement,
+  REINFORCE: handleReinforcement,
 };
 
 export const onMapAction = async (event, gameState) => {
@@ -15,13 +15,6 @@ export const onMapAction = async (event, gameState) => {
 
   if (gameState.state in GAME_STATES) {
     const stateToPerform = GAME_STATES[gameState.state];
-    const result = await stateToPerform(territory, gameState);
-    const { message, status, remainingTroopsToDeploy } = result;
-
-    if (remainingTroopsToDeploy !== undefined) {
-      displayRemainingTroopsToDisplay(remainingTroopsToDeploy);
-    }
-
-    showNotification(message, status);
+    await stateToPerform(territory, gameState);
   }
 };

@@ -20,7 +20,7 @@ body {
 }
 
 .selected {
-  transform: scale(1.5);
-  fill: var(--text-primary);
+  /* transform: scale(1.5); */
+  stroke: var(--color-highlight);
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }

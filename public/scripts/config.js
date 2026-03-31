@@ -1,3 +1,5 @@
+import { setupReinforcePhase } from "./transition.js";
+
 export const STATES = {
   WAITING: "WAITING",
   START: "START",
@@ -5,4 +7,7 @@ export const STATES = {
   REINFORCE: "REINFORCE",
   INITIAL_TERRITORY_ALLOCATION: "INITIAL_TERRITORY_ALLOCATION",
 };
-export const SETUP = {};
+
+export const SETUP_TRANSITION = {
+  REINFORCE: setupReinforcePhase,
+};

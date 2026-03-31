@@ -1,5 +1,6 @@
 const USER_ACTIONS = {
-  "REINFORCE": (game, data) => game.reinforce(data),
+  REINFORCE: (game, data) => game.reinforce(data),
+  SETUP: (game) => game.setupNextPhase(),
 };
 
 export const handleUserActions = async (context) => {

@@ -97,16 +97,58 @@ export class Game {
   }
 
   reinforce({ territoryId, troopCount }) {
+    const territory = this.#territory[territoryId];
+
+    if (this.#isValidTroopCount(troopCount)) {
+      return {
+        action: this.#state,
+        data: {
+          territoryId,
+          newTroopCount: territory.troopCount,
+          remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+        },
+      };
+    }
+
     if (this.#state === STATES.INITIAL_REINFORCEMENT) {
       return this.initialReinforcement(territoryId, troopCount);
     }
 
-    const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;
+    this.#stateDetails.remainingTroopsToDeploy -= troopCount;
 
+    if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
+      this.#state = STATES.INVADE;
+    }
     return {
       action: this.#state,
-      data: { territoryId, newTroopCount: territory.troopCount },
+      data: {
+        territoryId,
+        newTroopCount: territory.troopCount,
+        remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+      },
     };
+  }
+
+  #isValidTroopCount(troopCount) {
+    return (
+      !troopCount ||
+      troopCount <= 0 ||
+      troopCount > this.#stateDetails.remainingTroopsToDeploy
+    );
+  }
+
+  #setReinforcements() {
+    this.#stateDetails.remainingTroopsToDeploy = 3;
+  }
+
+  setupNextPhase() {
+    if (this.#state === STATES.REINFORCE) {
+      this.#setReinforcements();
+      return {
+        action: this.#state,
+        data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
+      };
+    }
   }
 }

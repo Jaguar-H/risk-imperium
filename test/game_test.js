@@ -79,4 +79,86 @@ describe("Game", () => {
     assertEquals(data.territoryId, 37);
     assertEquals(data.newTroopCount, expectedTroopCount);
   });
+
+  describe("SET REINFORCEMENTS", () => {
+    it("Should set and give the reinforcement ", () => {
+      const game = new Game();
+      game.initTerritories();
+      game.getSetup();
+
+      for (let i = 1; i <= 13; i++) {
+        game.reinforce({ territoryId: 37, troopCount: 1 });
+      }
+
+      const { action, data } = game.setupNextPhase();
+
+      assertEquals(action, STATES.REINFORCE);
+      assertEquals(data.troopsToReinforce, 3);
+    });
+  });
+
+  describe("REINFORCE", () => {
+    it("Should update the troop count and change the state if troops are fully deployed", () => {
+      const game = new Game();
+      game.initTerritories();
+      game.getSetup();
+
+      for (let i = 1; i <= 13; i++) {
+        game.reinforce({ territoryId: 37, troopCount: 1 });
+      }
+
+      game.setupNextPhase();
+
+      const { action, data } = game.reinforce({
+        territoryId: 37,
+        troopCount: 3,
+      });
+
+      assertEquals(action, STATES.INVADE);
+      assertEquals(data.newTroopCount, 17);
+      assertEquals(data.remainingTroops, 0);
+    });
+
+    it("Should update the troop only", () => {
+      const game = new Game();
+      game.initTerritories();
+      game.getSetup();
+
+      for (let i = 1; i <= 13; i++) {
+        game.reinforce({ territoryId: 37, troopCount: 1 });
+      }
+
+      game.setupNextPhase();
+
+      const { action, data } = game.reinforce({
+        territoryId: 37,
+        troopCount: 1,
+      });
+      assertEquals(action, STATES.REINFORCE);
+      assertEquals(data.newTroopCount, 15);
+      assertEquals(data.remainingTroops, 2);
+    });
+
+    it("Shouldn't change any if the count is not valid", () => {
+      const game = new Game();
+      game.initTerritories();
+
+      for (let i = 1; i <= 13; i++) {
+        game.reinforce({ territoryId: 37, troopCount: 1 });
+      }
+
+      game.setupNextPhase();
+
+      const { action, data } = game.reinforce({
+        territoryId: 37,
+        troopCount: 0,
+      });
+
+      console.log(data);
+
+      assertEquals(action, STATES.REINFORCE);
+      assertEquals(data.newTroopCount, 14);
+      assertEquals(data.remainingTroops, 3);
+    });
+  });
 });
