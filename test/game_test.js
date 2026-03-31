@@ -22,10 +22,27 @@ describe("Game", () => {
     });
   });
 
+  it("Init territories method should return the players and territories", () => {
+    const game = new Game();
+    const { players, territories } = game.initTerritories();
+    const setupData = game.getSetup();
+    assertEquals(territories, setupData.territories);
+    assertEquals(
+      Object.values(territories).every(({ troopCount }) => troopCount === 1),
+      true,
+    );
+    assertEquals(
+      Object.values(players).every(
+        ({ territories }) => territories.length === 7,
+      ),
+      true,
+    );
+  });
+
   it("reinforce method should return the updated troop count with the territory id", () => {
     const game = new Game();
+    game.initTerritories();
     const gameState = game.getSetup();
-    gameState.state = STATES.INITIAL_REINFORCEMENT;
     const expectedTroopCount = gameState.territories[37].troopCount + 1;
     const { action, data } = game.reinforce({ territoryId: 37, troopCount: 1 });
 
@@ -34,21 +51,32 @@ describe("Game", () => {
     assertEquals(data.newTroopCount, expectedTroopCount);
   });
 
-  it("Init territories method should return the players and territories", () => {
+  it("reinforce method should not update the troop count is the troop count is invalid", () => {
     const game = new Game();
-    const { players, territories } = game.initTerritories();
-    const setupData = game.getSetup();
+    game.initTerritories();
+    const gameState = game.getSetup();
+    const expectedTroopCount = gameState.territories[37].troopCount;
+    const { action, data } = game.reinforce({ territoryId: 37, troopCount: 3 });
 
-    assertEquals(territories, setupData.territories);
-    assertEquals(
-      Object.values(territories).every(({ troopCount }) => troopCount === 1),
-      true,
-    );
-    assertEquals(
-      Object.values(players).every(({ territories }) =>
-        territories.length === 7
-      ),
-      true,
-    );
+    assertEquals(action, STATES.INITIAL_REINFORCEMENT);
+    assertEquals(data.territoryId, 37);
+    assertEquals(data.newTroopCount, expectedTroopCount);
+  });
+
+  it("reinforce method should change the game state when all troops are deployed", () => {
+    const game = new Game();
+    game.initTerritories();
+    const gameState = game.getSetup();
+    const expectedTroopCount = gameState.territories[37].troopCount + 13;
+
+    for (let i = 1; i <= 12; i++) {
+      game.reinforce({ territoryId: 37, troopCount: 1 });
+    }
+
+    const { action, data } = game.reinforce({ territoryId: 37, troopCount: 1 });
+
+    assertEquals(action, STATES.REINFORCE);
+    assertEquals(data.territoryId, 37);
+    assertEquals(data.newTroopCount, expectedTroopCount);
   });
 });
