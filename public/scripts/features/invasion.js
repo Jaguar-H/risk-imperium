@@ -3,6 +3,7 @@ import {
   removeHighlights,
   renderGameState,
   setUpNextPhase,
+  showNotification,
 } from "../utilities.js";
 
 const highlightTerritories = (territories) => {
@@ -78,10 +79,16 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
     attackerTroops,
   });
 
-  setUpNextPhase(gameState, newState);
+  gameState.state = newState;
+  showNotification(
+    "Please click on the defender territory. Be human. Be kind.",
+    "warning",
+    5000,
+  );
   renderGameState(newState);
-  removeHighlights("selected");
 
+  removeHighlights("selected");
+  setUpNextPhase(gameState, newState);
   return {
     message: createMessage(gameState, attackerTerritoryId, defenderTerritoryId),
     status: "info",

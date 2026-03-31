@@ -32,14 +32,11 @@ const deployTroops = async (
   const response = await sendPostRequest(APIs.USER_ACTIONS, payLoad);
   const { action: nextState, data: updatedTerritory } = response;
 
-  if (nextState !== gameState.state) {
-    renderGameState(nextState);
-    setUpNextPhase(gameState, nextState);
-  }
+  renderGameState(nextState);
 
   const { territoryId: updatedTerritoryId, newTroopCount } = updatedTerritory;
-  updateTroopCount(territory, newTroopCount);
 
+  updateTroopCount(territory, newTroopCount);
   gameState.territories[updatedTerritoryId].troopCount = newTroopCount;
 
   const playerName = gameState.player.name;
@@ -54,6 +51,7 @@ const deployTroops = async (
   }
 
   showNotification(message, NOTIFY_STATUS.SUCCESS);
+  setUpNextPhase(gameState, nextState);
 };
 
 export const handleInitialReinforcement = async (territory, gameState) => {

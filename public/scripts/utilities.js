@@ -80,7 +80,6 @@ export const setUpNextPhase = (gameState, nextState) => {
     return;
   }
   gameState.state = nextState;
-
   if (nextState in SETUP_TRANSITION) {
     return SETUP_TRANSITION[nextState](gameState);
   }
