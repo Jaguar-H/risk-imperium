@@ -1,3 +1,5 @@
+import { SETUP_TRANSITION } from "./config.js";
+
 export const getOwnedContinents = (player, continents) => {
   return Object.values(continents).filter((continent) => {
     continent.territories.every((territory) =>
@@ -35,11 +37,20 @@ export const displayRemainingTroopsToDeploy = (remainingTroops) => {
 export const highlightTerritories = (territories) => {
   territories.forEach((territory) => {
     const territoryElement = document.querySelector(
-      `[data-territory-id="${territory}"] > path`,
+      `[data-territory-id="${territory}"]`,
     );
     territoryElement.classList.add("selected");
+    territoryElement.parentElement.append(territoryElement);
   });
 };
+
+export const removeHighlights = (className) => {
+  const territories = document.querySelectorAll(".territory");
+  territories.forEach((territory) => {
+    territory.classList.remove(className);
+  });
+};
+
 const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
     "#current-player-name",
@@ -62,4 +73,14 @@ export const renderCurrentPlayerName = (gameState) => {
 export const renderGameState = (state) => {
   const stateNameElement = document.querySelector("#game-state-name");
   stateNameElement.textContent = `Phase: ${state}`;
+};
+
+export const setUpNextPhase = (gameState, nextState) => {
+  if (gameState.state === nextState) {
+    return;
+  }
+  gameState.state = nextState;
+  if (nextState in SETUP_TRANSITION) {
+    return SETUP_TRANSITION[nextState](gameState);
+  }
 };

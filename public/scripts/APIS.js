@@ -1,4 +1,5 @@
 import { sendPostRequest } from "./server_calls.js";
+import { USER_ACTIONS } from "./user_action.js";
 
 export const APIs = {
   SETUP: "/setup",
@@ -7,7 +8,7 @@ export const APIs = {
 };
 
 export const invade = async (invasionDetails) => {
-  const reqData = { userActions: "INVADE", data: invasionDetails };
+  const reqData = { userActions: USER_ACTIONS.INVADE, data: invasionDetails };
   try {
     return await sendPostRequest("/user-actions", reqData);
   } catch (e) {
@@ -17,7 +18,7 @@ export const invade = async (invasionDetails) => {
 
 export const reinforce = async (data) => {
   const reqData = {
-    userActions: "REINFORCE",
+    userActions: USER_ACTIONS.REINFORCE,
     data,
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
@@ -25,16 +26,15 @@ export const reinforce = async (data) => {
 
 export const defend = async (data) => {
   const reqData = {
-    userActions: "DEFEND",
+    userActions: USER_ACTIONS.DEFEND,
     data,
   };
-
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
 
 export const combat = async (data) => {
   const reqData = {
-    userActions: "COMBAT",
+    userActions: USER_ACTIONS.RESOLVE_COMBAT,
     data,
   };
 
