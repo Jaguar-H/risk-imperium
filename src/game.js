@@ -23,12 +23,12 @@ export class Game {
     this.#continents = continents;
     this.#state = STATES.SETUP;
     this.#stateDetails = {
-      "initialTroopLimit": 13,
-      "remainingTroopsToDeploy": 0,
-      "attackerTerritoryId": "21",
-      "defenderTerritoryId": "22",
-      "attackerTroops": 3,
-      "defenderTroops": 1,
+      initialTroopLimit: 13,
+      remainingTroopsToDeploy: 0,
+      attackerTerritoryId: "21",
+      defenderTerritoryId: "22",
+      attackerTroops: 3,
+      defenderTroops: 1,
     };
   }
 
@@ -271,6 +271,7 @@ export class Game {
       combatResult,
     );
     this.#state = STATES.REINFORCE;
+
     return {
       action: this.#state,
       data: { attackerDice, defenderDice, msg, ...updatedTroops },

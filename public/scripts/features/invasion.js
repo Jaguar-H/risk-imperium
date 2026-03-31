@@ -1,5 +1,9 @@
 import { invade } from "../APIS.js";
-import { removeHighlights, renderGameState } from "../utilities.js";
+import {
+  removeHighlights,
+  renderGameState,
+  setUpNextPhase,
+} from "../utilities.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -68,14 +72,14 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
   const defenderTerritoryId = selectedTerritoryId;
   const attackerTroops = getAttackingTroop(gameState, attackerTerritoryId);
 
-  const { action } = await invade({
+  const { action: newState } = await invade({
     attackerTerritoryId,
     defenderTerritoryId,
     attackerTroops,
   });
 
-  gameState.state = action;
-  renderGameState(action);
+  setUpNextPhase(gameState, newState);
+  renderGameState(newState);
   removeHighlights("selected");
 
   return {
