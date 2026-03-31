@@ -8,6 +8,7 @@ export class Game {
   #continents;
   #state;
   #initialTroopLimit;
+  #stateDetails;
 
   constructor(
     players = mockPlayers,
@@ -20,6 +21,7 @@ export class Game {
     this.#continents = continents;
     this.#state = STATES.WAITING;
     this.#initialTroopLimit = 13;
+    this.#stateDetails = {};
   }
 
   getSetup(playerId) {
@@ -29,8 +31,8 @@ export class Game {
     for (const { id, ...details } of opponents) {
       opponentsDetails[id] = { ...details, id };
     }
-    const currentPlayerDetails = this.#players.find(({ id }) =>
-      id === playerId
+    const currentPlayerDetails = this.#players.find(
+      ({ id }) => id === playerId,
     );
 
     this.#state = STATES.INITIAL_REINFORCEMENT;
@@ -102,5 +104,11 @@ export class Game {
       action: this.#state,
       data: { territoryId, newTroopCount: territory.troopCount },
     };
+  }
+
+  invade(invadeDetials) {
+    this.#state = STATES.DEFEND;
+    this.#stateDetails = invadeDetials;
+    return {};
   }
 }

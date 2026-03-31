@@ -45,8 +45,8 @@ describe("Game", () => {
       true,
     );
     assertEquals(
-      Object.values(players).every(({ territories }) =>
-        territories.length === 7
+      Object.values(players).every(
+        ({ territories }) => territories.length === 7,
       ),
       true,
     );
