@@ -42,6 +42,18 @@ describe("Game", () => {
     });
   });
 
+  describe("SETUP INITIAL REINFORCEMENT PHASE", () => {
+    it("Should set the initial remaining troops to deploy", () => {
+      const game = new Game();
+      game.initTerritories();
+
+      const { action, data } = game.setupNextPhase();
+
+      assertEquals(action, STATES.INITIAL_REINFORCEMENT);
+      assertEquals(data.troopsToReinforce, 13);
+    });
+  });
+
   describe("INITIAL REINFORCEMENT", () => {
     it("reinforce method should return the updated troop count with the territory id", () => {
       const game = new Game();
