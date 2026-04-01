@@ -197,7 +197,7 @@ export class Game {
 
     this.#state = STATES.DEFEND;
     this.#stateDetails = invadeDetials;
-    return { action: this.#state, data: {} };
+    return { newState: this.#state, data: {} };
   }
 
   defend(data) {

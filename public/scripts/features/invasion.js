@@ -34,21 +34,9 @@ const getAttackingTroop = (gameState, attacker) => {
   return attackingTroop;
 };
 
-const isNeighbourTerritory = (gameState, selectedTerritoryId) => {
+const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {
   if (!gameState.invadeDetials) return false;
   return gameState.invadeDetials.neighbours.includes(selectedTerritoryId);
-};
-
-const createMessage = (gameState, attackerTerritoryId, defenderTerritoryId) => {
-  const playerName = gameState.player.name;
-  const attackingTerritory = gameState.territories[attackerTerritoryId].name;
-  const attackMessage = `${playerName} is attacking from ${attackingTerritory}`;
-  if (defenderTerritoryId) {
-    const defendingTerritory = gameState.territories[defenderTerritoryId].name;
-    return `${attackMessage} to ${defendingTerritory}`;
-  }
-
-  return attackMessage;
 };
 
 const selectAttacker = (gameState, selectedTerritoryId) => {
@@ -62,55 +50,55 @@ const selectAttacker = (gameState, selectedTerritoryId) => {
   gameState.invadeDetials = { attacker: selectedTerritoryId, neighbours };
 
   highlightTerritories(neighbours);
-  return {
-    message: createMessage(gameState, selectedTerritoryId),
-  };
+};
+
+const deleteInvadeDetails = (gameState) => {
+  delete gameState.invadeDetials;
 };
 
 const selectDefender = async (gameState, selectedTerritoryId) => {
   removeHighlights("highlight", ".territory");
+
   const attackerTerritoryId = gameState.invadeDetials.attacker;
   const defenderTerritoryId = selectedTerritoryId;
   const attackerTroops = getAttackingTroop(gameState, attackerTerritoryId);
 
-  const { action: newState } = await invade({
+  const { newState } = await invade({
     attackerTerritoryId,
     defenderTerritoryId,
     attackerTroops,
   });
 
-  gameState.state = newState;
   showNotification(
     "Please click on the defender territory. Be human. Be kind.",
     "warning",
     5000,
   );
-  renderGameState(newState);
 
+  deleteInvadeDetails(gameState);
   removeHighlights("selected");
+
+  renderGameState(newState);
   setUpNextPhase(gameState, newState);
-  return {
-    message: createMessage(gameState, attackerTerritoryId, defenderTerritoryId),
-    status: "info",
-  };
 };
 
 const canAttack = (gameState, selectedTerritoryId) => {
   return gameState.territories[selectedTerritoryId].troopCount > 1;
 };
 
+const isAttackableTerritory = (gameState, territoryId) =>
+  isMyTerritory(gameState, territoryId) && canAttack(gameState, territoryId);
+
 export const handleInvasion = async (territory, gameState) => {
-  const selectedTerritoryId = parseInt(territory.dataset.territoryId);
-  if (
-    isMyTerritory(gameState, selectedTerritoryId) &&
-    canAttack(gameState, selectedTerritoryId)
-  ) {
+  const selectedTerritoryId = Number(territory.dataset.territoryId);
+
+  if (isAttackableTerritory(gameState, selectedTerritoryId)) {
     return selectAttacker(gameState, selectedTerritoryId);
   }
 
-  if (isNeighbourTerritory(gameState, selectedTerritoryId)) {
+  if (isNeighbouringOpponent(gameState, selectedTerritoryId)) {
     return await selectDefender(gameState, selectedTerritoryId);
   }
 
-  return { message: "Invalid territory", status: "warning" };
+  showNotification("Invalid Territory", "warning");
 };
