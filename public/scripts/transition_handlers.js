@@ -8,6 +8,17 @@ import {
   highlightTerritories,
   removeHighlights,
 } from "./utilities/highlight.js";
+import { STATES } from "./configs/game_states.js";
+
+const setupInitialReinforcementPhase = async (gameState) => {
+  const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
+    userActions: USER_ACTIONS.SETUP,
+  });
+
+  const territories = gameState.player.territories;
+  renderRemainingTroopsToDeploy(data.troopsToReinforce);
+  highlightTerritories(territories);
+};
 
 const setupReinforcePhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -31,8 +42,9 @@ const setupInvasionPhase = (gameState) => {
 };
 
 export const SETUP_TRANSITION = {
-  REINFORCE: setupReinforcePhase,
-  INVASION: setupInvasionPhase,
+  [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
+  [STATES.REINFORCE]: setupReinforcePhase,
+  [STATES.INVASION]: setupInvasionPhase,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

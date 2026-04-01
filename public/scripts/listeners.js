@@ -1,5 +1,4 @@
 import { onMapAction } from "./features/map_events.js";
-import { highlightTerritories } from "./utilities/highlight.js";
 
 export const addListenersToPlayerIcon = () => {
   const playerIcon = document.querySelector("#player-details-button");
@@ -21,7 +20,6 @@ export const addListenersToPlayerIcon = () => {
 };
 
 export const setupListeners = (gameState) => {
-  highlightTerritories(gameState.player.territories);
   const map = document.querySelector("#game");
   map.addEventListener("click", (e) => onMapAction(e, gameState));
 };
