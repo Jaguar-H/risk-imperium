@@ -1,5 +1,5 @@
 import { CONFIG, STATES } from "./config.js";
-import { mockPlayers } from "./dummy_data.js";
+import { mockPlayers } from "./mock_data.js";
 
 export class Game {
   #activePlayerId;
@@ -156,6 +156,14 @@ export class Game {
   }
 
   setupNextPhase() {
+    if (this.#state === STATES.INITIAL_REINFORCEMENT) {
+      this.#stateDetails.remainingTroopsToDeploy = 13;
+      return {
+        action: this.#state,
+        data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
+      };
+    }
+
     if (this.#state === STATES.REINFORCE) {
       this.#setReinforcements();
       return {
