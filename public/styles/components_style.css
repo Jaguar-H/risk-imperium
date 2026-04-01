@@ -213,12 +213,14 @@
 
 #deploy-troops-container {
   position: fixed;
-  background-color: rgb(164, 14, 14);
+  background-color: rgb(255, 255, 255);
   top: 20px;
   left: 40%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .notification.info {
@@ -236,10 +238,21 @@
 
 #deploy-troops-form {
   display: flex;
-  gap: 10px;
+  gap: 0.6em;
+  width: 260px;
+  padding: 6px;
 }
 
 #troop-count-input {
-  width: 60%;
-  padding: 5px 3px;
+  width: 70%;
+  padding: 5px 8px;
+  border-style: none;
+  outline: none;
+}
+
+#deploy-troops-btn {
+  border-style: none;
+  outline: none;
+  padding: 8px;
+  border-radius: 5px;
 }
