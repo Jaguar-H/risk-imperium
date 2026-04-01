@@ -2,6 +2,7 @@ import { invade } from "../APIS.js";
 import {
   removeHighlights,
   renderGameState,
+  setUpNextPhase,
   showNotification,
 } from "../utilities.js";
 
@@ -72,21 +73,22 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
   const defenderTerritoryId = selectedTerritoryId;
   const attackerTroops = getAttackingTroop(gameState, attackerTerritoryId);
 
-  const { action } = await invade({
+  const { action: newState } = await invade({
     attackerTerritoryId,
     defenderTerritoryId,
     attackerTroops,
   });
 
-  gameState.state = action;
+  gameState.state = newState;
   showNotification(
     "Please click on the defender territory. Be human. Be kind.",
     "warning",
     5000,
   );
-  renderGameState(action);
-  removeHighlights("selected");
+  renderGameState(newState);
 
+  removeHighlights("selected");
+  setUpNextPhase(gameState, newState);
   return {
     message: createMessage(gameState, attackerTerritoryId, defenderTerritoryId),
     status: "info",

@@ -1,6 +1,9 @@
 import { combat } from "../APIS.js";
-import { SETUP_TRANSITION } from "../config.js";
-import { renderGameState, showNotification } from "../utilities.js";
+import {
+  renderGameState,
+  setUpNextPhase,
+  showNotification,
+} from "../utilities.js";
 
 const updateTroopsInMap = (territoryId, troopsCount) => {
   const territoryElement = document.querySelector(
@@ -40,8 +43,8 @@ export const handleCombat = async (prevData, _action, gameState) => {
   updateDiceTray("#attacker-dice", data.attackerDice);
   updateDiceTray("#defender-dice", data.defenderDice);
 
-  gameState.state = newState;
   renderGameState(newState);
   updateMap(prevData, data);
-  SETUP_TRANSITION.REINFORCE(gameState);
+
+  setUpNextPhase(gameState, newState);
 };

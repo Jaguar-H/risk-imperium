@@ -48,7 +48,7 @@ body {
   align-items: center;
   animation:
     dice-faces 0.2s step-end infinite,
-    roll 1s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+    roll 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
 }
 
 @keyframes dice-faces {

@@ -1,5 +1,6 @@
 import { APIs } from "./APIS.js";
 import { sendPostRequest } from "./server_calls.js";
+import { USER_ACTIONS } from "./user_action.js";
 import {
   displayRemainingTroopsToDeploy,
   highlightTerritories,
@@ -14,7 +15,7 @@ export const setTroopLimit = (maxTroops) => {
 
 export const setupReinforcePhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
-    userActions: "SETUP",
+    userActions: USER_ACTIONS.SETUP,
   });
 
   const territories = gameState.player.territories;
