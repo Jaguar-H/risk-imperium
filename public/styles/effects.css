@@ -20,9 +20,6 @@ body {
 }
 
 .selected > .territory-outline {
-  /* transform: scale(1.005);
-  transform-origin: center;
-  transform-box: fill-box; */
   stroke: green;
   stroke-opacity: 1;
   fill: rgb(8, 204, 8);
