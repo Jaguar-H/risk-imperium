@@ -19,27 +19,27 @@ body {
 }
 
 #australia-continent-outline {
-  stroke: hsl(299, 86%, 36%);
-}
-
-#asia-continent-outline {
-  stroke: hsl(122, 53%, 53%);
+  stroke: var(--cont-australia)
 }
 
 #europe-continent-outline {
-  stroke: rgb(34, 147, 172);
-}
-
-#africa-continent-outline {
-  stroke: rgb(120, 92, 5);
-}
-
-#north-america-continent-outline {
-  stroke: rgb(181, 184, 29);
+  stroke: var(--cont-europe)
 }
 
 #south-america-continent-outline {
-  stroke: rgb(156, 36, 15);
+  stroke: var(--cont-south-america)
+}
+
+#north-america-continent-outline {
+  stroke: var(--cont-north-america)
+}
+
+#africa-continent-outline {
+  stroke: var(--cont-africa)
+}
+
+#asia-continent-outline {
+  stroke: var(--cont-asia)
 }
 
 #sea-routes {
@@ -67,9 +67,61 @@ body {
 }
 
 circle {
-  fill: hsl(0, 0%, 86%);
+  fill: hsl(0, 2%, 91%);
 }
 
 text {
   font-size: 8px;
+}
+
+#continent-asia .troop-count-container,
+#continent-asia .troop-count,
+#continent-south-america .troop-count-container,
+#continent-south-america .troop-count,
+#iceland .troop-count-container,
+#iceland .troop-count,
+#indonesia .troop-count-container,
+#indonesia .troop-count,
+#ukraine .troop-count-container,
+#ukraine .troop-count {
+  transform: translate(0px, -15px);
+}
+
+#continent-africa .troop-count-container,
+#continent-africa .troop-count,
+#continent-north-america .troop-count-container,
+#continent-north-america .troop-count {
+  transform: translate(4px, 10px);
+}
+
+#western-australia .troop-count-container,
+#western-australia .troop-count {
+  transform: translate(-4px, 10px);
+}
+
+#eastern-australia .troop-count-container,
+#eastern-australia .troop-count,
+#southern-europe .troop-count-container,
+#southern-europe .troop-count {
+  transform: translate(10px, 12px);
+}
+
+#northern-europe .troop-count-container,
+#northern-europe .troop-count {
+  transform: translate(-20px, 8px);
+}
+
+#western-europe .troop-count-container,
+#western-europe .troop-count {
+  transform: translate(12px, -30px);
+}
+
+#scandinavia .troop-count-container,
+#scandinavia .troop-count {
+  transform: translate(-9px, 30px);
+}
+
+#new-guinea .troop-count-container,
+#new-guinea .troop-count {
+  transform: translate(-18px, -20px);
 }

@@ -27,10 +27,10 @@
   --player-5: hsl(0, 0%, 50%);
   --player-6: hsl(0, 0%, 40%);
 
-  --cont-north-america: #d97706;
-  --cont-south-america: #dc2626;
-  --cont-europe: #2563eb;
-  --cont-africa: #92400e;
-  --cont-asia: #059669;
-  --cont-australia: #7c3aed;
+  --cont-north-america: hsl(32, 95%, 44%);
+  --cont-south-america: hsl(9, 83%, 34%);
+  --cont-europe: hsl(221, 83%, 53%);
+  --cont-africa: hsl(23, 83%, 31%);
+  --cont-asia: hsl(161, 94%, 30%);
+  --cont-australia: hsl(262, 83%, 58%);
 }
