@@ -10,8 +10,10 @@
 }
 
 .golden-cavalry-circle {
-  width: 100px;
-  height: 100px;
+  position: relative;
+  top: 20px;
+  width: 60px;
+  height: 60px;
   /* border: var(--ui-border);
   border-radius: 50%; */
   /* background: var(--color-surface); */

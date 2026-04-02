@@ -1,15 +1,16 @@
-import { assertEquals } from "@std/assert/equals";
-import { handleGameSetup } from "../src/handler.js";
+import { assertEquals } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
+import { handleGameSetup } from "../src/handler.js";
 import { Game } from "../src/game.js";
-import { assertRejects } from "@std/assert/rejects";
 import { handleUserActions } from "../src/handlers/user_actions.js";
+import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { STATES } from "../src/config.js";
 
 describe("Api Handler", () => {
   let game;
   beforeEach(() => {
-    game = new Game();
+    const continentsHandler = new ContinentsHandler();
+    game = new Game(continentsHandler);
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -53,8 +54,10 @@ describe("Api Handler", () => {
       assertEquals(updatedTerritory.territoryId, 37);
     });
 
-    it("Should throw an error when the arguments are not given", () => {
-      assertRejects(() => handleUserActions());
+    it("Should catch an error when error occurred", async () => {
+      const context = { json: (x) => x };
+      const { msg } = await handleUserActions(context);
+      assertEquals("context.get is not a function", msg);
     });
 
     it("SETUP : Should handle user actions when called", async () => {
@@ -102,6 +105,61 @@ describe("Api Handler", () => {
       };
       const data = await handleUserActions(context);
       assertEquals(data.action, STATES.REINFORCE);
+    });
+
+    it("shouldn't change game state to the reinforcement when not in fortification state", async () => {
+      let state = "WAITING";
+      const game = {
+        skipFortification: () => {
+          state = "REINFORCE";
+        },
+        getGameState: () => {
+          return state;
+        },
+      };
+
+      const context = {
+        get: (name) => {
+          if (name === "game") {
+            return game;
+          }
+        },
+        req: {
+          json: () => ({ userActions: STATES.SKIP_FORTIFICATION, data: [] }),
+        },
+        json: (data) => data,
+      };
+      const data = await handleUserActions(context);
+      assertEquals(data.action, STATES.WAITING);
+    });
+  });
+
+  describe("SKIP_INVASION", () => {
+    it("should change game state to the reinforcement when currently in fortification state", async () => {
+      let state = STATES.INVASION;
+      const game = {
+        skipInvasion: () => {
+          state = STATES.FORTIFICATION;
+        },
+        getGameState: () => {
+          return state;
+        },
+      };
+
+      const context = {
+        get: (name) => {
+          if (name === "game") {
+            return game;
+          }
+        },
+        req: {
+          json: () => ({ userActions: STATES.SKIP_INVASION, data: [] }),
+        },
+        json: (data) => data,
+      };
+      const data = await handleUserActions(context);
+
+      assertEquals(data.action, STATES.FORTIFICATION);
     });
 
     it("shouldn't change game state to the reinforcement when not in fortification state", async () => {

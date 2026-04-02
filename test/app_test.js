@@ -4,6 +4,7 @@ import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
 import { STATES } from "../src/config.js";
+import { ContinentsHandler } from "../src/models/continents_handler.js";
 
 it("Create app should return the instance of the Hono class", () => {
   const app = createApp({});
@@ -28,7 +29,8 @@ describe("App Handler", () => {
 
   describe("POST /user-actions", () => {
     it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
-      const game = new Game();
+      const continentsHandler = new ContinentsHandler();
+      const game = new Game(continentsHandler);
       game.initTerritories();
       const gameState = game.getSetup(1);
       gameState.state = STATES.INITIAL_REINFORCEMENT;

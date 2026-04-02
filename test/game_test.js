@@ -4,20 +4,27 @@ import { assert, assertEquals, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
+
 import fortification from "../data/states/fortification.json" with {
+  type: "json",
+};
+import combatResolve from "../data/states/resolve_combat.json" with {
   type: "json",
 };
 import reinforceState from "../data/states/reinforce.json" with {
   type: "json",
 };
-import initilaReinforcementState from "../data/states/init-reinforcement.json" with {
+import initialReinforcementState from "../data/states/init-reinforcement.json" with {
   type: "json",
 };
+import { ContinentsHandler } from "../src/models/continents_handler.js";
 
 describe("Game", () => {
   let game;
+  let continentsHandler;
   beforeEach(() => {
-    game = new Game();
+    continentsHandler = new ContinentsHandler();
+    game = new Game(continentsHandler);
   });
 
   it("setup method should return data for the single user", () => {
@@ -69,12 +76,12 @@ describe("Game", () => {
 
   describe("INITIAL REINFORCEMENT", () => {
     beforeEach(() => {
-      game.loadGameState(initilaReinforcementState);
+      game.loadGameState(initialReinforcementState);
     });
 
     it("reinforce method should return the updated troop count with the territory id", () => {
       const expectedTroopCount =
-        initilaReinforcementState.territories[37].troopCount + 1;
+        initialReinforcementState.territories[37].troopCount + 1;
       const { action, data } = game.reinforce({
         territoryId: 37,
         troopCount: 1,
@@ -89,7 +96,7 @@ describe("Game", () => {
 
     it("reinforce method should not update the troop count is the troop count is invalid", () => {
       const expectedTroopCount =
-        initilaReinforcementState.territories[37].troopCount;
+        initialReinforcementState.territories[37].troopCount;
       const { action, data } = game.reinforce({
         territoryId: 37,
         troopCount: 3,
@@ -104,7 +111,7 @@ describe("Game", () => {
 
     it("reinforce method should change the game state when all troops are deployed", () => {
       const mockGameState = {
-        ...initilaReinforcementState,
+        ...initialReinforcementState,
         stateDetails: {
           initialTroopLimit: 13,
           remainingTroopsToDeploy: 1,
@@ -129,7 +136,7 @@ describe("Game", () => {
 
   describe("DEFEND", () => {
     it("should return next state and data", () => {
-      const game = new Game(() => 0.3);
+      const game = new Game(continentsHandler, () => 0.3);
       game.loadGameState(defendState);
       const defendData = { territoryId: "22", troopCount: 1 };
       const { action, data } = game.defend(defendData);
@@ -145,12 +152,12 @@ describe("Game", () => {
 
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
-      const game = new Game(() => 0.3);
+      const game = new Game(continentsHandler, "cards", () => 0.3);
       game.initTerritories();
       game.getSetup(1);
       const { action, data } = game.resolveCombat();
       const expected = {
-        action: STATES.FORTIFICATION,
+        action: STATES.INVASION,
         data: {
           attackerDice: [2, 2, 2],
           defenderDice: [2],
@@ -277,7 +284,8 @@ describe("Game", () => {
   });
 
   describe("LOADGAMESTATE", () => {
-    const game1 = new Game();
+    const continentsHandler = new ContinentsHandler();
+    const game1 = new Game(continentsHandler);
     game1.initTerritories();
     const initializedGameState = game1.getSavableGameState();
     it("Should reset the gameState when loaded with initialGameState", () => {
@@ -343,6 +351,7 @@ describe("Game", () => {
       assertThrows(() => game.invade(invadeDetails));
     });
   });
+
   describe("getGameState", () => {
     it("Should return the current state of the game", () => {
       const state = game.getGameState();
@@ -350,11 +359,33 @@ describe("Game", () => {
     });
   });
   describe("skipFortification", () => {
-    it("Should return the current state of the game", () => {
+    it("Should return the ", () => {
       game.loadGameState(fortification);
       game.skipFortification();
       const state = game.getGameState();
       assertEquals(state, STATES.GET_CARD);
+    });
+  });
+
+  describe("CAPTURE", () => {
+    it("should return updated territory details ", () => {
+      const game = new Game(() => 0.3);
+      game.loadGameState(combatResolve);
+      const result = game.captureTerritory(3);
+      const expected = [
+        { territoryId: 21, troopCount: 2 },
+        { territoryId: 22, troopCount: 3 },
+      ];
+      assertEquals(expected, result);
+    });
+  });
+
+  describe("skipInvasion", () => {
+    it("Should return the current state of the game", () => {
+      game.loadGameState(invasionState);
+      game.skipInvasion();
+      const state = game.getGameState();
+      assertEquals(state, STATES.FORTIFICATION);
     });
   });
 });
