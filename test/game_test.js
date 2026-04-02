@@ -10,11 +10,14 @@ import reinforceState from "../data/states/reinforce.json" with {
 import initilaReinforcementState from "../data/states/init-reinforcement.json" with {
   type: "json",
 };
+import { ContinentsHandler } from "../src/models/continents_handler.js";
 
 describe("Game", () => {
   let game;
+  let continentsHandler;
   beforeEach(() => {
-    game = new Game();
+    continentsHandler = new ContinentsHandler();
+    game = new Game(continentsHandler);
   });
 
   it("setup method should return data for the single user", () => {
@@ -126,7 +129,7 @@ describe("Game", () => {
 
   describe("DEFEND", () => {
     it("should return next state and data", () => {
-      const game = new Game(() => 0.3);
+      const game = new Game(continentsHandler, () => 0.3);
       game.loadGameState(defendState);
       const defendData = { territoryId: "22", troopCount: 1 };
       const { action, data } = game.defend(defendData);
@@ -142,7 +145,7 @@ describe("Game", () => {
 
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
-      const game = new Game(() => 0.3);
+      const game = new Game(continentsHandler, () => 0.3);
       game.initTerritories();
       game.getSetup();
       const { action, data } = game.resolveCombat();
@@ -274,7 +277,8 @@ describe("Game", () => {
   });
 
   describe("LOADGAMESTATE", () => {
-    const game1 = new Game();
+    const continentsHandler = new ContinentsHandler();
+    const game1 = new Game(continentsHandler);
     game1.initTerritories();
     const initializedGameState = game1.getSavableGameState();
     it("Should reset the gameState when loaded with initialGameState", () => {

@@ -29,8 +29,6 @@ const updateDiceTray = (selector, diceValues) => {
 
 export const handleCombat = async (prevData, _action, gameState) => {
   const { action: newState, data } = await combat(prevData);
-  console.log("COMBAT", { data });
-
   updateDiceTray("#attacker-dice", data.attackerDice);
   updateDiceTray("#defender-dice", data.defenderDice);
 

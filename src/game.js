@@ -5,22 +5,22 @@ export class Game {
   #activePlayerId;
   #territories;
   #players;
-  #continents;
+  #continentsHandler;
   #state;
   #randomFunction;
   #stateDetails;
 
   constructor(
+    continentsHandler,
     randomFunction = Math.random,
     players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
-    continents = CONFIG.CONTINENTS,
   ) {
     this.#randomFunction = randomFunction;
     this.#activePlayerId = players[0].id;
     this.#territories = territories;
     this.#players = players;
-    this.#continents = continents;
+    this.#continentsHandler = continentsHandler;
     this.#state = STATES.SETUP;
     this.#stateDetails = {
       initialTroopLimit: 13,
@@ -44,7 +44,7 @@ export class Game {
     );
 
     return {
-      continents: this.#continents,
+      continents: this.#continentsHandler.getContinents(),
       territories: this.#territories,
       player: { ...currentPlayerDetails },
       opponents: opponentsDetails,
@@ -152,22 +152,8 @@ export class Game {
     );
   }
 
-  #getOwnedContinents() {
-    const activePlayer = this.#getActivePlayer();
-    return Object.values(this.#continents).filter((continent) => {
-      return continent.territories.every((territory) =>
-        activePlayer.territories.includes(territory)
-      );
-    });
-  }
-
-  #getContinentsBonus() {
-    const ownedContinents = this.#getOwnedContinents();
-    return ownedContinents.reduce((total, { armies }) => total + armies, 0);
-  }
-
-  #getOwnedTerritoryCount() {
-    return this.#getActivePlayer().territories.length;
+  #getOwnedTerritories() {
+    return this.#getActivePlayer().territories;
   }
 
   #getActivePlayer() {
@@ -175,11 +161,18 @@ export class Game {
   }
 
   #setReinforcements() {
-    const territoryCount = this.#getOwnedTerritoryCount();
-    const continentBonus = this.#getContinentsBonus();
-    const troopsForTerritory = Math.max(3, Math.floor(territoryCount / 3));
-    const totalTroops = troopsForTerritory + continentBonus;
-    this.#stateDetails.remainingTroopsToDeploy = totalTroops;
+    const territories = this.#getOwnedTerritories();
+    const continentBonus = this.#continentsHandler.calculateContinentsBonus(
+      territories,
+    );
+
+    const reinforcementForTerritory = Math.max(
+      3,
+      Math.floor(territories.length / 3),
+    );
+    const totalReinforcement = reinforcementForTerritory + continentBonus;
+
+    this.#stateDetails.remainingTroopsToDeploy = totalReinforcement;
   }
 
   setupNextPhase() {
@@ -328,25 +321,19 @@ export class Game {
       activePlayerId: this.#activePlayerId,
       territories: this.#territories,
       players: this.#players,
-      continents: this.#continents,
+      continents: this.#continentsHandler.getContinents(),
       state: this.#state,
       stateDetails: this.#stateDetails,
     };
   }
 
   loadGameState(gameState) {
-    const {
-      activePlayerId,
-      territories,
-      players,
-      continents,
-      state,
-      stateDetails,
-    } = gameState;
+    const { activePlayerId, territories, players, state, stateDetails } =
+      gameState;
+
     this.#activePlayerId = activePlayerId;
     this.#territories = territories;
     this.#players = players;
-    this.#continents = continents;
     this.#state = state;
     this.#stateDetails = stateDetails;
   }

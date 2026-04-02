@@ -1,6 +1,6 @@
 {
   "activePlayerId": 1,
-  "territory": {
+  "territories": {
     "1": {
       "name": "Alaska",
       "neighbours": [

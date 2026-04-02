@@ -1,14 +1,15 @@
-import { assertEquals } from "@std/assert/equals";
-import { handleGameSetup } from "../src/handler.js";
+import { assertEquals } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
+import { handleGameSetup } from "../src/handler.js";
 import { Game } from "../src/game.js";
-import { assertRejects } from "@std/assert/rejects";
 import { handleUserActions } from "../src/handlers/user_actions.js";
+import { ContinentsHandler } from "../src/models/continents_handler.js";
 
 describe("Api Handler", () => {
   let game;
   beforeEach(() => {
-    game = new Game();
+    const continentsHandler = new ContinentsHandler();
+    game = new Game(continentsHandler);
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -52,8 +53,10 @@ describe("Api Handler", () => {
       assertEquals(updatedTerritory.territoryId, 37);
     });
 
-    it("Should throw an error when the arguments are not given", () => {
-      assertRejects(() => handleUserActions());
+    it("Should catch an error when error occurred", async () => {
+      const context = { json: (x) => x };
+      const { msg } = await handleUserActions(context);
+      assertEquals("context.get is not a function", msg);
     });
 
     it("SETUP : Should handle user actions when called", async () => {
