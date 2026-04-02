@@ -87,7 +87,9 @@ export class Game {
     if (troopCount !== 1) {
       return {
         action: this.#state,
-        data: { territoryId, newTroopCount: territory.troopCount },
+        data: {
+          updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
+        },
       };
     }
 
@@ -101,8 +103,7 @@ export class Game {
     return {
       action: this.#state,
       data: {
-        territoryId,
-        newTroopCount: territory.troopCount,
+        updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
         remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
       },
     };
@@ -115,8 +116,7 @@ export class Game {
       return {
         action: this.#state,
         data: {
-          territoryId,
-          newTroopCount: territory.troopCount,
+          updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
           remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
         },
       };
@@ -136,8 +136,7 @@ export class Game {
     return {
       action: this.#state,
       data: {
-        territoryId,
-        newTroopCount: territory.troopCount,
+        updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
         remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
       },
     };

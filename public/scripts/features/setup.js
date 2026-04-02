@@ -31,7 +31,6 @@ export const setup = (gameState) => {
   );
 
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
-  console.log(players);
 
   const allPlayersDetails = Object.values(players).map((player) =>
     renderPlayerDetails(player, gameState.continents)

@@ -17,3 +17,34 @@ export const setTroopLimit = (maxTroops, min = 1) => {
   input.max = maxTroops;
   input.min = min;
 };
+
+const getTerritoryElementIdByTerritoryId = (territories, territoryId) => {
+  const territoryName = territories[territoryId].name;
+  return territoryName.toLowerCase().replaceAll(" ", "-");
+};
+
+export const getTerritoryElementById = (territories, territoryId) => {
+  const territoryElementId = getTerritoryElementIdByTerritoryId(
+    territories,
+    territoryId,
+  );
+
+  const territoryElement = document.querySelector(`#${territoryElementId}`);
+
+  return territoryElement;
+};
+
+export const updateTroopsInTerritories = (gameState, territories) => {
+  territories.forEach(({ territoryId, troopCount }) => {
+    const territoryElement = getTerritoryElementById(
+      gameState.territories,
+      territoryId,
+    );
+    const territoryTroopCountElement = territoryElement.querySelector(
+      ".troop-count",
+    );
+
+    territoryTroopCountElement.textContent = troopCount;
+    gameState.territories[territoryId].troopCount = troopCount;
+  });
+};

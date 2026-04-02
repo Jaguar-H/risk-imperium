@@ -1,5 +1,5 @@
 import { sendReinforceRequest } from "../server_calls.js";
-import { setTroopLimit } from "../utilities.js";
+import { setTroopLimit, updateTroopsInTerritories } from "../utilities.js";
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
@@ -18,9 +18,9 @@ const notifyNotOwned = (gameState, id) => {
   showNotification(message, NOTIFICATION_TYPES.WARNING);
 };
 
-const notifyDeployment = (gameState, data, troopCount) => {
+const notifyDeployment = (gameState, territoryId, troopCount) => {
   const player = gameState.player.name;
-  const territoryName = gameState.territories[data.territoryId].name;
+  const territoryName = gameState.territories[territoryId].name;
   const message = `${player} deployed ${troopCount} troops in ${territoryName}`;
   showNotification(message, NOTIFICATION_TYPES.SUCCESS);
 };
@@ -36,13 +36,17 @@ const updateRemainingTroops = (remainingTroops) => {
 };
 
 const updateAfterDeploy = (gameState, territory, response, troopCount) => {
-  const { action: nextState, data } = response;
+  const { action: nextState, data: { updatedTerritory, remainingTroops } } =
+    response;
 
   renderGameState(nextState);
 
-  applyTroopUpdate(gameState, territory, data);
-  notifyDeployment(gameState, data, troopCount);
-  updateRemainingTroops(data.remainingTroops);
+  updateTroopsInTerritories(gameState, updatedTerritory);
+
+  const updatedTerritoryId = updatedTerritory[0].territoryId;
+  // applyTroopUpdate(gameState, territory, data);
+  notifyDeployment(gameState, updatedTerritoryId, troopCount);
+  updateRemainingTroops(remainingTroops);
 
   setUpNextPhase(gameState, nextState);
 };
