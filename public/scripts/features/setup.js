@@ -50,7 +50,8 @@ export const updateCards = (cards) => {
   const cardElements = cards.map((card) => {
     const element = document.createElement("div");
 
-    element.textContent = card;
+    element.textContent = 1;
+    element.classList.add("card");
     return element;
   });
 

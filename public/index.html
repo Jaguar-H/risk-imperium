@@ -1058,11 +1058,7 @@
             </svg>
             User
           </button>
-          <button
-            class="action-btn"
-            id="cards"
-            popovertarget="player-details-container"
-          >
+          <button class="action-btn" id="cards" popovertarget="card-area">
             <svg
               width="62"
               height="48"
@@ -1130,12 +1126,12 @@
       </form>
     </dialog>
 
-    <dialog id="player-details-container">
+    <div id="player-details-container" class="hidden">
       <div id="players-info">
         <ul></ul>
       </div>
       <button id="close-player-details-button">Close</button>
-    </dialog>
+    </div>
 
     <template id="single-player-detail-template">
       <li class="player-deatils">
@@ -1155,9 +1151,8 @@
       <button id="skip-button">Skip</button>
       <!-- </div> -->
     </template>
-    <dialog id="card-area">
+    <div id="card-area" class="hidden">
       <div></div>
-      <button>close</button>
-    </dialog>
+    </div>
   </body>
 </html>

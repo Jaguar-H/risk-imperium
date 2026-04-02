@@ -12,11 +12,11 @@ export const addListenersToPlayerIcon = () => {
   );
 
   playerIcon.addEventListener("click", () => {
-    playerDetailsDialog.showModal();
+    playerDetailsDialog.classList.toggle("hidden");
   });
 
   closeButton.addEventListener("click", () => {
-    playerDetailsDialog.close();
+    playerDetailsDialog.classList.toggle("hidden");
   });
 };
 
@@ -29,13 +29,11 @@ export const addListenerToCardIcon = (player) => {
   const cardArea = document.querySelector("#card-area");
   const cardIcon = document.querySelector("#cards");
 
-  const closeButton = cardArea.querySelector("button");
   updateCards(player.cards);
 
   cardIcon.addEventListener("click", () => {
     const alert = cardIcon.querySelector("circle");
     alert.classList.remove("card-alert");
-    cardArea.showModal();
+    cardArea.classList.toggle("hidden");
   });
-  closeButton.addEventListener("click", () => cardArea.close());
 };
