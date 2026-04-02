@@ -66,8 +66,10 @@ describe("Game", () => {
       });
 
       assertEquals(action, STATES.INITIAL_REINFORCEMENT);
-      assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, expectedTroopCount);
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.territoryId, 37);
+      assertEquals(updatedTerritory.troopCount, expectedTroopCount);
     });
 
     it("reinforce method should not update the troop count is the troop count is invalid", () => {
@@ -80,8 +82,11 @@ describe("Game", () => {
         troopCount: 3,
       });
       assertEquals(action, STATES.INITIAL_REINFORCEMENT);
-      assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, expectedTroopCount);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.territoryId, 37);
+      assertEquals(updatedTerritory.troopCount, expectedTroopCount);
     });
 
     it("reinforce method should not update the troop count is the troop count is invalid", () => {
@@ -95,8 +100,11 @@ describe("Game", () => {
       });
 
       assertEquals(action, STATES.INITIAL_REINFORCEMENT);
-      assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, expectedTroopCount);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.territoryId, 37);
+      assertEquals(updatedTerritory.troopCount, expectedTroopCount);
     });
 
     it("reinforce method should change the game state when all troops are deployed", () => {
@@ -115,8 +123,11 @@ describe("Game", () => {
       });
 
       assertEquals(action, STATES.REINFORCE);
-      assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, expectedTroopCount);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.territoryId, 37);
+      assertEquals(updatedTerritory.troopCount, expectedTroopCount);
     });
   });
 
@@ -198,7 +209,9 @@ describe("Game", () => {
       });
 
       assertEquals(action, STATES.INVASION);
-      assertEquals(data.newTroopCount, 17);
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.troopCount, 17);
       assertEquals(data.remainingTroops, 0);
     });
 
@@ -218,7 +231,10 @@ describe("Game", () => {
         troopCount: 1,
       });
       assertEquals(action, STATES.REINFORCE);
-      assertEquals(data.newTroopCount, 15);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.troopCount, 15);
       assertEquals(data.remainingTroops, 2);
     });
 
@@ -238,7 +254,10 @@ describe("Game", () => {
       });
 
       assertEquals(action, STATES.REINFORCE);
-      assertEquals(data.newTroopCount, 14);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.troopCount, 14);
       assertEquals(data.remainingTroops, 3);
     });
   });

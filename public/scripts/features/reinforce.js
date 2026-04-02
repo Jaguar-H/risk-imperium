@@ -9,7 +9,6 @@ import {
 import {
   renderGameState,
   renderRemainingTroopsToDeploy,
-  renderUpdatedTroopCount,
 } from "../utilities/render_UI.js";
 
 const notifyNotOwned = (gameState, id) => {
@@ -35,7 +34,7 @@ const updateRemainingTroops = (remainingTroops) => {
   }
 };
 
-const updateAfterDeploy = (gameState, territory, response, troopCount) => {
+const updateAfterDeploy = (gameState, _territory, response, troopCount) => {
   const { action: nextState, data: { updatedTerritory, remainingTroops } } =
     response;
 
@@ -44,16 +43,11 @@ const updateAfterDeploy = (gameState, territory, response, troopCount) => {
   updateTroopsInTerritories(gameState, updatedTerritory);
 
   const updatedTerritoryId = updatedTerritory[0].territoryId;
-  // applyTroopUpdate(gameState, territory, data);
+
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
   updateRemainingTroops(remainingTroops);
 
   setUpNextPhase(gameState, nextState);
-};
-
-const applyTroopUpdate = (gameState, territory, data) => {
-  renderUpdatedTroopCount(territory, data.newTroopCount);
-  gameState.territories[data.territoryId].troopCount = data.newTroopCount;
 };
 
 const handleCustomDeployment = (gameState, territory, territoryId) => {

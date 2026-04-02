@@ -42,8 +42,11 @@ describe("Api Handler", () => {
       const { action, data } = await handleUserActions(context);
 
       assertEquals(action, "INITIAL_REINFORCEMENT");
-      assertEquals(data.newTroopCount, 2);
-      assertEquals(data.territoryId, 37);
+
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.troopCount, 2);
+      assertEquals(updatedTerritory.territoryId, 37);
     });
 
     it("Should throw an error when the arguments are not given", () => {

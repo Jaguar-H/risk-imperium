@@ -46,8 +46,10 @@ describe("App Handler", () => {
       assertEquals(response.status, 200);
       assertEquals(response.ok, true);
       assertEquals(action, "INITIAL_REINFORCEMENT");
-      assertEquals(data.territoryId, 37);
-      assertEquals(data.newTroopCount, 2);
+      assertEquals(data.updatedTerritory.length, 1);
+      const updatedTerritory = data.updatedTerritory[0];
+      assertEquals(updatedTerritory.territoryId, 37);
+      assertEquals(updatedTerritory.troopCount, 2);
     });
   });
 
