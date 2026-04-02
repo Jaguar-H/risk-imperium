@@ -12,6 +12,7 @@ import {
   removeHighlights,
 } from "./utilities/highlight.js";
 import { STATES } from "./configs/game_states.js";
+import { getCard } from "./features/cards.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -67,6 +68,7 @@ export const SETUP_TRANSITION = {
   [STATES.REINFORCE]: setupReinforcePhase,
   [STATES.INVASION]: setupInvasionPhase,
   [STATES.FORTIFICATION]: setupFortification,
+  [STATES.GET_CARD]: getCard,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

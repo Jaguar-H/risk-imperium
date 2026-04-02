@@ -39,3 +39,16 @@ export const setup = (gameState) => {
   playerDetailsDialog.append(...allPlayersDetails);
   addListenersToPlayerIcon(players, gameState.continents);
 };
+
+export const updateCards = (cards) => {
+  const cardsArea = document.querySelector("#card-area > div");
+  cardsArea.textContent = "";
+  const cardElements = cards.map((card) => {
+    const element = document.createElement("div");
+
+    element.textContent = card;
+    return element;
+  });
+
+  cardsArea.append(...cardElements);
+};

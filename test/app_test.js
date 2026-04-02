@@ -30,7 +30,7 @@ describe("App Handler", () => {
     it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
       const game = new Game();
       game.initTerritories();
-      const gameState = game.getSetup();
+      const gameState = game.getSetup(1);
       gameState.state = STATES.INITIAL_REINFORCEMENT;
       const app = createApp(game);
       const response = await app.request("/user-actions", {

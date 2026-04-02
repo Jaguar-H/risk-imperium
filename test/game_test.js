@@ -21,7 +21,7 @@ describe("Game", () => {
   });
 
   it("setup method should return data for the single user", () => {
-    const setupData = game.getSetup();
+    const setupData = game.getSetup(1);
     const setupDataProperties = Object.keys(setupData);
     const expectedKeys = [
       "continents",
@@ -40,7 +40,7 @@ describe("Game", () => {
   describe("INIT TERRITORIES", () => {
     it("Init territories method should return the players and territories", () => {
       const { players, territories } = game.initTerritories();
-      const setupData = game.getSetup();
+      const setupData = game.getSetup(1);
       assertEquals(territories, setupData.territories);
       assertEquals(
         Object.values(territories).every(({ troopCount }) => troopCount === 1),
@@ -147,7 +147,7 @@ describe("Game", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
       const game = new Game(() => 0.3);
       game.initTerritories();
-      game.getSetup();
+      game.getSetup(1);
       const { action, data } = game.resolveCombat();
       const expected = {
         action: STATES.FORTIFICATION,
@@ -172,7 +172,7 @@ describe("Game", () => {
   describe("SET REINFORCEMENTS", () => {
     it("Should set and give the reinforcement ", () => {
       game.initTerritories();
-      game.getSetup();
+      game.getSetup(1);
 
       for (let i = 1; i <= 13; i++) {
         game.reinforce({ territoryId: 37, troopCount: 1 });
@@ -354,7 +354,7 @@ describe("Game", () => {
       game.loadGameState(fortification);
       game.skipFortification();
       const state = game.getGameState();
-      assertEquals(state, STATES.REINFORCE);
+      assertEquals(state, STATES.GET_CARD);
     });
   });
 });

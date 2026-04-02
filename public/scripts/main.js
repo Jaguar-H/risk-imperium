@@ -1,4 +1,4 @@
-import { setupListeners } from "./listeners.js";
+import { addListenerToCardIcon, setupListeners } from "./listeners.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { getSetup } from "./server_calls.js";
 import { SETUP_TRANSITION } from "./transition_handlers.js";
@@ -16,6 +16,7 @@ globalThis.onload = async () => {
 
   renderGameState(gameState.state);
   setup(gameState);
+  addListenerToCardIcon(gameState.player);
 
   if (gameState.state in SETUP_TRANSITION) {
     SETUP_TRANSITION[gameState.state](gameState);

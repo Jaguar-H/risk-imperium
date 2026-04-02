@@ -9,8 +9,10 @@ export class Game {
   #state;
   #randomFunction;
   #stateDetails;
+  #cards;
 
   constructor(
+    cards,
     randomFunction = Math.random,
     players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
@@ -20,15 +22,18 @@ export class Game {
     this.#activePlayerId = players[0].id;
     this.#territories = territories;
     this.#players = players;
+    this.#cards = cards;
     this.#continents = continents;
     this.#state = STATES.SETUP;
+
     this.#stateDetails = {
-      initialTroopLimit: 13,
+      initialTroopLimit: 2,
       remainingTroopsToDeploy: 0,
       attackerTerritoryId: "21",
       defenderTerritoryId: "22",
       attackerTroops: 3,
       defenderTroops: 1,
+      hasCaptured: true,
     };
   }
 
@@ -37,8 +42,7 @@ export class Game {
   }
 
   skipFortification() {
-    this.#updateState(STATES.REINFORCE);
-    this.#setReinforcements();
+    this.#updateState(STATES.GET_CARD);
   }
 
   #updateState(state) {
@@ -49,7 +53,8 @@ export class Game {
   }
 
   getSetup(playerId) {
-    const opponents = this.#players.filter(({ id }) => id !== playerId);
+    const opponents = this.#players.filter(({ id }) => id !== playerId)
+      .map(({ id, name, territories }) => ({ id, name, territories }));
     const opponentsDetails = {};
 
     for (const { id, ...details } of opponents) {
@@ -64,7 +69,7 @@ export class Game {
       territories: this.#territories,
       player: { ...currentPlayerDetails },
       opponents: opponentsDetails,
-      cards: [],
+      cards: currentPlayerDetails.cards,
       currentPlayer: this.#activePlayerId,
       state: this.#state,
     };
@@ -77,6 +82,11 @@ export class Game {
   #initTerritory() {
     this.#players.forEach((player) => {
       player["territories"] = [];
+    });
+  }
+  #initCards() {
+    this.#players.forEach((player) => {
+      player["cards"] = [];
     });
   }
 
@@ -339,6 +349,24 @@ export class Game {
     };
   }
 
+  getCard() {
+    let card;
+    if (this.#stateDetails.hasCaptured) {
+      card = this.#cards.drawCard();
+      this.#players[this.#activePlayerId].cards.push(card);
+      console.log(card);
+    }
+    this.#state = STATES.REINFORCE;
+    this.#setReinforcements();
+
+    return {
+      action: STATES.REINFORCE,
+      data: {
+        card,
+      },
+    };
+  }
+
   getSavableGameState() {
     return {
       activePlayerId: this.#activePlayerId,
@@ -362,6 +390,7 @@ export class Game {
     this.#activePlayerId = activePlayerId;
     this.#territories = territories;
     this.#players = players;
+    this.#initCards();
     this.#continents = continents;
     this.#state = state;
     this.#stateDetails = stateDetails;

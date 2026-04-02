@@ -19,6 +19,7 @@ const USER_ACTIONS = {
 
     return { action: newState, data: [] };
   },
+  GET_CARD: (game, data) => game.getCard(data),
 };
 
 export const handleUserActions = async (context) => {
