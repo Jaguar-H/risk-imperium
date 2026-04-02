@@ -41,6 +41,9 @@ export class Game {
     this.#updateState(STATES.REINFORCE);
     this.#setReinforcements();
   }
+  skipInvasion() {
+    this.#updateState(STATES.FORTIFICATION);
+  }
 
   #updateState(state) {
     if (state in STATES) {
@@ -357,7 +360,7 @@ export class Game {
       this.#stateDetails.hasCaptured = true;
       updatedTerritories = this.captureTerritory(attackerDice.length);
     }
-    this.#state = STATES.FORTIFICATION;
+    this.#state = STATES.INVASION;
 
     return {
       action: this.#state,

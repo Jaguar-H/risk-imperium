@@ -95,6 +95,8 @@ export const handleInvasion = async (territory, gameState) => {
   }
 
   if (isNeighbouringOpponent(gameState, selectedTerritoryId)) {
+    const skipButtonElement = document.querySelector("#skip-button");
+    skipButtonElement.remove();
     return await selectDefender(gameState, selectedTerritoryId);
   }
 

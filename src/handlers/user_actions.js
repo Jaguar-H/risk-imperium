@@ -19,6 +19,16 @@ const USER_ACTIONS = {
 
     return { action: newState, data: [] };
   },
+
+  SKIP_INVASION: (game) => {
+    const state = game.getGameState();
+    if (state !== STATES.INVASION) {
+      return { action: state, data: [] };
+    }
+    game.skipInvasion();
+    const newState = game.getGameState();
+    return { action: newState, data: [] };
+  },
 };
 
 export const handleUserActions = async (context) => {

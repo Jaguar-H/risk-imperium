@@ -157,7 +157,7 @@ describe("Game", () => {
       game.getSetup();
       const { action, data } = game.resolveCombat();
       const expected = {
-        action: STATES.FORTIFICATION,
+        action: STATES.INVASION,
         data: {
           attackerDice: [2, 2, 2],
           defenderDice: [2],
@@ -359,7 +359,7 @@ describe("Game", () => {
     });
   });
   describe("skipFortification", () => {
-    it("Should return the current state of the game", () => {
+    it("Should return the ", () => {
       game.loadGameState(fortification);
       game.skipFortification();
       const state = game.getGameState();
@@ -377,6 +377,15 @@ describe("Game", () => {
         { territoryId: 22, troopCount: 3 },
       ];
       assertEquals(expected, result);
+    });
+  });
+
+  describe("skipInvasion", () => {
+    it("Should return the current state of the game", () => {
+      game.loadGameState(invasionState);
+      game.skipInvasion();
+      const state = game.getGameState();
+      assertEquals(state, STATES.FORTIFICATION);
     });
   });
 });

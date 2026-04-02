@@ -57,3 +57,11 @@ export const skipFortificationRequest = async () => {
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
+
+export const skipInvasionRequest = async () => {
+  const reqData = {
+    userActions: USER_ACTIONS.SKIP_INVASION,
+    data: [],
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
