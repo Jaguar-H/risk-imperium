@@ -1,6 +1,6 @@
 {
   "activePlayerId": 1,
-  "territory": {
+  "territories": {
     "1": {
       "name": "Alaska",
       "neighbours": [
@@ -210,7 +210,7 @@
         24,
         25
       ],
-      "troopCount": 1
+      "troopCount": 5
     },
     "22": {
       "name": "Egypt",
@@ -427,78 +427,78 @@
       "id": 1,
       "name": "Jon",
       "territories": [
-        "21",
-        "17",
-        "16",
-        "36",
-        "33",
-        "27",
-        "19"
+        21,
+        17,
+        16,
+        36,
+        33,
+        27,
+        19
       ]
     },
     {
       "id": 2,
       "name": "Rob",
       "territories": [
-        "15",
-        "20",
-        "1",
-        "10",
-        "38",
-        "37",
-        "2"
+        15,
+        20,
+        1,
+        10,
+        38,
+        37,
+        2
       ]
     },
     {
       "id": 3,
       "name": "Sansa",
       "territories": [
-        "4",
-        "13",
-        "41",
-        "31",
-        "5",
-        "42",
-        "40"
+        4,
+        13,
+        41,
+        31,
+        5,
+        42,
+        40
       ]
     },
     {
       "id": 4,
       "name": "Arya",
       "territories": [
-        "7",
-        "30",
-        "11",
-        "28",
-        "8",
-        "32",
-        "22"
+        7,
+        30,
+        11,
+        28,
+        8,
+        32,
+        22
       ]
     },
     {
       "id": 5,
       "name": "Rickon",
       "territories": [
-        "6",
-        "3",
-        "29",
-        "9",
-        "26",
-        "18",
-        "12"
+        6,
+        3,
+        29,
+        9,
+        26,
+        18,
+        12
       ]
     },
     {
       "id": 6,
       "name": "Bran",
       "territories": [
-        "35",
-        "25",
-        "34",
-        "24",
-        "14",
-        "39",
-        "23"
+        35,
+        25,
+        34,
+        24,
+        14,
+        39,
+        23
       ]
     }
   ],
@@ -586,8 +586,8 @@
   "stateDetails": {
     "initialTroopLimit": 13,
     "remainingTroopsToDeploy": 0,
-    "attackerTerritoryId": "21",
-    "defenderTerritoryId": "22",
+    "attackerTerritoryId": 21,
+    "defenderTerritoryId": 22,
     "attackerTroops": 3,
     "defenderTroops": 1
   }
