@@ -5,6 +5,10 @@ import { Game } from "../src/game.js";
 import { handleUserActions } from "../src/handlers/user_actions.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { STATES } from "../src/config.js";
+import { fortificationHandler } from "../src/handlers/fortification_handler.js";
+import fortification from "../data/states/fortification.json" with {
+  type: "json",
+};
 
 describe("Api Handler", () => {
   let game;
@@ -80,6 +84,7 @@ describe("Api Handler", () => {
       assertEquals(data.troopsToReinforce, 3);
     });
   });
+
   describe("SKIP_FORTIFICATION", () => {
     it("should change game state to the reinforcement when currently in fortification state", async () => {
       let state = "FORTIFICATION";
@@ -186,6 +191,52 @@ describe("Api Handler", () => {
       };
       const data = await handleUserActions(context);
       assertEquals(data.action, STATES.WAITING);
+    });
+  });
+
+  describe("FORTIFICATION", () => {
+    it("Should return the new phase and updated territory when data is valid", () => {
+      const expectedData = [
+        {
+          territoryId: 22,
+          troopCount: 1,
+        },
+        {
+          territoryId: 16,
+          troopCount: 10,
+        },
+      ];
+      game.loadGameState(fortification);
+      const data = fortificationHandler(game, { from: 22, to: 16, count: 9 });
+      assertEquals(data, { action: STATES.REINFORCE, data: expectedData });
+    });
+
+    it("Should not return the new phase and shouldn't updated territory when from territory is invalid", () => {
+      const expectedData = [];
+      game.loadGameState(fortification);
+      const data = fortificationHandler(game, { from: 1, to: 16, count: 9 });
+      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+    });
+
+    it("Should not return the new phase and shouldn't updated territory when to territory is invalid", () => {
+      const expectedData = [];
+      game.loadGameState(fortification);
+      const data = fortificationHandler(game, { from: 22, to: 1, count: 9 });
+      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+    });
+
+    it("Should not return the new phase and shouldn't updated territory when both territory id are same", () => {
+      const expectedData = [];
+      game.loadGameState(fortification);
+      const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
+      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+    });
+
+    it("Should return the previous phase when called without fortification phase", () => {
+      const expectedData = [];
+      game;
+      const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
+      assertEquals(data, { action: STATES.SETUP, data: expectedData });
     });
   });
 });

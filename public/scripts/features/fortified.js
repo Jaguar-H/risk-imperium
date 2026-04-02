@@ -35,8 +35,8 @@ export const handleFortified = async (territory, gameState) => {
     const { action: nextPhase, data: updatedTerritories } =
       await fortifyRequest({ from: fromId, to: id, count });
     updateTroopsInTerritories(gameState, updatedTerritories);
-    console.log(nextPhase);
-
+    delete gameState.fortifyFrom;
+    delete gameState.fortifyTo;
     setUpNextPhase(gameState, nextPhase);
   }
 };

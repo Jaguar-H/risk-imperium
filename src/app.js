@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import { handleUserActions } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
+import { handleLoadGameState } from "./handlers/handleLoadGameState.js";
+import { handleSaveGameState } from "./handlers/handleSaveGameState.js";
 
 export const createApp = (
   game,
@@ -24,24 +26,9 @@ export const createApp = (
   app.post("/user-actions", handleUserActions);
 
   if (isDevMode) {
-    app.get("/:state", async (c) => {
-      const { state } = c.req.param();
-      return await readTextFile(`./data/states/${state}.json`).then((data) => {
-        const savedState = JSON.parse(data);
-        game.loadGameState(savedState);
-        return c.redirect("/");
-      }).catch(() => {
-        return c.body("Bad Request", 404);
-      });
-    });
+    app.get("/:state", (c) => handleLoadGameState(c, readTextFile, game));
 
-    app.get("/save/:name", (c) => {
-      const { name } = c.req.param();
-      const gameState = game.getSavableGameState();
-      const savingData = JSON.stringify(gameState);
-      writeTextFile(`./data/states/${name}.json`, savingData);
-      return c.redirect("/");
-    });
+    app.get("/save/:name", (c) => handleSaveGameState(c, writeTextFile, game));
   }
   app.get("*", serveStatic({ root: "./public" }));
   return app;

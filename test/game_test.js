@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import { assert, assertEquals, assertFalse, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
@@ -386,6 +386,52 @@ describe("Game", () => {
       game.skipInvasion();
       const state = game.getGameState();
       assertEquals(state, STATES.FORTIFICATION);
+    });
+  });
+
+  describe("fortify", () => {
+    it("Should update the troop from when move from place to another", () => {
+      game.loadGameState(fortification);
+
+      const from = 22;
+      const to = 16;
+      const count = 9;
+
+      const expectedData = [
+        {
+          territoryId: 22,
+          troopCount: 1,
+        },
+        {
+          territoryId: 16,
+          troopCount: 10,
+        },
+      ];
+      const data = game.fortify(from, to, count);
+      assertEquals(data, expectedData);
+    });
+    it("Should update update nothing when invalid troop count", () => {
+      game.loadGameState(fortification);
+
+      const from = 22;
+      const to = 16;
+      const count = 10;
+
+      const expectedData = [];
+      const data = game.fortify(from, to, count);
+      assertEquals(data, expectedData);
+    });
+  });
+
+  describe("isCurrentUserTerritory", () => {
+    it("should give true if current player own territory of given territory id ", () => {
+      game.loadGameState(fortification);
+      assert(game.isCurrentUserTerritory(16));
+    });
+
+    it("should give false if current player doesn't own territory of given territory id ", () => {
+      game.loadGameState(fortification);
+      assertFalse(game.isCurrentUserTerritory(1));
     });
   });
 });
