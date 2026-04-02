@@ -126,8 +126,6 @@ describe("App Handler", () => {
 
         const writer = (path, data) => {
           actualStoringPath = path;
-          console.log("here", data, path);
-
           actualStoringData = data;
         };
 

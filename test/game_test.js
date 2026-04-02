@@ -4,6 +4,9 @@ import { assert, assertEquals, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
+import fortification from "../data/states/fortification.json" with {
+  type: "json",
+};
 import reinforceState from "../data/states/reinforce.json" with {
   type: "json",
 };
@@ -147,7 +150,7 @@ describe("Game", () => {
       game.getSetup();
       const { action, data } = game.resolveCombat();
       const expected = {
-        action: STATES.REINFORCE,
+        action: STATES.FORTIFICATION,
         data: {
           attackerDice: [2, 2, 2],
           defenderDice: [2],
@@ -338,6 +341,20 @@ describe("Game", () => {
       };
 
       assertThrows(() => game.invade(invadeDetails));
+    });
+  });
+  describe("getGameState", () => {
+    it("Should return the current state of the game", () => {
+      const state = game.getGameState();
+      assertEquals(state, STATES.SETUP);
+    });
+  });
+  describe("skipFortification", () => {
+    it("Should return the current state of the game", () => {
+      game.loadGameState(fortification);
+      game.skipFortification();
+      const state = game.getGameState();
+      assertEquals(state, STATES.REINFORCE);
     });
   });
 });

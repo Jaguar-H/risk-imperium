@@ -32,6 +32,21 @@ export class Game {
     };
   }
 
+  getGameState() {
+    return this.#state;
+  }
+
+  skipFortification() {
+    this.#updateState(STATES.REINFORCE);
+  }
+
+  #updateState(state) {
+    if (state in STATES) {
+      this.#state = state;
+    }
+    return state;
+  }
+
   getSetup(playerId) {
     const opponents = this.#players.filter(({ id }) => id !== playerId);
     const opponentsDetails = {};
@@ -284,7 +299,7 @@ export class Game {
       defenderTerritoryId,
       combatResult,
     );
-    this.#state = STATES.REINFORCE;
+    this.#state = STATES.FORTIFICATION;
 
     return {
       action: this.#state,
