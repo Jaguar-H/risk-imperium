@@ -46,7 +46,6 @@ const updateAfterDeploy = (gameState, _territory, response, troopCount) => {
 
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
   updateRemainingTroops(remainingTroops);
-
   setUpNextPhase(gameState, nextState);
 };
 
