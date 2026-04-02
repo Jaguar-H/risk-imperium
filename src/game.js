@@ -253,10 +253,16 @@ export class Game {
     attackerTerritory.troopCount -= combatResult.attackerLoss;
     defenderTerritory.troopCount -= combatResult.defenderLoss;
 
-    return {
-      attackerTroops: attackerTerritory.troopCount,
-      defenderTroops: defenderTerritory.troopCount,
-    };
+    return [
+      {
+        territoryId: attackerTerritoryId,
+        troopCount: attackerTerritory.troopCount,
+      },
+      {
+        territoryId: defenderTerritoryId,
+        troopCount: defenderTerritory.troopCount,
+      },
+    ];
   }
 
   #constructCombatMsg(combatResult) {
@@ -271,7 +277,7 @@ export class Game {
     const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
     const notifyMsg = this.#constructCombatMsg(combatResult);
-    const updatedTroops = this.#updateTroopCount(
+    const updatedTerritories = this.#updateTroopCount(
       attackerTerritoryId,
       defenderTerritoryId,
       combatResult,
@@ -280,7 +286,12 @@ export class Game {
 
     return {
       action: this.#state,
-      data: { attackerDice, defenderDice, notifyMsg, ...updatedTroops },
+      data: {
+        attackerDice,
+        defenderDice,
+        notifyMsg,
+        updatedTerritories,
+      },
     };
   }
 

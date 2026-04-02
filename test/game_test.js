@@ -150,7 +150,7 @@ describe("Game", () => {
     });
   });
 
-  describe("COMBATRESOLVE", () => {
+  describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
       const game = new Game(() => 0.3);
       game.initTerritories();
@@ -162,8 +162,10 @@ describe("Game", () => {
           attackerDice: [2, 2, 2],
           defenderDice: [2],
           msg: "Attack successful",
-          attackerTroops: 0,
-          defenderTroops: 1,
+          updatedTerritories: [
+            { territoryId: "21", troopCount: 0 },
+            { territoryId: "22", troopCount: 1 },
+          ],
         },
       };
       assertEquals(action, expected.action);
