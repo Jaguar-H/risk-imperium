@@ -57,3 +57,8 @@ export const delay = (duration) => {
     }, duration);
   });
 };
+
+export const removeSkipButton = () => {
+  const skipButtonElement = document.querySelector("#skip-button");
+  skipButtonElement.remove();
+};

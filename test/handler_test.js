@@ -140,7 +140,7 @@ describe("Api Handler", () => {
   });
 
   describe("SKIP_INVASION", () => {
-    it("should change game state to the reinforcement when currently in fortification state", async () => {
+    it("should change game state to the reinforcement when currently in invasion state", async () => {
       let state = STATES.INVASION;
       const game = {
         skipInvasion: () => {
@@ -162,16 +162,17 @@ describe("Api Handler", () => {
         },
         json: (data) => data,
       };
+
       const data = await handleUserActions(context);
 
       assertEquals(data.action, STATES.FORTIFICATION);
     });
 
-    it("shouldn't change game state to the reinforcement when not in fortification state", async () => {
-      let state = "WAITING";
+    it("shouldn't change game state to the reinforcement when not in invasion state", async () => {
+      let state = STATES.WAITING;
       const game = {
-        skipFortification: () => {
-          state = "REINFORCE";
+        skipInvasion: () => {
+          state = STATES.GET_CARD;
         },
         getGameState: () => {
           return state;
@@ -185,10 +186,11 @@ describe("Api Handler", () => {
           }
         },
         req: {
-          json: () => ({ userActions: STATES.SKIP_FORTIFICATION, data: [] }),
+          json: () => ({ userActions: STATES.SKIP_INVASION, data: [] }),
         },
         json: (data) => data,
       };
+
       const data = await handleUserActions(context);
       assertEquals(data.action, STATES.WAITING);
     });

@@ -1,7 +1,7 @@
 import { getFortifiableTerritory } from "../handlers/fortified_handler.js";
 import { fortifyRequest } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
-import { updateTroopsInTerritories } from "../utilities.js";
+import { removeSkipButton, updateTroopsInTerritories } from "../utilities.js";
 import {
   highlightTerritories,
   removeHighlights,
@@ -10,9 +10,9 @@ import {
 export const handleFortified = async (territory, gameState) => {
   const id = Number(territory.dataset.territoryId);
   const territoriesSets = getFortifiableTerritory(gameState);
-  const set = territoriesSets.find((set) => set.includes(id));
+  const connectedTerritories = territoriesSets.find((set) => set.includes(id));
 
-  if (!set) {
+  if (!connectedTerritories) {
     return;
   }
 
@@ -21,14 +21,14 @@ export const handleFortified = async (territory, gameState) => {
       return;
     }
 
-    const territoryToMoveTo = set.filter((tid) => tid !== id);
+    const territoryToMoveTo = connectedTerritories.filter((tid) => tid !== id);
     removeHighlights("selected");
     highlightTerritories(territoryToMoveTo);
     gameState.fortifyFrom = id;
     return;
   }
 
-  if (set.includes(gameState.fortifyFrom)) {
+  if (connectedTerritories.includes(gameState.fortifyFrom)) {
     gameState.fortifyTo = id;
     const fromId = gameState.fortifyFrom;
     const count = gameState.territories[fromId].troopCount - 1;
@@ -38,6 +38,7 @@ export const handleFortified = async (territory, gameState) => {
     updateTroopsInTerritories(gameState, updatedTerritories);
     delete gameState.fortifyFrom;
     delete gameState.fortifyTo;
+    removeSkipButton();
     setUpNextPhase(gameState, nextPhase);
   }
 };
