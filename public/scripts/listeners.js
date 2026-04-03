@@ -1,10 +1,13 @@
 import {
   removeCardAreaListener,
   renderTradeIndicator,
+  tradeCard,
 } from "./features/cards.js";
 import { onMapAction } from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
+import { setTroopLimit } from "./utilities.js";
 import { showNotification } from "./utilities/notifications.js";
+import { renderRemainingTroopsToDeploy } from "./utilities/render_UI.js";
 
 export const addListenersToPlayerIcon = () => {
   const playerIcon = document.querySelector("#player-details-button");
@@ -43,15 +46,17 @@ export const addListenerToCardIcon = (player) => {
   });
 };
 
-export const addListnerToTrade = (gameState) => {
+export const addListenerToTrade = (gameState) => {
   const trade = document.querySelector("#card-area button");
   const cards = gameState.player.cards;
-  trade.addEventListener("click", () => {
+  trade.addEventListener("click", async () => {
     showNotification("Traded the card ");
-
-    console.log(gameState.selectedCards, gameState.player.cards);
     const selectedCards = Object.values(gameState.selectedCards);
-    for (const card of selectedCards) {
+    const selected = [...selectedCards];
+    const { troops, _positions } = await tradeCard(selected);
+    renderRemainingTroopsToDeploy(troops);
+    setTroopLimit(troops);
+    for (const card of selected) {
       const idx = cards.findIndex((c) => c === card);
       cards.splice(idx, 1);
     }

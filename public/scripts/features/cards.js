@@ -26,6 +26,16 @@ export const getCard = async (gameState) => {
   return action;
 };
 
+export const tradeCard = async (cards) => {
+  const reqData = {
+    userActions: USER_ACTIONS.TRADE_CARD,
+    data: { cards },
+  };
+  const response = await sendPostRequest(APIs.USER_ACTIONS, reqData);
+
+  return response.data;
+};
+
 const getCombinations = (arr, k = 3) => {
   const result = [];
   function backtrack(start, combo) {
@@ -48,8 +58,6 @@ const isValidCombination = (combination = []) => {
   const set = new Set();
   combination.sort((a, b) => a - b);
   const allSame = combination.every((x) => {
-    console.log(x, combination, combination[0] === x || x === "4");
-
     return combination[0] === x || x === "4";
   });
   combination.forEach((x) => {
@@ -64,7 +72,6 @@ export const canBeTraded = (selectedCard) => {
   const cards = Object.entries(selectedCard);
   const button = document.querySelector("#card-area button");
   if (cards.length === 3) {
-    // console.log(cards);
     const isValid = isValidCombination(cards.map(([_, card]) => card));
     if (isValid) {
       button.removeAttribute("disabled");

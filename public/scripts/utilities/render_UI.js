@@ -7,6 +7,7 @@ export const renderUpdatedTroopCount = (territory, newTroopCount) => {
 
 export const renderRemainingTroopsToDeploy = (remainingTroops) => {
   const display = document.querySelector("#remaining-troops-to-deploy");
+
   display.textContent = remainingTroops
     ? `Remaining Troops To Deploy: ${remainingTroops}`
     : "";
