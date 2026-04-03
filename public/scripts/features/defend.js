@@ -1,10 +1,23 @@
 import { defend } from "../server_calls.js";
+import { displayTroopSelector, setTroopLimit } from "../utilities.js";
 import { handleCombat } from "./resolve_combat.js";
 
-export const handleDefend = async (territory, gameState) => {
-  const territoryId = Number(territory.dataset.territoryId);
-  const defendData = { territoryId, troopCount: 1 };
+const handleDefense = async (gameState, territoryId, troopCount) => {
+  const defendData = { territoryId, troopCount };
   const { action, data } = await defend(defendData);
   gameState.state = action;
-  return await handleCombat(data, action, gameState);
+  await handleCombat(data, action, gameState);
+};
+
+export const handleDefend = (territory, gameState, event) => {
+  const territoryId = Number(territory.dataset.territoryId);
+
+  const defendHandler = async (troopCount) =>
+    await handleDefense(gameState, territoryId, troopCount);
+
+  const troopCount = gameState.territories[territoryId].troopCount;
+  const maxTroops = Math.min(2, troopCount);
+  const minTroops = 1;
+  setTroopLimit(maxTroops, minTroops, maxTroops);
+  displayTroopSelector(event, defendHandler);
 };
