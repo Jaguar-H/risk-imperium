@@ -47,6 +47,7 @@ export class Game {
   skipFortification() {
     this.#updateState(STATES.GET_CARD);
   }
+
   skipInvasion() {
     this.#updateState(STATES.FORTIFICATION);
   }
@@ -59,7 +60,8 @@ export class Game {
   }
 
   getSetup(playerId) {
-    const opponents = this.#players.filter(({ id }) => id !== playerId)
+    const opponents = this.#players
+      .filter(({ id }) => id !== playerId)
       .map(({ id, name, territories }) => ({ id, name, territories }));
     const opponentsDetails = {};
 
