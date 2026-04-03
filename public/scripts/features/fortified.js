@@ -62,6 +62,7 @@ export const handleFortified = async (territory, gameState) => {
     delete gameState.fortifyFrom;
     removeHighlights("reinforce-from-selected");
     removeHighlights("selected");
+    removeSkipButton();
     SETUP_TRANSITION[STATES.FORTIFICATION](gameState);
     return;
   }
