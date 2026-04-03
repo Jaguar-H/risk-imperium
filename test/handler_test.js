@@ -208,7 +208,7 @@ describe("Api Handler", () => {
       ];
       game.loadGameState(fortification);
       const data = fortificationHandler(game, { from: 22, to: 16, count: 9 });
-      assertEquals(data, { action: STATES.REINFORCE, data: expectedData });
+      assertEquals(data, { action: STATES.GET_CARD, data: expectedData });
     });
 
     it("Should not return the new phase and shouldn't updated territory when from territory is invalid", () => {
@@ -237,6 +237,29 @@ describe("Api Handler", () => {
       game;
       const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
       assertEquals(data, { action: STATES.SETUP, data: expectedData });
+    });
+  });
+
+  describe("Get card", () => {
+    it("testing get card ", async () => {
+      const game = {
+        getCard: () => {
+          return "2";
+        },
+      };
+      const context = {
+        get: (name) => {
+          if (name === "game") {
+            return game;
+          }
+        },
+        req: {
+          json: () => ({ userActions: STATES.GET_CARD, data: [] }),
+        },
+        json: (data) => data,
+      };
+      const data = await handleUserActions(context);
+      assertEquals(data, "2");
     });
   });
 });

@@ -32,7 +32,7 @@ describe("App Handler", () => {
       const continentsHandler = new ContinentsHandler();
       const game = new Game(continentsHandler);
       game.initTerritories();
-      const gameState = game.getSetup();
+      const gameState = game.getSetup(1);
       gameState.state = STATES.INITIAL_REINFORCEMENT;
       const app = createApp(game);
       const response = await app.request("/user-actions", {

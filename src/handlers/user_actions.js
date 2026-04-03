@@ -20,6 +20,7 @@ const USER_ACTIONS = {
 
     return { action: newState, data: [] };
   },
+  GET_CARD: (game, data) => game.getCard(data),
 
   SKIP_INVASION: (game) => {
     const state = game.getGameState();

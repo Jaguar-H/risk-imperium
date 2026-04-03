@@ -4,6 +4,7 @@ import { assert, assertEquals, assertFalse, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
+import getCardState from "../data/states/getCard.json" with { type: "json" };
 
 import fortification from "../data/states/fortification.json" with {
   type: "json",
@@ -17,7 +18,11 @@ import reinforceState from "../data/states/reinforce.json" with {
 import initialReinforcementState from "../data/states/init-reinforcement.json" with {
   type: "json",
 };
+import playerElimination from "../data/states/player_elemination.json" with {
+  type: "json",
+};
 import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { Cards } from "../src/models/cards.js";
 
 describe("Game", () => {
   let game;
@@ -28,7 +33,7 @@ describe("Game", () => {
   });
 
   it("setup method should return data for the single user", () => {
-    const setupData = game.getSetup();
+    const setupData = game.getSetup(1);
     const setupDataProperties = Object.keys(setupData);
     const expectedKeys = [
       "continents",
@@ -47,7 +52,7 @@ describe("Game", () => {
   describe("INIT TERRITORIES", () => {
     it("Init territories method should return the players and territories", () => {
       const { players, territories } = game.initTerritories();
-      const setupData = game.getSetup();
+      const setupData = game.getSetup(1);
       assertEquals(territories, setupData.territories);
       assertEquals(
         Object.values(territories).every(({ troopCount }) => troopCount === 1),
@@ -152,9 +157,9 @@ describe("Game", () => {
 
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
-      const game = new Game(continentsHandler, () => 0.3);
+      const game = new Game(continentsHandler, "cards", () => 0.3);
       game.initTerritories();
-      game.getSetup();
+      game.getSetup(1);
       const { action, data } = game.resolveCombat();
       const expected = {
         action: STATES.INVASION,
@@ -179,7 +184,7 @@ describe("Game", () => {
   describe("SET REINFORCEMENTS", () => {
     it("Should set and give the reinforcement ", () => {
       game.initTerritories();
-      game.getSetup();
+      game.getSetup(1);
 
       for (let i = 1; i <= 13; i++) {
         game.reinforce({ territoryId: 37, troopCount: 1 });
@@ -363,13 +368,17 @@ describe("Game", () => {
       game.loadGameState(fortification);
       game.skipFortification();
       const state = game.getGameState();
-      assertEquals(state, STATES.REINFORCE);
+      assertEquals(state, STATES.GET_CARD);
     });
   });
 
   describe("CAPTURE", () => {
+    let game;
+    beforeEach(() => {
+      const continentsHandler = new ContinentsHandler();
+      game = new Game(continentsHandler, () => 0.3);
+    });
     it("should return updated territory details ", () => {
-      const game = new Game(() => 0.3);
       game.loadGameState(combatResolve);
       const result = game.captureTerritory(3);
       const expected = [
@@ -378,6 +387,17 @@ describe("Game", () => {
       ];
       assertEquals(expected, result);
     });
+  });
+  it("should eliminate the player if he doesn't have a territories ", () => {
+    game.loadGameState(playerElimination);
+    const result = game.captureTerritory(3);
+    const expected = [
+      { territoryId: 1, troopCount: 27 },
+      { territoryId: 2, troopCount: 3 },
+    ];
+    const currentState = game.getSavableGameState();
+    assertEquals(expected, result);
+    assertEquals(currentState.players.length, 5);
   });
 
   describe("skipInvasion", () => {
@@ -389,7 +409,7 @@ describe("Game", () => {
     });
   });
 
-  describe("fortify", () => {
+  describe("fortification", () => {
     it("Should update the troop from when move from place to another", () => {
       game.loadGameState(fortification);
 
@@ -407,7 +427,7 @@ describe("Game", () => {
           troopCount: 10,
         },
       ];
-      const data = game.fortify(from, to, count);
+      const data = game.fortification(from, to, count);
       assertEquals(data, expectedData);
     });
     it("Should update update nothing when invalid troop count", () => {
@@ -418,7 +438,7 @@ describe("Game", () => {
       const count = 10;
 
       const expectedData = [];
-      const data = game.fortify(from, to, count);
+      const data = game.fortification(from, to, count);
       assertEquals(data, expectedData);
     });
   });
@@ -432,6 +452,26 @@ describe("Game", () => {
     it("should give false if current player doesn't own territory of given territory id ", () => {
       game.loadGameState(fortification);
       assertFalse(game.isCurrentUserTerritory(1));
+    });
+  });
+
+  describe("Get a card ", () => {
+    it("should not get a card on unsuccesful invasion and move the phase reinforcement", () => {
+      game.loadGameState(getCardState);
+      const res = game.getCard();
+      assertEquals(res.action, STATES.REINFORCE);
+      assertEquals(res.data.card, undefined);
+    });
+    it("should get a card on unsuccesful invasion and move the phase reinforcement", () => {
+      getCardState.stateDetails.hasCaptured = true;
+      const cards = new Cards();
+      const continent = new ContinentsHandler();
+      const gme = new Game(continent, cards);
+      gme.loadGameState(getCardState);
+      const res = gme.getCard();
+      const typeOfCard = typeof res.data.card;
+      assertEquals(res.action, STATES.REINFORCE);
+      assertEquals(typeOfCard, "string");
     });
   });
 });
