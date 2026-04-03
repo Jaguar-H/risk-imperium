@@ -49,7 +49,6 @@ export const addListnerToTrade = (gameState) => {
   trade.addEventListener("click", () => {
     showNotification("Traded the card ");
 
-    console.log(gameState.selectedCards, gameState.player.cards);
     const selectedCards = Object.values(gameState.selectedCards);
     for (const card of selectedCards) {
       const idx = cards.findIndex((c) => c === card);

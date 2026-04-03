@@ -51,7 +51,6 @@ export const addListenerToCard = (gameState, cardArea) => {
   cardArea.onclick = (e) => {
     const id = e.target.id;
     const list = e.target.classList;
-    console.log(list, !list.contains("card"));
 
     if (!list.contains("card")) return;
 
