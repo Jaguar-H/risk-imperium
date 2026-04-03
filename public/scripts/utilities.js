@@ -89,3 +89,11 @@ export const removeSkipButton = () => {
   const skipButtonElement = document.querySelector("#skip-button");
   if (skipButtonElement) skipButtonElement.remove();
 };
+
+export const getPlayerById = (players, territoryId) =>
+  Object.values(players).find((player) =>
+    player.territories.includes(territoryId)
+  );
+
+export const getIndexOf = (collection, target) =>
+  collection.findIndex((element) => element === target);
