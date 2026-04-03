@@ -43,5 +43,5 @@ export const captureTerritory = (
   setTimeout(() => {
     renderPlayersDetails(gameState);
     showNotification(msg);
-  }, 1000);
+  }, 2000);
 };
