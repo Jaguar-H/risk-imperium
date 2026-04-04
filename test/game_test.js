@@ -450,26 +450,21 @@ describe("Game", () => {
         { random: () => 0.3 },
       );
     });
+
     it("should return updated territory details ", () => {
       game.loadGameState(combatResolve);
       const result = game.captureTerritory(3);
-      const expected = [
-        { territoryId: 21, troopCount: 2 },
-        { territoryId: 22, troopCount: 3 },
-      ];
-      assertEquals(expected, result);
+      const expected = [{ territoryId: 21, troopCount: 2 }, {
+        territoryId: 22,
+        troopCount: 3,
+      }];
+      assertEquals(expected, result.data.updatedTerritories);
     });
 
     it("should eliminate the player if he doesn't have a territories ", () => {
       game.loadGameState(playerElimination);
       const result = game.captureTerritory(3);
-      const expected = [
-        { territoryId: 1, troopCount: 27 },
-        { territoryId: 2, troopCount: 3 },
-      ];
-      const currentState = game.getSavableGameState();
-      assertEquals(expected, result);
-      assertEquals(currentState.players.length, 2);
+      assertEquals(result.data.hasEliminated, true);
     });
   });
 

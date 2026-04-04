@@ -17,7 +17,11 @@ import {
 } from "./utilities/highlight.js";
 import { STATES } from "./configs/game_states.js";
 import { territoryToFortifyFrom } from "./handlers/fortified_handler.js";
-import { getCard, renderTradeIndicator } from "./features/cards.js";
+import {
+  getCard,
+  removeCardAreaListener,
+  renderTradeIndicator,
+} from "./features/cards.js";
 import { handleDefense } from "./features/defend.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
@@ -80,6 +84,8 @@ const setupInvasionPhase = (gameState) => {
 
   addInvasionSkipButton(gameState);
   removeHighlights("selected");
+
+  removeCardAreaListener(gameState);
   highlightTerritories(attackableTerritories);
 };
 

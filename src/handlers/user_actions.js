@@ -36,6 +36,7 @@ const USER_ACTIONS = {
 
   FORTIFICATION: fortificationHandler,
   TRADE_CARD: tradeCardHandler,
+  CAPTURE: (game, data) => game.captureTerritory(data),
 };
 
 export const handleUserActions = async (context) => {

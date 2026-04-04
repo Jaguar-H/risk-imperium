@@ -106,14 +106,14 @@ export const renderTradeIndicator = (gameState) => {
 };
 
 export const removeCardAreaListener = (gameState, id = "#card-area") => {
-  const cardArea = document.querySelector(id);
-  const button = cardArea.querySelector("button");
+  const cardContainer = document.querySelector(`${id}`);
+  const cardArea = cardContainer.querySelector("div");
+  const button = cardContainer.querySelector("button");
   const cardIcon = document.querySelector("#cards");
   cardIcon.classList.remove(STYLES.HIGHLIGHT_CARD_ICON);
   cardArea.onclick = () => {};
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => card.classList = [STYLES.CARD]);
-
+  cards.forEach((card) => card.className = STYLES.CARD);
   button.setAttribute("disabled", true);
 
   gameState.selectedCard = {};

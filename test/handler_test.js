@@ -18,9 +18,14 @@ describe("Api Handler", () => {
   let game;
   beforeEach(() => {
     const continentsHandler = new ContinentsHandler();
-    game = new Game(mockPlayers(), CONFIG.TERRITORIES, { continentsHandler }, {
-      random: () => 0.3,
-    });
+    game = new Game(
+      mockPlayers(),
+      CONFIG.TERRITORIES,
+      { continentsHandler },
+      {
+        random: () => 0.3,
+      },
+    );
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -327,6 +332,26 @@ describe("Api Handler", () => {
       };
       const data = await handleUserActions(context);
       assertEquals(data, "2");
+    });
+  });
+  describe("CAPTURE", () => {
+    it("should return true", async () => {
+      const game = {
+        captureTerritory: () => true,
+      };
+      const context = {
+        get: (name) => {
+          if (name === "game") {
+            return game;
+          }
+        },
+        req: {
+          json: () => ({ userActions: STATES.CAPTURE, data: 3 }),
+        },
+        json: (data) => data,
+      };
+      const data = await handleUserActions(context);
+      assertEquals(data, true);
     });
   });
 });

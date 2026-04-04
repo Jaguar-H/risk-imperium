@@ -282,6 +282,8 @@
 }
 
 .card {
+  display: flex;
+  justify-content: center;
   align-items: center;
   height: 14em;
   width: 9em;

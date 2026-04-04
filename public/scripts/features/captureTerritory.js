@@ -1,12 +1,18 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { STYLES } from "../configs/styles.js";
+import { sendCaptureRequest } from "../server_calls.js";
+import { setUpNextPhase } from "../transition_handlers.js";
 import {
+  addListenerTroopSelector,
+  displayTroopSelector,
   getIndexOf,
   getPlayerById,
   getTerritoryElementById,
+  setTroopLimit,
+  updateTroopsInTerritories,
 } from "../utilities.js";
 import { showNotification } from "../utilities/notifications.js";
-import { addCardAlert } from "./cards.js";
+import { addCardAlert, renderTradeIndicator } from "./cards.js";
 import { renderPlayersDetails, updateCards } from "./setup.js";
 
 const updatePlayerTerritories = (defender, defenderTerritoryId, gameState) => {
@@ -34,6 +40,7 @@ const handleElimination = (defender, gameState, combatResult) => {
   gameState.player.cards = combatResult.newCards;
   updateCards(gameState.player.cards);
   addCardAlert();
+  renderTradeIndicator(gameState);
   delete gameState.opponents[defender.id];
 
   const msg = `${defender.name} has eliminated`;
@@ -49,29 +56,54 @@ const showWinner = (player) => {
   playerElement.textContent = `${player},the great`;
 };
 
+const handlePostCapture = async (gameState, defender, troopCount) => {
+  const { action, data } = await sendCaptureRequest(troopCount);
+  updateTroopsInTerritories(gameState, data.updatedTerritories);
+
+  if (data.hasEliminated) {
+    handleElimination(defender, gameState, data);
+  }
+  renderPlayersDetails(gameState);
+  if (data.hasWon) {
+    // setTimeout(() => {
+    //   redirect
+    // })
+    showWinner(gameState.player.name);
+  }
+
+  setUpNextPhase(gameState, action);
+};
+
 export const captureTerritory = (
   gameState,
-  { defenderTerritoryId },
+  { defenderTerritoryId, attackerTerritoryId },
   combatResult,
 ) => {
-  combatResult.updatedTerritories.forEach(({ territoryId, troopCount }) => {
-    gameState.territories[territoryId].troopCount = troopCount;
-  });
+  updateTroopsInTerritories(gameState, combatResult.updatedTerritories);
+
+  const territoryElement = getTerritoryElementById(
+    gameState.territories,
+    attackerTerritoryId,
+  );
+
+  const element = territoryElement.getBoundingClientRect();
+
+  const x = element.left;
+  const y = element.top;
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
 
   updatePlayerTerritories(defender, defenderTerritoryId, gameState);
   addPlayerIdToTerritory(gameState, defenderTerritoryId);
   showCapturedMsg(gameState, defenderTerritoryId);
+  setTroopLimit(
+    gameState.territories[attackerTerritoryId].troopCount - 1,
+    combatResult.attackerDice.length,
+  );
 
-  if (combatResult.hasEliminated) {
-    handleElimination(defender, gameState, combatResult);
-  }
-  renderPlayersDetails(gameState);
-  if (combatResult.hasWon) {
-    // setTimeout(() => {
-    //   redirect
-    // })
-    showWinner(gameState.player.name);
-  }
+  displayTroopSelector({ x, y });
+
+  addListenerTroopSelector((troopCount) =>
+    handlePostCapture(gameState, defender, troopCount)
+  );
 };

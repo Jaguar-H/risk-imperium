@@ -73,3 +73,11 @@ export const fortifyRequest = async (data) => {
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
+
+export const sendCaptureRequest = async (troopsToMove) => {
+  const reqData = {
+    userActions: USER_ACTIONS.CAPTURE,
+    data: troopsToMove,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};

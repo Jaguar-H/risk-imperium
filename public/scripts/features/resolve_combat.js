@@ -41,6 +41,7 @@ export const handleCombat = async (prevData, _action, gameState) => {
 
   if (data.hasCaptured) {
     captureTerritory(gameState, prevData, data);
+    return;
   }
 
   setUpNextPhase(gameState, newState);
