@@ -2,6 +2,7 @@ import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { sendCaptureRequest } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
+  addListenerTroopSelector,
   displayTroopSelector,
   getIndexOf,
   getPlayerById,
@@ -68,6 +69,7 @@ const handlePostCapture = async (gameState, defender, troopCount) => {
     // })
     showWinner(gameState.player.name);
   }
+
   setUpNextPhase(gameState, action);
 };
 
@@ -93,14 +95,15 @@ export const captureTerritory = (
   updatePlayerTerritories(defender, defenderTerritoryId, gameState);
   addPlayerIdToTerritory(gameState, defenderTerritoryId);
   showCapturedMsg(gameState, defenderTerritoryId);
-
-  displayTroopSelector(
-    { x, y },
-    (troopCount) => handlePostCapture(gameState, defender, troopCount),
-  );
   setTroopLimit(
     gameState.territories[attackerTerritoryId].troopCount - 1,
     combatResult.attackerDice.length,
+  );
+
+  displayTroopSelector({ x, y });
+
+  addListenerTroopSelector((troopCount) =>
+    handlePostCapture(gameState, defender, troopCount)
   );
 };
 

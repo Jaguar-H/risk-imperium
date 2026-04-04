@@ -99,7 +99,6 @@ export const renderTradeIndicator = (gameState) => {
     return forceTrade(gameState);
   }
   addListenerToCard(gameState, cardArea);
-  console.log(cards, canTradeCards(cardArea));
   if (canTradeCards(cards)) {
     const cardIcon = document.querySelector("#cards");
     cardIcon.classList.add("highlight-card-icon");

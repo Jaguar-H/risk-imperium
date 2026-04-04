@@ -67,7 +67,6 @@ const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
   }
 
   removeCardAreaListener(gameState);
-  console.log("traded");
   if (gameState.state === STATES.REINFORCE) renderTradeIndicator(gameState);
   setUpNextPhase(gameState, action);
   updateCards(cards);

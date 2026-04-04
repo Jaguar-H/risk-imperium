@@ -373,7 +373,6 @@ export class Game {
     this.#territories[defenderTerritoryId].troopCount = attackerTroops;
     this.#territories[attackerTerritoryId].troopCount -= attackerTroops;
     this.#state = this.#stateDetails.hasWon ? STATES.WON : STATES.INVASION;
-
     const updatedTerritories = [
       {
         territoryId: attackerTerritoryId,
@@ -396,7 +395,7 @@ export class Game {
   }
 
   #handleCapture(defenderTerritoryId) {
-    if (this.#territories[defenderTerritoryId].troopCount === 0) {
+    if (this.#territories[defenderTerritoryId].troopCount <= 0) {
       this.#stateDetails.hasCaptured = true;
       this.#state = STATES.CAPTURE;
     } else {
