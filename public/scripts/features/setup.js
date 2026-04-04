@@ -87,7 +87,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
 const createCardElement = (card, i) => {
   const cardElement = document.createElement("div");
   cardElement.dataset.cardType = TERRITORY_CARD[card];
-  cardElement.dataset.values = card;
+  cardElement.textContent = TERRITORY_CARD[card];
   cardElement.classList.add("card");
   cardElement.id = `card-${i}`;
   return cardElement;
@@ -95,8 +95,9 @@ const createCardElement = (card, i) => {
 
 export const updateCards = (
   cards,
-  cardsArea = document.querySelector("#card-area > div"),
+  id = "#card-area",
 ) => {
+  const cardsArea = document.querySelector(`${id} > div`);
   cardsArea.textContent = "";
   const cardElements = cards.map(createCardElement);
   cardsArea.append(...cardElements);

@@ -2,7 +2,6 @@ import { APIs } from "../configs/APIS.js";
 import { USER_ACTIONS } from "../configs/user_action.js";
 import { sendPostRequest } from "../server_calls.js";
 import { addGlow } from "../utilities/highlight.js";
-// import { setUpNextPhase } from "../transition_handlers.js";
 import { showNotification } from "../utilities/notifications.js";
 import { forceTrade } from "./force_trade.js";
 import { addListenerToCard, updateCards } from "./setup.js";
@@ -106,13 +105,14 @@ export const renderTradeIndicator = (gameState) => {
 };
 
 export const removeCardAreaListener = (gameState, id = "#card-area") => {
-  const cardArea = document.querySelector(id);
-  const button = cardArea.querySelector("button");
+  const cardContainer = document.querySelector(`${id}`);
+  const cardArea = cardContainer.querySelector("div");
+  const button = cardContainer.querySelector("button");
   const cardIcon = document.querySelector("#cards");
   cardIcon.classList.remove("highlight-card-icon");
   cardArea.onclick = () => {};
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => card.classList = ["card"]);
+  cards.forEach((card) => card.className = "card");
   button.setAttribute("disabled", true);
 
   gameState.selectedCard = {};
