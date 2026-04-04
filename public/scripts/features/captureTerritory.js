@@ -17,8 +17,6 @@ export const captureTerritory = (
   { defenderTerritoryId },
   combatResult,
 ) => {
-  console.log(combatResult);
-
   combatResult.updatedTerritories.forEach(({ territoryId, troopCount }) => {
     gameState.territories[territoryId].troopCount = troopCount;
   });
@@ -44,7 +42,6 @@ export const captureTerritory = (
     gameState.player.cards = combatResult.newCards;
     updateCards(gameState.player.cards);
     addCardAlert();
-    console.log(gameState);
     delete gameState.opponents[defender.id];
     showNotification(msg, NOTIFICATION_TYPES.WARNING);
   }

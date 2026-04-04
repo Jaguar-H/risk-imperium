@@ -1,8 +1,10 @@
 import { APIs } from "../configs/APIS.js";
 import { USER_ACTIONS } from "../configs/user_action.js";
 import { sendPostRequest } from "../server_calls.js";
+import { addGlow } from "../utilities/highlight.js";
 // import { setUpNextPhase } from "../transition_handlers.js";
 import { showNotification } from "../utilities/notifications.js";
+import { forceTrade } from "./force_trade.js";
 import { addListenerToCard, updateCards } from "./setup.js";
 
 export const addCardAlert = () => {
@@ -32,8 +34,7 @@ export const tradeCard = async (cards) => {
     data: { cards },
   };
   const response = await sendPostRequest(APIs.USER_ACTIONS, reqData);
-
-  return response.data;
+  return response;
 };
 
 const getCombinations = (arr, k = 3) => {
@@ -68,15 +69,19 @@ const isValidCombination = (combination = []) => {
   return allDifferent || allSame;
 };
 
-export const canBeTraded = (selectedCard) => {
+export const canBeTraded = (selectedCard, cardContainer) => {
   const cards = Object.entries(selectedCard);
-  const button = document.querySelector("#card-area button");
+  const button = cardContainer.querySelector("button");
+
   if (cards.length === 3) {
     const isValid = isValidCombination(cards.map(([_, card]) => card));
+
     if (isValid) {
+      addGlow(cardContainer, selectedCard, "glow-correct");
       button.removeAttribute("disabled");
       return;
     }
+    addGlow(cardContainer, selectedCard, "glow-wrong");
   }
 
   button.setAttribute("disabled", true);
@@ -89,23 +94,26 @@ export const canTradeCards = (cards) => {
 
 export const renderTradeIndicator = (gameState) => {
   const cardArea = document.querySelector("#card-area");
-  addListenerToCard(gameState, cardArea);
   const cards = gameState.player.cards;
-
+  if (cards.length > 4) {
+    return forceTrade(gameState);
+  }
+  addListenerToCard(gameState, cardArea);
+  console.log(cards, canTradeCards(cardArea));
   if (canTradeCards(cards)) {
     const cardIcon = document.querySelector("#cards");
     cardIcon.classList.add("highlight-card-icon");
   }
 };
 
-export const removeCardAreaListener = (gameState) => {
-  const cardArea = document.querySelector("#card-area");
-  const button = document.querySelector("#card-area button");
+export const removeCardAreaListener = (gameState, id = "#card-area") => {
+  const cardArea = document.querySelector(id);
+  const button = cardArea.querySelector("button");
   const cardIcon = document.querySelector("#cards");
   cardIcon.classList.remove("highlight-card-icon");
   cardArea.onclick = () => {};
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => card.classList.remove("glow"));
+  cards.forEach((card) => card.classList = ["card"]);
   button.setAttribute("disabled", true);
 
   gameState.selectedCard = {};

@@ -1,3 +1,4 @@
+import { STATES } from "./configs/game_states.js";
 import {
   removeCardAreaListener,
   renderTradeIndicator,
@@ -6,6 +7,7 @@ import {
 import { updateCavalry } from "./features/cavalryUpdate.js";
 import { onMapAction } from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
+import { setUpNextPhase } from "./transition_handlers.js";
 import { setTroopLimit } from "./utilities.js";
 import { showNotification } from "./utilities/notifications.js";
 import { renderRemainingTroopsToDeploy } from "./utilities/render_UI.js";
@@ -47,27 +49,41 @@ export const addListenerToCardIcon = (player) => {
   });
 };
 
-export const addListenerToTrade = (gameState) => {
-  const trade = document.querySelector("#card-area button");
-  const cards = gameState.player.cards;
-  trade.addEventListener("click", async () => {
-    showNotification("Traded the card ");
-    const selectedCards = Object.values(gameState.selectedCards);
-    const selected = [...selectedCards];
-    const { troops, positions } = await tradeCard(selected);
-    updateCavalry(positions);
-    renderRemainingTroopsToDeploy(troops);
-    setTroopLimit(troops);
-    for (const card of selected) {
-      const idx = cards.findIndex((c) => c === card);
-      cards.splice(idx, 1);
-    }
-    removeCardAreaListener(gameState);
-    renderTradeIndicator(gameState);
+const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
+  showNotification("Traded the card ");
+  const selectedCards = Object.values(gameState.selectedCards);
+  const selected = [...selectedCards];
+  const { action, data } = await tradeCard(selected);
+  updateCavalry(data.positions);
+  renderRemainingTroopsToDeploy(data.troops);
+  setTroopLimit(data.troops);
+  for (const card of selected) {
+    const idx = cards.findIndex((c) => c === card);
+    cards.splice(idx, 1);
+  }
 
-    updateCards(cards);
-    gameState.selectedCards = {};
-  });
+  if (cards.length < 5) {
+    closeDialoge();
+  }
+
+  removeCardAreaListener(gameState);
+  console.log("traded");
+  if (gameState.state === STATES.REINFORCE) renderTradeIndicator(gameState);
+  setUpNextPhase(gameState, action);
+  updateCards(cards);
+  gameState.selectedCards = {};
+};
+
+export const addListenerToTrade = (
+  gameState,
+  trade = document.querySelector("#trade"),
+  close = () => {},
+) => {
+  const cards = gameState.player.cards;
+  trade.addEventListener(
+    "click",
+    (_) => tradeSelectedCards(gameState, cards, close),
+  );
 };
 const isValidTroopCount = (value, max) => value > 0 && value <= max;
 

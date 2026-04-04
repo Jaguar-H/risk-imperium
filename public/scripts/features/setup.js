@@ -1,6 +1,8 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { TERRITORY_CARD } from "../configs/territory_card.js";
 import { addListenersToPlayerIcon } from "../listeners.js";
 import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
+import { addGlow } from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";
 import { canBeTraded } from "./cards.js";
 
@@ -47,49 +49,55 @@ export const setup = (gameState) => {
   addListenersToPlayerIcon(players, gameState.continents);
 };
 
-export const addListenerToCard = (gameState, cardArea) => {
+export const addListenerToCard = (gameState, cardContainer) => {
+  const cardArea = cardContainer.querySelector("div");
   cardArea.onclick = (e) => {
     const id = e.target.id;
-    const list = e.target.classList;
+    const cardElement = e.target.closest(".card");
 
-    if (!list.contains("card")) return;
+    if (!cardElement) return;
 
     const cardId = +id.split("-")[1];
-
     const card = cardArea.querySelector(`#${id}`);
     const cards = gameState.player.cards;
     const selectedCards = gameState.selectedCards;
+
     if (selectedCards[id]) {
       delete selectedCards[id];
-      card.classList.remove("glow");
-      canBeTraded(gameState.selectedCards);
+      card.className = "";
+      card.className = "card";
+      addGlow(cardContainer, selectedCards, "glow");
       return;
     }
 
     if (Object.entries(selectedCards).length === 3) {
       showNotification(
-        "deselect to select all cards",
+        "Deselect A Card To Select All Cards",
         NOTIFICATION_TYPES.WARNING,
       );
       return;
     }
 
     gameState.selectedCards[id] = cards[cardId];
-    card.classList.add("glow");
-    canBeTraded(gameState.selectedCards);
+    card.className = "card glow";
+    canBeTraded(gameState.selectedCards, cardContainer);
   };
 };
 
-export const updateCards = (cards) => {
-  const cardsArea = document.querySelector("#card-area > div");
-  cardsArea.textContent = "";
-  const cardElements = cards.map((card, i) => {
-    const cardElement = document.createElement("div");
-    cardElement.textContent = card;
-    cardElement.classList.add("card");
-    cardElement.id = `card-${i}`;
-    return cardElement;
-  });
+const createCardElement = (card, i) => {
+  const cardElement = document.createElement("div");
+  cardElement.dataset.cardType = TERRITORY_CARD[card];
+  cardElement.dataset.values = card;
+  cardElement.classList.add("card");
+  cardElement.id = `card-${i}`;
+  return cardElement;
+};
 
+export const updateCards = (
+  cards,
+  cardsArea = document.querySelector("#card-area > div"),
+) => {
+  cardsArea.textContent = "";
+  const cardElements = cards.map(createCardElement);
   cardsArea.append(...cardElements);
 };

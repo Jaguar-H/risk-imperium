@@ -340,7 +340,6 @@ export class Game {
   }
 
   #getDefenderCards(attacker, defender) {
-    console.log(defender);
     attacker.cards.push(...defender.cards);
   }
 

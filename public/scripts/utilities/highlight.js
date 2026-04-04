@@ -15,3 +15,11 @@ export const removeHighlights = (className) => {
     territory.classList.remove(className);
   });
 };
+
+export const addGlow = (cardContainer, selectedCards, glow) => {
+  for (const card in selectedCards) {
+    const cardElement = cardContainer.querySelector(`#${card}`);
+    cardElement.className = "";
+    cardElement.className = "card " + glow;
+  }
+};

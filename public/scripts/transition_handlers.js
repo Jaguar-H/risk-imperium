@@ -38,6 +38,8 @@ const setupReinforcePhase = async (gameState) => {
   setTroopLimit(data.troopsToReinforce);
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
   highlightTerritories(territories);
+  console.log("in setup reinforce");
+
   renderTradeIndicator(gameState);
 };
 
