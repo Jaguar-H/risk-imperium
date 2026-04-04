@@ -1,37 +1,73 @@
 :root {
   --secondary-font: "MedievalSharp", serif;
-  --primary-font: "Inter";
-  --ui-border: 1px solid var(--color-border-ui);
+  --primary-font: sans-serif;
   --transition-speed: 0.3s;
 
-  --color-bg-main: #f1f5f9;
-  --color-surface: #ffffff;
-  --color-border-ui: #cbd5e1;
+  --color-bg-main: #ede6d6;
+  --color-surface: rgba(255, 252, 245, 0.75);
 
-  --color-map-stroke: #c8d2e0;
-  --color-highlight: #d20e0e;
+  --color-border-ui: rgba(92, 75, 55, 0.25);
+  --ui-border: 1px solid var(--color-border-ui);
 
-  --color-warning: #faad14;
-  --color-info: #1890ff;
-  --color-fail: #d20e0e;
-  --color-success: #52c41a;
-  --color-highlight-icon: rgba(78, 253, 189, 0.864);
+  --text-primary: #3e3326;
+  --text-secondary: #6f5e49;
 
-  --text-primary: #1e293b;
-  --text-secondary: #060606;
-  --accent-gold: #fbbf24;
+  --glass-bg: rgba(255, 252, 245, 0.55);
+  --glass-bg-strong: rgba(255, 252, 245, 0.75);
+  --glass-border: rgba(92, 75, 55, 0.25);
+  --glass-blur: blur(10px);
 
-  --player-1: hsl(0, 0%, 90%);
-  --player-2: hsl(0, 0%, 80%);
-  --player-3: hsl(0, 0%, 70%);
-  --player-4: hsl(0, 0%, 60%);
-  --player-5: hsl(0, 0%, 50%);
-  --player-6: hsl(0, 0%, 40%);
+  --map-background: linear-gradient(to bottom, #f4efe3, #e8decc);
+  --color-map-stroke: #5c4b37;
 
-  --cont-north-america: hsl(32, 95%, 44%);
-  --cont-south-america: hsl(9, 83%, 34%);
-  --cont-europe: hsl(221, 83%, 53%);
-  --cont-africa: hsl(23, 83%, 31%);
-  --cont-asia: hsl(161, 94%, 30%);
-  --cont-australia: rgb(124, 58, 237);
+  --color-selection: #6c7a89;
+  --color-selection-glow: rgba(108, 122, 137, 0.25);
+  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
+
+  --color-target: #a05a4a;
+  --target-filter: opacity(0.85) saturate(1.1);
+
+  --color-highlight: #c2a96a;
+  --color-highlight-icon: rgba(194, 169, 106, 0.7);
+
+  --color-success: #8f9f7a;
+  --color-warning: #c2a96a;
+  --color-info: #6c7a89;
+  --color-fail: #a05a4a;
+
+  --player-1: #b07a6a;
+  --player-2: #6f8fa6;
+  --player-3: #c1a45a;
+  --player-4: #7f9c8b;
+  --player-5: #8c6f9c;
+  --player-6: #a4876a;
+
+  --cont-north-america: #e3d8c6;
+  --cont-north-america-light: #f1eadf;
+  --cont-north-america-dark: #b9a78f;
+
+  --cont-south-america: #e6d3c2;
+  --cont-south-america-light: #f2e4d8;
+  --cont-south-america-dark: #bfa08a;
+
+  --cont-europe: #d8dbe2;
+  --cont-europe-light: #e9ecf1;
+  --cont-europe-dark: #a8adb8;
+
+  --cont-africa: #e7d6b8;
+  --cont-africa-light: #f3e7d3;
+  --cont-africa-dark: #c2a983;
+
+  --cont-asia: #dbe4cf;
+  --cont-asia-light: #edf3e5;
+  --cont-asia-dark: #aebc9c;
+
+  --cont-australia: #e4d6dc;
+  --cont-australia-light: #f1e6eb;
+  --cont-australia-dark: #bba3ad;
+
+  --shadow-soft: 0 3px 10px rgba(60, 50, 35, 0.25);
+  --shadow-strong: 0 6px 18px rgba(60, 50, 35, 0.35);
+
+  --texture-parchment: url("path/to/aged-paper.jpg");
 }

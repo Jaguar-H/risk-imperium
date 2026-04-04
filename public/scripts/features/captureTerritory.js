@@ -1,4 +1,5 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { STYLES } from "../configs/styles.js";
 import {
   getIndexOf,
   getPlayerById,
@@ -41,11 +42,11 @@ const handleElimination = (defender, gameState, combatResult) => {
 
 const showWinner = (player) => {
   const glassBox = document.querySelector("#glass-box");
-  glassBox.classList.remove("d-none");
+  glassBox.classList.remove(STYLES.DISPLAY_NONE);
   const actionMenu = document.querySelector(".action-menu");
-  actionMenu.classList.add("remove-events");
+  actionMenu.classList.add(STYLES.REMOVE_EVENTS);
   const playerElement = document.querySelector("#winner-name");
-  playerElement.textContent = `${player},the greate`;
+  playerElement.textContent = `${player},the great`;
 };
 
 export const captureTerritory = (

@@ -1,8 +1,8 @@
 import { APIs } from "../configs/APIS.js";
+import { STYLES } from "../configs/styles.js";
 import { USER_ACTIONS } from "../configs/user_action.js";
 import { sendPostRequest } from "../server_calls.js";
 import { addGlow } from "../utilities/highlight.js";
-// import { setUpNextPhase } from "../transition_handlers.js";
 import { showNotification } from "../utilities/notifications.js";
 import { forceTrade } from "./force_trade.js";
 import { addListenerToCard, updateCards } from "./setup.js";
@@ -10,7 +10,7 @@ import { addListenerToCard, updateCards } from "./setup.js";
 export const addCardAlert = () => {
   const cardElement = document.querySelector("#cards");
   const circle = cardElement.querySelector("circle");
-  circle.classList.add("card-alert");
+  circle.classList.add(STYLES.CARD_ALERT);
 };
 
 export const getCard = async (gameState) => {
@@ -23,7 +23,7 @@ export const getCard = async (gameState) => {
     addCardAlert();
 
     updateCards(player.cards);
-    showNotification(`${player.name} recieved a card`);
+    showNotification(`${player.name} received a card`);
   }
   return action;
 };
@@ -99,10 +99,9 @@ export const renderTradeIndicator = (gameState) => {
     return forceTrade(gameState);
   }
   addListenerToCard(gameState, cardArea);
-  console.log(cards, canTradeCards(cardArea));
   if (canTradeCards(cards)) {
     const cardIcon = document.querySelector("#cards");
-    cardIcon.classList.add("highlight-card-icon");
+    cardIcon.classList.add(STYLES.HIGHLIGHT_CARD_ICON);
   }
 };
 
@@ -110,10 +109,11 @@ export const removeCardAreaListener = (gameState, id = "#card-area") => {
   const cardArea = document.querySelector(id);
   const button = cardArea.querySelector("button");
   const cardIcon = document.querySelector("#cards");
-  cardIcon.classList.remove("highlight-card-icon");
+  cardIcon.classList.remove(STYLES.HIGHLIGHT_CARD_ICON);
   cardArea.onclick = () => {};
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => card.classList = ["card"]);
+  cards.forEach((card) => card.classList = [STYLES.CARD]);
+
   button.setAttribute("disabled", true);
 
   gameState.selectedCard = {};
