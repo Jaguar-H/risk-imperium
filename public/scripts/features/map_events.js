@@ -1,4 +1,4 @@
-import { handleDefend } from "./defend.js";
+// import { handleDefend } from "./defend.js";
 import { initialReinforcement, reinforce } from "./reinforce.js";
 import { handleInvasion } from "./invasion.js";
 import { STATES } from "../configs/game_states.js";
@@ -8,7 +8,7 @@ const GAME_STATES = {
   [STATES.INITIAL_REINFORCEMENT]: initialReinforcement,
   [STATES.REINFORCE]: reinforce,
   [STATES.INVASION]: handleInvasion,
-  [STATES.DEFEND]: handleDefend,
+  // [STATES.DEFEND]: handleDefend,
   [STATES.FORTIFICATION]: handleFortified,
 };
 

@@ -416,6 +416,8 @@ export class Game {
       attackerDice,
     );
 
+    //if cannot attack any more change the state
+
     return {
       action: this.#state,
       data: {
