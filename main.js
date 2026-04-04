@@ -6,12 +6,14 @@ import { ContinentsHandler } from "./src/models/continents_handler.js";
 import { mockPlayers } from "./src/mock_data.js";
 import { CONFIG } from "./src/config.js";
 import { FortificationHandler } from "./src/models/fortification_handler.js";
+import { Cavalry } from "./src/models/cavalry.js";
 
 const main = () => {
   const handlers = {
     fortificationHandler: new FortificationHandler(CONFIG.TERRITORIES),
     continentsHandler: new ContinentsHandler(),
     cardsHandler: new Cards(),
+    cavalry: new Cavalry(),
   };
 
   const utilities = {

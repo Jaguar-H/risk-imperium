@@ -77,11 +77,10 @@ export const displayTroopSelector = (event, handleSelection) => {
 
   form.onsubmit = async (e) => {
     e.preventDefault();
+    dialog.close();
 
     const troopCount = Number(input.value);
     await handleSelection(troopCount);
-
-    dialog.close();
   };
 };
 

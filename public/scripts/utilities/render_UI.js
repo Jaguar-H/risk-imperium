@@ -1,3 +1,4 @@
+import { updateCavalry } from "../features/cavalryUpdate.js";
 import { getAllPlayersDetail } from "../utilities.js";
 
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
@@ -7,6 +8,7 @@ export const renderUpdatedTroopCount = (territory, newTroopCount) => {
 
 export const renderRemainingTroopsToDeploy = (remainingTroops) => {
   const display = document.querySelector("#remaining-troops-to-deploy");
+
   display.textContent = remainingTroops
     ? `Remaining Troops To Deploy: ${remainingTroops}`
     : "";
@@ -24,7 +26,8 @@ export const renderCurrentPlayerName = (gameState) => {
   renderCurrentUserTurn(players, gameState.currentPlayer);
 };
 
-export const renderGameState = (state) => {
+export const renderGameState = (gameState) => {
+  updateCavalry(gameState.cavalryPositions);
   const stateNameElement = document.querySelector("#game-state-name");
-  stateNameElement.textContent = `Phase: ${state}`;
+  stateNameElement.textContent = `Phase: ${gameState.state}`;
 };

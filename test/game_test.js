@@ -17,6 +17,9 @@ import combatResolve from "../data/states/resolve_combat.json" with {
 import reinforceState from "../data/states/reinforce.json" with {
   type: "json",
 };
+import trade from "../data/states/trade.json" with {
+  type: "json",
+};
 import initialReinforcementState from "../data/states/init-reinforcement.json" with {
   type: "json",
 };
@@ -29,6 +32,7 @@ import { FortificationHandler } from "../src/models/fortification_handler.js";
 
 import { Cards } from "../src/models/cards.js";
 import { mockPlayers } from "../src/mock_data.js";
+import { Cavalry } from "../src/models/cavalry.js";
 
 describe("Game", () => {
   let game;
@@ -38,11 +42,12 @@ describe("Game", () => {
     const territories = CONFIG.TERRITORIES;
     continentsHandler = new ContinentsHandler();
     fortificationHandler = new FortificationHandler(territories);
+    const cavalry = new Cavalry();
 
     game = new Game(
       mockPlayers(),
       territories,
-      { continentsHandler, fortificationHandler },
+      { continentsHandler, fortificationHandler, cavalry },
       { random: () => 0.3 },
       "HERWE",
     );
@@ -198,12 +203,14 @@ describe("Game", () => {
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
       const continentsHandler = new ContinentsHandler();
+      const cavalry = new Cavalry();
       const game = new Game(
         mockPlayers(),
         CONFIG.TERRITORIES,
         {
           continentsHandler,
           fortificationHandler,
+          cavalry,
         },
         { random: () => 0.3 },
       );
@@ -582,6 +589,29 @@ describe("Game", () => {
       const typeOfCard = typeof res.data.card;
       assertEquals(res.action, STATES.REINFORCE);
       assertEquals(typeOfCard, "string");
+    });
+  });
+
+  describe("trade card tests", () => {
+    let game;
+    beforeEach(() => {
+      const cavalry = new Cavalry();
+      const cards = new Cards();
+      game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        cardsHandler: cards,
+        cavalry,
+      });
+      game.loadGameState(trade);
+    });
+    it("should trade the cards", () => {
+      const cards = ["2", "2", "2"];
+      const { troops, positions } = game.tradeCard(cards);
+      assertEquals(troops, 7);
+      assertEquals(positions, [4, 6, 8]);
+    });
+    it("should throw", () => {
+      const cards = ["2", "2", "1"];
+      assertThrows(() => game.tradeCard(cards));
     });
   });
 });

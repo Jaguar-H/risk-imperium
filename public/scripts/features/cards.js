@@ -26,6 +26,16 @@ export const getCard = async (gameState) => {
   return action;
 };
 
+export const tradeCard = async (cards) => {
+  const reqData = {
+    userActions: USER_ACTIONS.TRADE_CARD,
+    data: { cards },
+  };
+  const response = await sendPostRequest(APIs.USER_ACTIONS, reqData);
+
+  return response.data;
+};
+
 const getCombinations = (arr, k = 3) => {
   const result = [];
   function backtrack(start, combo) {

@@ -11,6 +11,7 @@ export class Game {
   #stateDetails;
   #cards;
   #fortificationHandler;
+  #cavalry;
 
   constructor(
     players = mockPlayers(),
@@ -26,6 +27,7 @@ export class Game {
     this.#continentsHandler = handlers.continentsHandler;
     this.#state = STATES.SETUP;
     this.#fortificationHandler = handlers.fortificationHandler;
+    this.#cavalry = handlers.cavalry;
 
     this.#stateDetails = {
       initialTroopLimit: 2,
@@ -79,6 +81,7 @@ export class Game {
       opponents: opponentsDetails,
       cards: currentPlayerDetails.cards,
       currentPlayer: this.#activePlayerId,
+      cavalryPositions: this.#cavalry.getPositions(),
       state: this.#state,
     };
   }
@@ -90,11 +93,6 @@ export class Game {
   #initTerritory() {
     this.#players.forEach((player) => {
       player["territories"] = [];
-    });
-  }
-  #initCards() {
-    this.#players.forEach((player) => {
-      player["cards"] = [];
     });
   }
 
@@ -187,10 +185,10 @@ export class Game {
   }
 
   #getOwnedTerritories() {
-    return this.#getActivePlayer().territories;
+    return this.#activePlayer.territories;
   }
 
-  #getActivePlayer() {
+  get #activePlayer() {
     return this.#players.find((player) => player.id === this.#activePlayerId);
   }
 
@@ -347,7 +345,7 @@ export class Game {
 
   #eliminatePlayer(defender) {
     const index = this.#getIndexOf(this.#players, defender);
-    const attacker = this.#getActivePlayer();
+    const attacker = this.#activePlayer;
     this.#getDefenderCards(attacker, defender);
     this.#players.splice(index, 1);
     this.#stateDetails.hasEliminated = true;
@@ -428,7 +426,7 @@ export class Game {
         hasCaptured: this.#stateDetails.hasCaptured,
         hasEliminated: this.#stateDetails.hasEliminated,
         hasWon: this.#stateDetails.hasWon,
-        newCards: this.#getActivePlayer().cards,
+        newCards: this.#activePlayer.cards,
       },
     };
   }
@@ -438,7 +436,7 @@ export class Game {
     if (this.#stateDetails.hasCaptured) {
       card = this.#cards.drawCard();
       this.#stateDetails.hasCaptured = false;
-      const activePlayer = this.#getActivePlayer();
+      const activePlayer = this.#activePlayer;
       activePlayer.cards.push(card);
     }
     this.#state = STATES.REINFORCE;
@@ -450,6 +448,36 @@ export class Game {
         card,
       },
     };
+  }
+  #isPlayerCards(cards) {
+    const currentPlayer = this.#activePlayer;
+    const playerCards = currentPlayer.cards;
+    return cards.every((card) => playerCards.includes(card));
+  }
+
+  removePlayerCards(cards) {
+    const currentPlayer = this.#activePlayer;
+    const playerCards = currentPlayer.cards;
+    for (const card in cards) {
+      const idx = playerCards.findIndex((c) => c === card);
+      playerCards.splice(idx, 1);
+    }
+  }
+
+  tradeCard(cards) {
+    const isValidCombo = this.#cards.isValidCombination(cards);
+    const isPlayerCards = this.#isPlayerCards(cards);
+    if (isValidCombo && isPlayerCards) {
+      const troops = this.#cavalry.getCurrentCount();
+      this.#stateDetails.remainingTroopsToDeploy += troops;
+      const remainingTroopsToDeploy =
+        this.#stateDetails.remainingTroopsToDeploy;
+      this.removePlayerCards(cards);
+      this.#cavalry.moveCavalry();
+      const positions = this.#cavalry.getPositions();
+      return { troops: remainingTroopsToDeploy, positions };
+    }
+    throw new Error("INVALID CARDS COMBO");
   }
 
   isCurrentUserTerritory(territoryId) {
