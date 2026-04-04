@@ -372,7 +372,9 @@ export class Game {
     this.#updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId);
     this.#territories[defenderTerritoryId].troopCount = attackerTroops;
     this.#territories[attackerTerritoryId].troopCount -= attackerTroops;
-    return [
+    this.#state = this.#stateDetails.hasWon ? STATES.WON : STATES.INVASION;
+
+    const updatedTerritories = [
       {
         territoryId: attackerTerritoryId,
         troopCount: this.#territories[attackerTerritoryId].troopCount,
@@ -382,20 +384,24 @@ export class Game {
         troopCount: this.#territories[defenderTerritoryId].troopCount,
       },
     ];
+    return {
+      action: this.#state,
+      data: {
+        updatedTerritories,
+        hasEliminated: this.#stateDetails.hasEliminated,
+        hasWon: this.#stateDetails.hasWon,
+        newCards: this.#activePlayer.cards,
+      },
+    };
   }
 
-  #handleCapture(defenderTerritoryId, updatedTerritories, attackerDice) {
+  #handleCapture(defenderTerritoryId) {
     if (this.#territories[defenderTerritoryId].troopCount === 0) {
       this.#stateDetails.hasCaptured = true;
-      updatedTerritories = this.captureTerritory(attackerDice.length);
-    }
-    if (this.#stateDetails.hasWon) {
-      this.#state = STATES.WON;
+      this.#state = STATES.CAPTURE;
     } else {
       this.#state = STATES.INVASION;
     }
-
-    return updatedTerritories;
   }
 
   resolveCombat() {
@@ -404,17 +410,13 @@ export class Game {
     const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
     const notifyMsg = this.#constructCombatMsg(combatResult);
-    let updatedTerritories = this.#updateTroopCount(
+    const updatedTerritories = this.#updateTroopCount(
       attackerTerritoryId,
       defenderTerritoryId,
       combatResult,
     );
 
-    updatedTerritories = this.#handleCapture(
-      defenderTerritoryId,
-      updatedTerritories,
-      attackerDice,
-    );
+    this.#handleCapture(defenderTerritoryId, attackerDice);
 
     //if cannot attack any more change the state
 
@@ -426,9 +428,6 @@ export class Game {
         notifyMsg,
         updatedTerritories,
         hasCaptured: this.#stateDetails.hasCaptured,
-        hasEliminated: this.#stateDetails.hasEliminated,
-        hasWon: this.#stateDetails.hasWon,
-        newCards: this.#activePlayer.cards,
       },
     };
   }
