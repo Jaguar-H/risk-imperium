@@ -121,7 +121,8 @@ const getOverlay = () => {
   if (!el) {
     el = document.createElement("div");
     el.id = "dice-overlay";
-    document.body.appendChild(el);
+    const controlPanel = document.querySelector("#controls-panel");
+    controlPanel.append(el);
   }
   return el;
 };
