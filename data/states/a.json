@@ -17,13 +17,13 @@
       "name": "Greenland",
       "neighbours": [2, 5, 6, 14],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 3
     },
     "4": {
       "name": "Alberta",
       "neighbours": [1, 2, 5, 7],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 1
     },
     "5": {
       "name": "Ontario",
@@ -35,25 +35,25 @@
       "name": "Quebec",
       "neighbours": [3, 5, 8],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 2
     },
     "7": {
       "name": "Western United States",
       "neighbours": [4, 5, 8, 9],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1
     },
     "8": {
       "name": "Eastern United States",
       "neighbours": [5, 6, 7, 9],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 4
     },
     "9": {
       "name": "Central America",
       "neighbours": [7, 8, 10],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 3
     },
     "10": {
       "name": "Venezuela",
@@ -65,73 +65,73 @@
       "name": "Peru",
       "neighbours": [10, 12, 13],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 3
     },
     "12": {
       "name": "Brazil",
       "neighbours": [10, 11, 13, 21],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 6
     },
     "13": {
       "name": "Argentina",
       "neighbours": [11, 12],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 5
     },
     "14": {
       "name": "Iceland",
       "neighbours": [3, 15, 17],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 5
     },
     "15": {
       "name": "Scandinavia",
       "neighbours": [14, 16, 17, 18],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 4
     },
     "16": {
       "name": "Ukraine",
       "neighbours": [15, 18, 20, 23, 28, 35],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1
     },
     "17": {
       "name": "Great Britain",
       "neighbours": [14, 15, 18, 19],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 5
     },
     "18": {
       "name": "Northern Europe",
       "neighbours": [15, 16, 17, 19, 20],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 6
     },
     "19": {
       "name": "Western Europe",
       "neighbours": [17, 18, 20, 21],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 1
     },
     "20": {
       "name": "Southern Europe",
       "neighbours": [16, 18, 19, 21, 22, 23],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 4
     },
     "21": {
       "name": "North Africa",
       "neighbours": [12, 19, 20, 22, 24, 25],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 5
     },
     "22": {
       "name": "Egypt",
       "neighbours": [20, 21, 23, 24],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 6
     },
     "23": {
       "name": "Middle East",
@@ -143,31 +143,31 @@
       "name": "East Africa",
       "neighbours": [21, 22, 23, 25, 26, 27],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1
     },
     "25": {
       "name": "Congo",
       "neighbours": [21, 24, 26],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 6
     },
     "26": {
       "name": "South Africa",
       "neighbours": [24, 25, 27],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 6
     },
     "27": {
       "name": "Madagascar",
       "neighbours": [26, 24],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1
     },
     "28": {
       "name": "Ural",
       "neighbours": [16, 29, 37, 35, 36],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 5
     },
     "29": {
       "name": "Siberia",
@@ -179,61 +179,61 @@
       "name": "Yakutsk",
       "neighbours": [29, 31, 32],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1
     },
     "31": {
       "name": "Irkutsk",
       "neighbours": [29, 30, 32, 33],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 4
     },
     "32": {
       "name": "Kamchatka",
       "neighbours": [1, 30, 31, 33, 34],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 3
     },
     "33": {
       "name": "Mongolia",
       "neighbours": [29, 31, 32, 34, 36],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 4
     },
     "34": {
       "name": "Japan",
       "neighbours": [32, 33],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 2
     },
     "35": {
       "name": "Afghanistan",
       "neighbours": [16, 23, 28, 36, 37],
-      "troopCount": 17,
-      "ownerId": 1
+      "troopCount": 1,
+      "ownerId": 5
     },
     "36": {
       "name": "China",
       "neighbours": [28, 29, 35, 33, 37, 38],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 5
     },
     "37": {
       "name": "India",
       "neighbours": [35, 36, 38, 23],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 3
     },
     "38": {
       "name": "Siam",
       "neighbours": [36, 37, 39],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 2
     },
     "39": {
       "name": "Indonesia",
       "neighbours": [38, 40, 41],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 3
     },
     "40": {
       "name": "New Guinea",
@@ -245,7 +245,7 @@
       "name": "Western Australia",
       "neighbours": [39, 40, 42],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 4
     },
     "42": {
       "name": "Eastern Australia",
@@ -255,12 +255,12 @@
     }
   },
   "players": [
-    { "id": 1, "name": "Jon", "cards": [] },
-    { "id": 2, "name": "Rob", "cards": [] },
-    { "id": 3, "name": "Sansa", "cards": [] },
-    { "id": 4, "name": "Arya", "cards": [] },
-    { "id": 5, "name": "Rickon", "cards": [] },
-    { "id": 6, "name": "Bran", "cards": [1, 2, 3] }
+    { "id": 1, "name": "Jon", "cards": [], "territories": [] },
+    { "id": 2, "name": "Rob", "cards": [], "territories": [] },
+    { "id": 3, "name": "Sansa", "cards": [], "territories": [] },
+    { "id": 4, "name": "Arya", "cards": [], "territories": [] },
+    { "id": 5, "name": "Rickon", "cards": [], "territories": [] },
+    { "id": 6, "name": "Bran", "cards": [], "territories": [] }
   ],
   "continents": {
     "1": {
@@ -290,6 +290,16 @@
     },
     "6": { "name": "Australia", "territories": [39, 40, 41, 42], "armies": 2 }
   },
-  "state": "INVASION",
-  "cavalry": 0
+  "state": "INITIAL_REINFORCEMENT",
+  "stateDetails": {
+    "initialTroopLimit": 2,
+    "remainingTroopsToDeploy": 13,
+    "attackerTerritoryId": "21",
+    "defenderTerritoryId": "22",
+    "attackerTroops": 3,
+    "defenderTroops": 1,
+    "hasCaptured": false,
+    "hasEliminated": false,
+    "hasWon": false
+  }
 }

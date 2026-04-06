@@ -1,6 +1,6 @@
 import { STATES } from "../config.js";
 import { tradeCardHandler } from "./cardHandler.js";
-import { fortificationHandler } from "./fortification_handler.js";
+import { fortificationHandler } from "../models/fortification_handler.js";
 
 const USER_ACTIONS = {
   REINFORCE: (game, data) => game.reinforce(data),
@@ -36,7 +36,7 @@ const USER_ACTIONS = {
 
   FORTIFICATION: fortificationHandler,
   TRADE_CARD: tradeCardHandler,
-  CAPTURE: (game, data) => game.captureTerritory(data),
+  CAPTURE: (game, data) => game.moveIn(data),
 };
 
 export const handleUserActions = async (context) => {
@@ -44,12 +44,13 @@ export const handleUserActions = async (context) => {
     const game = context.get("game");
     const { userActions, data } = await context.req.json();
     const actionToPerform = USER_ACTIONS[userActions];
+    console.log(userActions);
 
     const result = actionToPerform(game, data);
 
     return context.json(result);
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return context.json({ msg: e.message }, 500);
   }
 };

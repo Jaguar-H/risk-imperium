@@ -36,7 +36,6 @@ const handleFortification = async (_event, gameState, fromId, id, count) => {
     to: id,
     count,
   });
-
   updateTroopsInTerritories(gameState, updatedTerritories);
 
   delete gameState.fortifyFrom;

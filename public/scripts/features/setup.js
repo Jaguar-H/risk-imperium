@@ -95,8 +95,9 @@ const createCardElement = (card, i) => {
 
 export const updateCards = (
   cards,
-  cardsArea = document.querySelector("#card-area > div"),
+  id = "#card-area",
 ) => {
+  const cardsArea = document.querySelector(`${id} > div`);
   cardsArea.textContent = "";
   const cardElements = cards.map(createCardElement);
   cardsArea.append(...cardElements);

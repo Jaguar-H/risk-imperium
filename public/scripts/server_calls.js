@@ -1,4 +1,5 @@
 import { APIs } from "./configs/APIS.js";
+import { STATES } from "./configs/game_states.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 export const getSetup = async () => {
@@ -80,4 +81,16 @@ export const sendCaptureRequest = async (troopsToMove) => {
     data: troopsToMove,
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const getNewUpdates = async () => {
+  const res = await fetch("/get-data");
+  if (!res.ok) {
+    return { action: STATES.WAITING };
+  }
+  if (res.status === 204) {
+    return getNewUpdate();
+  }
+
+  return res.json();
 };

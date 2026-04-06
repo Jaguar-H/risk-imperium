@@ -1,5 +1,6 @@
 import { APIs } from "./configs/APIS.js";
 import {
+  getNewUpdates,
   sendPostRequest,
   skipFortificationRequest,
   skipInvasionRequest,
@@ -115,6 +116,15 @@ const setupDefendPhase = (gameState) => {
   handleDefense(gameState);
 };
 
+const handleWaiting = async (gameState) => {
+  let newState = gameState.state;
+  while (newState === STATES.WAITING) {
+    const { action } = await getNewUpdates();
+    newState = action;
+  }
+  setUpNextPhase(gameState, newState);
+};
+
 export const SETUP_TRANSITION = {
   [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
   [STATES.REINFORCE]: setupReinforcePhase,
@@ -122,13 +132,13 @@ export const SETUP_TRANSITION = {
   [STATES.DEFEND]: setupDefendPhase,
   [STATES.FORTIFICATION]: setupFortification,
   [STATES.GET_CARD]: handleGetCard,
+  [STATES.WAITING]: handleWaiting,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {
   if (gameState.state === nextState) {
     return;
   }
-
   gameState.state = nextState;
   renderGameState(gameState);
 

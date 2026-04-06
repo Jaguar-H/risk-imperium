@@ -1,29 +1,34 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { FortificationHandler } from "../src/models/fortification_handler.js";
+import { FortificationController } from "../src/handlers/fortification_controller.js";
 
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
 import { assertEquals } from "@std/assert/equals";
 import { assertThrows } from "@std/assert/throws";
+import { TerritoriesHandler } from "../src/models/territoryHandler.js";
 
 describe("Fortification handler", () => {
   let fortificationHandler;
+  const territoryHandler = new TerritoriesHandler(fortification.territories);
   const player = fortification.players.find(({ id }) =>
     fortification.activePlayerId === id
   );
+  const playerTerritory = territoryHandler.getTerritoriesOf(player.id);
 
   beforeEach(() => {
-    fortificationHandler = new FortificationHandler(fortification.territories);
+    fortificationHandler = new FortificationController(
+      fortification.territories,
+    );
   });
 
   it("Should reinforce when player can reinforece from one place to another", () => {
-    const expectedData = [22, 16];
+    const expectedData = [10, 26];
     const actualData = fortificationHandler.moveTroops(
-      22,
-      16,
+      10,
+      26,
       9,
-      player.territories,
+      playerTerritory,
     );
     assertEquals(actualData, expectedData);
   });

@@ -58,9 +58,9 @@ const getCombinations = (arr, k = 3) => {
 const isValidCombination = (combination = []) => {
   const set = new Set();
   combination.sort((a, b) => a - b);
-  const allSame = combination.every((x) => {
-    return combination[0] === x || x === "4";
-  });
+
+  const allSame = combination.every((x) => combination[0] === x || x === "4");
+
   combination.forEach((x) => {
     set.add(x);
   });

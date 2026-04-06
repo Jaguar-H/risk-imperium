@@ -31,7 +31,6 @@ const showCapturedMsg = (gameState, defenderTerritoryId) => {
   const msg = `${gameState.player.name} captured ${
     gameState.territories[defenderTerritoryId].name
   }`;
-
   showNotification(msg);
 };
 

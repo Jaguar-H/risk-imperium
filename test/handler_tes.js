@@ -5,27 +5,44 @@ import { Game } from "../src/game.js";
 import { handleUserActions } from "../src/handlers/user_actions.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { CONFIG, STATES } from "../src/config.js";
-import { fortificationHandler } from "../src/handlers/fortification_handler.js";
+import { fortificationHandler } from "../src/models/fortification_handler.js";
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
 import { mockPlayers } from "../src/mock_data.js";
-import { FortificationHandler } from "../src/models/fortification_handler.js";
+import { FortificationController } from "../src/handlers/fortification_controller.js";
 
 describe("Api Handler", () => {
   let game;
   beforeEach(() => {
-    const continentsHandler = new ContinentsHandler();
-    game = new Game(
-      mockPlayers(),
-      CONFIG.TERRITORIES,
-      { continentsHandler },
-      {
-        random: () => 0.3,
-      },
-    );
+    const handlers = {
+      fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
+      continentsHandler: new ContinentsHandler(),
+      cardsHandler: new Cards(),
+      cavalry: new Cavalry(),
+      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+    };
+
+    const utilities = { random: Math.random };
+
+    const controllers = {
+      initialReinforcementController: new InitialReinforcementController(
+        1,
+        handlers.territoriesHandler,
+      ),
+      reinforcementController: new ReinforcementController(
+        handlers.territoriesHandler,
+        handlers.continentsHandler,
+      ),
+      invasionController: new InvasionController(
+        handlers.territoriesHandler,
+        utilities.random,
+      ),
+    };
+
+    game = new Game(mockPlayers(), handlers, controllers, utilities);
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -177,7 +194,7 @@ describe("Api Handler", () => {
     });
 
     it("shouldn't change game state to the reinforcement when not in fortification state", async () => {
-      let state = "WAITING";
+      let state = STATES.SETUP;
       const game = {
         skipFortification: () => {
           state = "REINFORCE";
@@ -199,7 +216,7 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
       const data = await handleUserActions(context);
-      assertEquals(data.action, STATES.WAITING);
+      assertEquals(data.action, STATES.SETUP);
     });
   });
 
@@ -233,7 +250,7 @@ describe("Api Handler", () => {
     });
 
     it("shouldn't change game state to the reinforcement when not in invasion state", async () => {
-      let state = STATES.WAITING;
+      let state = STATES.SETUP;
       const game = {
         skipInvasion: () => {
           state = STATES.GET_CARD;
@@ -256,7 +273,7 @@ describe("Api Handler", () => {
       };
 
       const data = await handleUserActions(context);
-      assertEquals(data.action, STATES.WAITING);
+      assertEquals(data.action, STATES.SETUP);
     });
   });
 
@@ -275,7 +292,9 @@ describe("Api Handler", () => {
 
       const savedState = fortification;
       const handler = {
-        fortificationHandler: new FortificationHandler(savedState.territories),
+        fortificationHandler: new FortificationController(
+          savedState.territories,
+        ),
       };
       game.loadGameState(savedState, handler);
 

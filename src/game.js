@@ -1,45 +1,99 @@
-import { CONFIG, STATES } from "./config.js";
+import { STATES } from "./config.js";
+
 import { mockPlayers } from "./mock_data.js";
 
 export class Game {
   #activePlayerId;
+  #activePlayerIndex;
   #territories;
   #players;
   #continentsHandler;
   #state;
   #randomFunction;
-  #stateDetails;
   #cards;
   #fortificationHandler;
   #cavalry;
+  #territoriesHandler;
+  #initialReinforcementController;
+  #reinforcementController;
+  #invasionController;
+  #hasCaptured;
 
   constructor(
     players = mockPlayers(),
-    territories = CONFIG.TERRITORIES,
     handlers = {},
+    controllers = {},
     utilities = {},
   ) {
     this.#randomFunction = utilities.random;
     this.#activePlayerId = players[0].id;
-    this.#territories = territories;
+    this.#activePlayerIndex = players[0].id;
+
+    this.#territoriesHandler = handlers.territoriesHandler;
     this.#players = players;
     this.#cards = handlers.cardsHandler;
     this.#continentsHandler = handlers.continentsHandler;
-    this.#state = STATES.SETUP;
     this.#fortificationHandler = handlers.fortificationHandler;
     this.#cavalry = handlers.cavalry;
+    this.#state = STATES.SETUP;
+    this.#hasCaptured = false;
+    this.#initialReinforcementController =
+      controllers.initialReinforcementController;
+    this.#reinforcementController = controllers.reinforcementController;
+    this.#invasionController = controllers.invasionController;
+  }
 
-    this.#stateDetails = {
-      initialTroopLimit: 2,
-      remainingTroopsToDeploy: 0,
-      attackerTerritoryId: "21",
-      defenderTerritoryId: "22",
-      attackerTroops: 3,
-      defenderTroops: 1,
-      hasCaptured: false,
-      hasEliminated: false,
-      hasWon: false,
-    };
+  get #activePlayer() {
+    return this.#players.find((player) => player.id === this.#activePlayerId);
+  }
+
+  #changeTurn() {
+    this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
+      this.#players.length;
+    return this.#activePlayerIndex;
+  }
+
+  #updateState(state) {
+    if (state in STATES) {
+      this.#state = state;
+    }
+    return state;
+  }
+
+  #setReinforcements() {
+    this.#reinforcementController.setToReinforce(this.#activePlayerId);
+  }
+
+  #getPlayerByTerritoryId(territoryId) {
+    const playerId = this.#territoriesHandler.getOwnerOf(territoryId);
+    return this.#players.find((player) => playerId === player.id);
+  }
+
+  #getDefenderCards(attacker, defender) {
+    attacker.cards.push(...defender.cards);
+  }
+
+  #eliminatePlayer(defender) {
+    const index = this.#players.findIndex((player) => player === defender);
+    const attacker = this.#activePlayer;
+    this.#getDefenderCards(attacker, defender);
+    this.#players.splice(index, 1);
+  }
+
+  #isEliminated(playerId) {
+    const territoryCount =
+      this.#territoriesHandler.getTerritoriesOf(playerId).length;
+    return territoryCount <= 0;
+  }
+
+  #isPlayerCards(cards) {
+    const currentPlayer = this.#activePlayer;
+    const playerCards = currentPlayer.cards;
+    return cards.every((card) => playerCards.includes(card));
+  }
+
+  #hasPlayerWon() {
+    return this.#territoriesHandler.isConquered;
   }
 
   getGameState() {
@@ -54,370 +108,187 @@ export class Game {
     this.#updateState(STATES.FORTIFICATION);
   }
 
-  #updateState(state) {
-    if (state in STATES) {
-      this.#state = state;
-    }
-    return state;
-  }
-
   getSetup(playerId) {
-    const opponents = this.#players
-      .filter(({ id }) => id !== playerId)
-      .map(({ id, name, territories }) => ({ id, name, territories }));
-    const opponentsDetails = {};
+    const opponents = this.#players.reduce((opponents, player) => {
+      if (player.id !== playerId) {
+        const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
+          player.id,
+        );
+        const playerBasicDetails = player.getBasicDetails();
+        const opponentDetails = {
+          ...playerBasicDetails,
+          territories: playerTerritories,
+        };
+        opponents[player.id] = opponentDetails;
+      }
+      return opponents;
+    }, {});
 
-    for (const { id, ...details } of opponents) {
-      opponentsDetails[id] = { ...details, id };
-    }
-    const currentPlayerDetails = this.#players.find(
-      ({ id }) => id === playerId,
-    );
+    const currentPlayer = this.#players.find(({ id }) => id === playerId);
+
+    const cards = currentPlayer.cards;
+    const basicDetails = currentPlayer.getBasicDetails();
+    const territories = this.#territoriesHandler.getTerritoriesOf(playerId);
+
+    const currentPlayerDetails = { ...basicDetails, territories, cards };
 
     return {
       continents: this.#continentsHandler.getContinents(),
-      territories: this.#territories,
-      player: { ...currentPlayerDetails },
-      opponents: opponentsDetails,
-      cards: currentPlayerDetails.cards,
+      territories: this.#territoriesHandler.getTerritories(),
+      player: currentPlayerDetails,
+      opponents: opponents,
       currentPlayer: this.#activePlayerId,
       cavalryPositions: this.#cavalry.getPositions(),
       state: this.#state,
     };
   }
 
-  #shuffleTerritories(territories) {
-    return territories.sort(() => this.#randomFunction() - 0.5);
-  }
-
-  #initTerritory() {
-    this.#players.forEach((player) => {
-      player["territories"] = [];
-    });
-  }
-
   initTerritories() {
-    const territoryIds = this.#shuffleTerritories(
-      Object.keys(this.#territories),
+    this.#territoriesHandler.setInitTroops();
+    this.#territoriesHandler.assignRandomTerritories(
+      this.#players.map((player) => player.id),
+      this.#randomFunction,
     );
-    this.#initTerritory();
-    territoryIds.forEach((territoryId, playerIndex) => {
-      const territory = this.#territories[territoryId];
-      territory.troopCount = 1;
-      const player = this.#players[playerIndex % this.#players.length];
-      player.territories.push(Number(territoryId));
-    });
-
     this.#state = STATES.INITIAL_REINFORCEMENT;
-    this.#stateDetails.remainingTroopsToDeploy = 13;
-
-    return { players: this.#players, territories: this.#territories };
+    return {
+      players: this.#players,
+      territories: this.#territoriesHandler.territories,
+    };
   }
 
-  initialReinforcement(territoryId, troopCount) {
-    const territory = this.#territories[territoryId];
+  initialReinforcement(territoryId) {
+    const troopsLeft = this.#initialReinforcementController.addOne(territoryId);
+    const isDone = this.#initialReinforcementController.isDone;
+    // this.#changeTurn();
 
-    if (troopCount !== 1) {
-      return {
-        action: this.#state,
-        data: {
-          updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
-        },
-      };
-    }
-
-    territory.troopCount++;
-    this.#stateDetails.remainingTroopsToDeploy--;
-
-    if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
-      this.#state = STATES.REINFORCE;
+    if (isDone) {
+      this.#updateState(STATES.REINFORCE);
       this.#setReinforcements();
     }
 
     return {
       action: this.#state,
       data: {
-        updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
-        remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
+        updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+          territoryId,
+        ),
+        remainingTroops: troopsLeft,
       },
     };
   }
 
   reinforce({ territoryId, troopCount }) {
-    const territory = this.#territories[territoryId];
-
-    if (this.#isValidTroopCount(troopCount)) {
-      return {
-        action: this.#state,
-        data: {
-          updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
-          remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
-        },
-      };
-    }
-
     if (this.#state === STATES.INITIAL_REINFORCEMENT) {
       return this.initialReinforcement(territoryId, troopCount);
     }
 
-    territory.troopCount += troopCount;
-    this.#stateDetails.remainingTroopsToDeploy -= troopCount;
+    try {
+      const remainingTroopToDeploy = this.#reinforcementController.reinforce(
+        territoryId,
+        troopCount,
+      );
 
-    if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
-      this.#state = STATES.INVASION;
+      if (this.#reinforcementController.isDone) {
+        this.#state = STATES.INVASION;
+      }
+
+      return {
+        action: this.#state,
+        data: {
+          updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+            territoryId,
+          ),
+          remainingTroops: remainingTroopToDeploy,
+        },
+      };
+    } catch {
+      return {
+        action: this.#state,
+        data: {
+          updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+            territoryId,
+          ),
+          remainingTroops: 0,
+        },
+      };
     }
-
-    return {
-      action: this.#state,
-      data: {
-        updatedTerritory: [{ territoryId, troopCount: territory.troopCount }],
-        remainingTroops: this.#stateDetails.remainingTroopsToDeploy,
-      },
-    };
-  }
-
-  #isValidTroopCount(troopCount) {
-    return (
-      !troopCount ||
-      troopCount <= 0 ||
-      troopCount > this.#stateDetails.remainingTroopsToDeploy
-    );
-  }
-
-  #getOwnedTerritories() {
-    return this.#activePlayer.territories;
-  }
-
-  get #activePlayer() {
-    return this.#players.find((player) => player.id === this.#activePlayerId);
-  }
-
-  #setReinforcements() {
-    const territories = this.#getOwnedTerritories();
-    const continentBonus = this.#continentsHandler.calculateContinentsBonus(
-      territories,
-    );
-
-    const reinforcementForTerritory = Math.max(
-      3,
-      Math.floor(territories.length / 3),
-    );
-    const totalReinforcement = reinforcementForTerritory + continentBonus;
-
-    this.#stateDetails.remainingTroopsToDeploy = totalReinforcement;
   }
 
   setupNextPhase() {
     if (this.#state === STATES.INITIAL_REINFORCEMENT) {
+      const troopsToReinforce =
+        this.#initialReinforcementController.remainingTroop;
       return {
         action: this.#state,
-        data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
+        data: { troopsToReinforce },
       };
     }
 
     if (this.#state === STATES.REINFORCE) {
       return {
         action: this.#state,
-        data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
+        data: { troopsToReinforce: this.#reinforcementController.remaining },
       };
     }
   }
 
-  #isValidAttacker({ attackerTerritoryId }) {
-    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
-    return player.territories.includes(attackerTerritoryId);
-  }
-
-  #validDefender({ attackerTerritoryId, defenderTerritoryId }) {
-    const neighbours = this.#territories[attackerTerritoryId].neighbours;
-
-    const isNeighbour = neighbours.includes(defenderTerritoryId);
-    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
-    const isEnemy = !player.territories.includes(defenderTerritoryId);
-    return isNeighbour && isEnemy;
-  }
-
-  #isValidAttackerTroopsCount({ attackerTerritoryId, attackerTroops }) {
-    const availableTroopCount =
-      this.#territories[attackerTerritoryId].troopCount;
-    const isInRange = attackerTroops <= 3 && attackerTroops > 0;
-
-    return availableTroopCount > attackerTroops && isInRange;
-  }
-
-  invade(invadeDetials) {
-    const isValidAttack = this.#isValidAttacker(invadeDetials) &&
-      this.#validDefender(invadeDetials) &&
-      this.#isValidAttackerTroopsCount(invadeDetials);
-
-    if (!isValidAttack) {
-      throw new Error("Invalid Attack");
-    }
-
-    this.#state = STATES.DEFEND;
-    this.#stateDetails = invadeDetials;
-    return { newState: this.#state, data: {} };
-  }
-
-  defend(data) {
-    this.#state = STATES.RESOLVE_COMBAT;
-    this.#stateDetails["defenderTroops"] = data.troopCount;
-
-    const {
-      attackerTerritoryId,
-      defenderTerritoryId,
-      attackerTroops,
-      defenderTroops,
-    } = this.#stateDetails;
-
-    return {
-      action: this.#state,
-      data: {
+  invade({ attackerTerritoryId, attackerTroops, defenderTerritoryId }) {
+    try {
+      this.#invasionController.setNewInvasion(
+        this.#activePlayerId,
         attackerTerritoryId,
         defenderTerritoryId,
         attackerTroops,
-        defenderTroops,
-      },
-    };
-  }
-
-  #rollDice(count) {
-    return Array.from(
-      { length: count },
-      () => Math.ceil(this.#randomFunction() * 6),
-    ).sort((a, b) => b - a);
-  }
-
-  #calculateLoss(defenderDice, attackerDice) {
-    const combatResult = { attackerLoss: 0, defenderLoss: 0 };
-    const dicesCount = Math.min(defenderDice.length, attackerDice.length);
-    for (let index = 0; index < dicesCount; index++) {
-      attackerDice[index] <= defenderDice[index]
-        ? combatResult.attackerLoss++
-        : combatResult.defenderLoss++;
-    }
-    return combatResult;
-  }
-
-  #updateTroopCount(attackerTerritoryId, defenderTerritoryId, combatResult) {
-    const attackerTerritory = this.#territories[attackerTerritoryId];
-    const defenderTerritory = this.#territories[defenderTerritoryId];
-    attackerTerritory.troopCount -= combatResult.attackerLoss;
-    defenderTerritory.troopCount -= combatResult.defenderLoss;
-
-    return [
-      {
-        territoryId: attackerTerritoryId,
-        troopCount: attackerTerritory.troopCount,
-      },
-      {
-        territoryId: defenderTerritoryId,
-        troopCount: defenderTerritory.troopCount,
-      },
-    ];
-  }
-
-  #constructCombatMsg(combatResult) {
-    return combatResult.attackerLoss < combatResult.defenderLoss
-      ? { status: "success", msg: "Attack Successful" }
-      : { status: "fail", msg: "Attack Unsuccessful" };
-  }
-
-  #getPlayerById(territoryId) {
-    return this.#players.find((player) =>
-      player.territories.includes(territoryId)
-    );
-  }
-
-  #getIndexOf(collection, target) {
-    return collection.findIndex((element) => element === target);
-  }
-
-  #hasWinner() {
-    if (this.#players.length === 1) {
-      this.#stateDetails.hasWon = true;
+      );
+      this.#state = STATES.DEFEND;
+      return { newState: this.#state, data: {} };
+    } catch {
+      throw new Error("Invalid Attack");
     }
   }
 
-  #getDefenderCards(attacker, defender) {
-    attacker.cards.push(...defender.cards);
-  }
+  defend({ troopCount }) {
+    try {
+      this.#invasionController.setDefenderTroops(troopCount);
+      this.#state = STATES.RESOLVE_COMBAT;
 
-  #eliminatePlayer(defender) {
-    const index = this.#getIndexOf(this.#players, defender);
-    const attacker = this.#activePlayer;
-    this.#getDefenderCards(attacker, defender);
-    this.#players.splice(index, 1);
-    this.#stateDetails.hasEliminated = true;
-    this.#hasWinner();
-  }
-
-  #isEliminated(defender) {
-    return defender.territories.length <= 0;
-  }
-
-  #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
-    const defender = this.#getPlayerById(defenderTerritoryId);
-    const attacker = this.#getPlayerById(attackerTerritoryId);
-    const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
-    attacker.territories.push(...defender.territories.splice(index, 1));
-    if (this.#isEliminated(defender)) {
-      this.#eliminatePlayer(defender);
-    }
-  }
-
-  captureTerritory(attackerTroops) {
-    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
-    this.#stateDetails.hasCaptured = true;
-    this.#updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId);
-    this.#territories[defenderTerritoryId].troopCount = attackerTroops;
-    this.#territories[attackerTerritoryId].troopCount -= attackerTroops;
-    this.#state = this.#stateDetails.hasWon ? STATES.WON : STATES.INVASION;
-    const updatedTerritories = [
-      {
-        territoryId: attackerTerritoryId,
-        troopCount: this.#territories[attackerTerritoryId].troopCount,
-      },
-      {
-        territoryId: defenderTerritoryId,
-        troopCount: this.#territories[defenderTerritoryId].troopCount,
-      },
-    ];
-    return {
-      action: this.#state,
-      data: {
-        updatedTerritories,
-        hasEliminated: this.#stateDetails.hasEliminated,
-        hasWon: this.#stateDetails.hasWon,
-        newCards: this.#activePlayer.cards,
-      },
-    };
-  }
-
-  #handleCapture(defenderTerritoryId) {
-    if (this.#territories[defenderTerritoryId].troopCount <= 0) {
-      this.#stateDetails.hasCaptured = true;
-      this.#state = STATES.CAPTURE;
-    } else {
-      this.#state = STATES.INVASION;
+      return {
+        action: this.#state,
+        data: this.#invasionController.invadeDetails,
+      };
+    } catch {
+      return {
+        action: this.#state,
+        data: this.#invasionController.invadeDetails,
+      };
     }
   }
 
   resolveCombat() {
-    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
-    const attackerDice = this.#rollDice(this.#stateDetails.attackerTroops);
-    const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
-    const combatResult = this.#calculateLoss(defenderDice, attackerDice);
-    const notifyMsg = this.#constructCombatMsg(combatResult);
-    const updatedTerritories = this.#updateTroopCount(
-      attackerTerritoryId,
-      defenderTerritoryId,
-      combatResult,
-    );
+    const updatedTerritoriesIds = this.#invasionController.resolve();
+    const updatedTerritories = this.#territoriesHandler
+      .getTerritoryAndTroopsCount(...updatedTerritoriesIds);
 
-    this.#handleCapture(defenderTerritoryId, attackerDice);
+    const { attackerDice, defenderDice, defenderTerritoryId } =
+      this.#invasionController.invadeDetails;
+    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
 
-    //if cannot attack any more change the state
+    const isEliminated = this.#isEliminated(defenderId);
+
+    if (isEliminated) {
+      this.#eliminatePlayer(defender);
+    }
+
+    const isWon = this.#hasPlayerWon();
+    this.#state = isWon ? STATES.WON : STATES.INVASION;
+
+    const notifyMsg = this.#invasionController.isAttackSuccessful
+      ? { status: "success", msg: "Attack Successful" }
+      : { status: "fail", msg: "Attack Unsuccessful" };
+
+    const isCurrentCaptured = this.#invasionController.isCaptured;
+
+    this.#hasCaptured = this.#hasCaptured || isCurrentCaptured;
 
     return {
       action: this.#state,
@@ -426,18 +297,21 @@ export class Game {
         defenderDice,
         notifyMsg,
         updatedTerritories,
-        hasCaptured: this.#stateDetails.hasCaptured,
+        hasCaptured: isCurrentCaptured,
+        hasEliminated: isEliminated,
+        hasWon: isWon,
+        newCards: this.#activePlayer.cards,
       },
     };
   }
 
   getCard() {
     let card;
-    if (this.#stateDetails.hasCaptured) {
+    if (this.#hasCaptured) {
       card = this.#cards.drawCard();
-      this.#stateDetails.hasCaptured = false;
       const activePlayer = this.#activePlayer;
       activePlayer.cards.push(card);
+      this.#hasCaptured = false;
     }
     this.#state = STATES.REINFORCE;
     this.#setReinforcements();
@@ -448,11 +322,6 @@ export class Game {
         card,
       },
     };
-  }
-  #isPlayerCards(cards) {
-    const currentPlayer = this.#activePlayer;
-    const playerCards = currentPlayer.cards;
-    return cards.every((card) => playerCards.includes(card));
   }
 
   removePlayerCards(cards) {
@@ -467,51 +336,43 @@ export class Game {
   tradeCard(cards) {
     const isValidCombo = this.#cards.isValidCombination(cards);
     const isPlayerCards = this.#isPlayerCards(cards);
-    if (isValidCombo && isPlayerCards) {
-      const troops = this.#cavalry.getCurrentCount();
-      this.#stateDetails.remainingTroopsToDeploy += troops;
-      const remainingTroopsToDeploy =
-        this.#stateDetails.remainingTroopsToDeploy;
-      this.removePlayerCards(cards);
-      this.#cavalry.moveCavalry();
-      const positions = this.#cavalry.getPositions();
-      return { troops: remainingTroopsToDeploy, positions };
+
+    if (!isValidCombo || !isPlayerCards) {
+      throw new Error("INVALID CARDS COMBO");
     }
-    throw new Error("INVALID CARDS COMBO");
+
+    const troops = this.#cavalry.getCurrentCount();
+
+    this.#reinforcementController.addExtraTroops(troops);
+
+    const remainingTroopsToDeploy = this.#reinforcementController.remaining;
+    this.removePlayerCards(cards);
+    this.#cavalry.moveCavalry();
+    const positions = this.#cavalry.getPositions();
+    return { troops: remainingTroopsToDeploy, positions };
   }
 
   isCurrentUserTerritory(territoryId) {
-    const player = this.#players.find(
-      (player) => this.#activePlayerId === player.id,
+    return this.#territoriesHandler.isTerritoryOwnBy(
+      territoryId,
+      this.#activePlayerId,
     );
-    return player.territories.includes(territoryId);
-  }
-
-  #getCurrentPlayer() {
-    return this.#players.find(({ id }) => id === this.#activePlayerId);
-  }
-
-  #getTerritoryAndTroopsCount(...territoryIds) {
-    const territoriesDetails = [];
-    for (const territoryId of territoryIds) {
-      const territory = this.#territories[territoryId];
-      const troopCount = territory.troopCount;
-      territoriesDetails.push({ territoryId, troopCount });
-    }
-    return territoriesDetails;
   }
 
   fortification(from, to, count) {
-    const currentPlayer = this.#getCurrentPlayer();
     try {
-      this.#fortificationHandler.moveTroops(
+      const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
+        this.#activePlayerId,
+      );
+      this.#fortificationHandler.moveTroops(from, to, count, playerTerritories);
+
+      const updatedTerritories = this.#territoriesHandler.moveTroops(
         from,
         to,
         count,
-        currentPlayer.territories,
       );
+
       this.#updateState(STATES.GET_CARD);
-      const updatedTerritories = this.#getTerritoryAndTroopsCount(from, to);
       return updatedTerritories;
     } catch {
       return [];
@@ -521,22 +382,53 @@ export class Game {
   getSavableGameState() {
     return {
       activePlayerId: this.#activePlayerId,
-      territories: this.#territories,
-      players: this.#players,
+      territories: this.#territoriesHandler.getTerritories(),
+      players: this.#players.map((player) => player.getSaveableData()),
       continents: this.#continentsHandler.getContinents(),
       state: this.#state,
-      stateDetails: this.#stateDetails,
+
+      cavalry: this.#cavalry.lastPos,
     };
   }
 
-  loadGameState(gameState, handlers = {}) {
-    const { activePlayerId, territories, players, state, stateDetails } =
-      gameState;
+  loadGameState(gameState, handlers = {}, controller = {}) {
+    const { activePlayerId, players, state } = gameState;
+
+    for (let index = 0; index < players.length; index++) {
+      const player = this.#players[index];
+      const playerCards = players[index].cards;
+      player.loadSaveGame(playerCards);
+    }
+
+    this.#invasionController = controller.invasionController;
+    this.#reinforcementController = controller.reinforcementController;
+    this.#initialReinforcementController =
+      controller.initialReinforcementController;
+
     this.#activePlayerId = activePlayerId;
-    this.#territories = territories;
-    this.#players = players;
+    this.#territoriesHandler = handlers.territoriesHandler;
     this.#state = state;
-    this.#stateDetails = stateDetails;
+    this.#cavalry = handlers.cavalry;
     this.#fortificationHandler = handlers.fortificationHandler;
+  }
+
+  moveIn(troopCount) {
+    const updatedTerritoriesId = this.#invasionController.moveIn(troopCount);
+
+    const { defenderTerritoryId } = this.#invasionController.invadeDetails;
+    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
+
+    const hasEliminated = this.#isEliminated(defenderId);
+    const updatedTerritories = this.#territoriesHandler
+      .getTerritoryAndTroopsCount(...updatedTerritoriesId);
+    return {
+      action: this.#state,
+      data: {
+        updatedTerritories,
+        hasEliminated,
+        hasWon: this.#hasPlayerWon(),
+        newCards: this.#activePlayer.cards,
+      },
+    };
   }
 }

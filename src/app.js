@@ -4,6 +4,7 @@ import { handleUserActions } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handleLoadGameState.js";
 import { handleSaveGameState } from "./handlers/handleSaveGameState.js";
+import { STATES } from "./config.js";
 
 export const createApp = (
   game,
@@ -25,6 +26,11 @@ export const createApp = (
 
   app.post("/user-actions", handleUserActions);
 
+  app.get("/get-data", async (c) => {
+    await delay(2000);
+    game.updateSTATE(STATES.REINFORCE);
+    return c.json({ action: STATES.REINFORCE, data: {} });
+  });
   if (isDevMode) {
     app.get("/:state", (c) => handleLoadGameState(c, readTextFile, game));
 
@@ -32,4 +38,12 @@ export const createApp = (
   }
   app.get("*", serveStatic({ root: "./public" }));
   return app;
+};
+
+const delay = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1);
+    }, time);
+  });
 };

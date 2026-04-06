@@ -1,9 +1,13 @@
 export class Cavalry {
   #positions;
   #currentPosition;
-  constructor() {
+  constructor(currentPosition = 0) {
     this.#positions = [4, 6, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-    this.#currentPosition = 0;
+    this.#currentPosition = currentPosition;
+  }
+
+  get lastPos() {
+    return this.#currentPosition;
   }
   getCurrentCount() {
     return this.#positions[this.#currentPosition];
@@ -21,9 +25,11 @@ export class Cavalry {
     this.#currentPosition++;
     return "moved";
   }
+
   getPos(idx) {
     return this.#positions[idx];
   }
+
   getPositions() {
     const curr = this.#currentPosition;
     const previous = this.getPos(curr - 1) || 0;
