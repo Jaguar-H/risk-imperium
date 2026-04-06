@@ -33,7 +33,9 @@ export const handleLoadGameState = async (c, readTextFile, game) => {
     game.loadGameState(savedState, handlers, controllers);
 
     return c.redirect("/");
-  }).catch(() => {
+  }).catch((e) => {
+    console.log(e);
+
     return c.body("Bad Request", 404);
   });
 };

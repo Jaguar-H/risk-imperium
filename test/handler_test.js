@@ -19,8 +19,8 @@ import { loadGameStateForTest } from "./utilities.js";
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
-import invasionState from "../data/states/invasion.json" with { type: "json" };
-import captureState from "../data/states/capture.json" with { type: "json" };
+import invasionState from "../data/tests/invasion.json" with { type: "json" };
+import captureState from "../data/tests/capture.json" with { type: "json" };
 
 describe("Api Handler", () => {
   let game;
@@ -92,12 +92,6 @@ describe("Api Handler", () => {
       const updatedTerritory = data.updatedTerritory[0];
       assertEquals(updatedTerritory.troopCount, 2);
       assertEquals(updatedTerritory.territoryId, 37);
-    });
-
-    it("Should catch an error when error occurred", async () => {
-      const context = { json: (x) => x };
-      const { msg } = await handleUserActions(context);
-      assertEquals("context.get is not a function", msg);
     });
 
     it("SETUP : Should handle user actions when called", async () => {

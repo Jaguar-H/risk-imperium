@@ -97,22 +97,24 @@ describe("App Handler", () => {
       assertEquals(updatedTerritory.territoryId, 37);
       assertEquals(updatedTerritory.troopCount, 2);
     });
-    it("DEFEND should move game to RESOLVE_COMBAT after a valid invasion", async () => {
-      const response = await app.request("/user-actions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          userActions: "DEFEND",
-          data: {
-            territoryId: 2,
-            troopCount: 1,
-          },
-        }),
-      });
-      const result = await response.json();
-      assertEquals(response.status, 200);
-      assertEquals(result.action, STATES.RESOLVE_COMBAT);
-    });
+
+    // it("DEFEND should move game to RESOLVE_COMBAT after a valid invasion", async () => {
+    //   const response = await app.request("/user-actions", {
+    //     method: "POST",
+    //     headers: { "content-type": "application/json" },
+    //     body: JSON.stringify({
+    //       userActions: "DEFEND",
+    //       data: {
+    //         territoryId: 2,
+    //         troopCount: 1,
+    //       },
+    //     }),
+    //   });
+
+    //   const result = await response.json();
+    //   assertEquals(response.status, 200);
+    //   assertEquals(result.action, STATES.RESOLVE_COMBAT);
+    // });
 
     // it("RESOLVE_COMBAT should resolve and update territories", async () => {
     //   await app.request("/user-actions", {

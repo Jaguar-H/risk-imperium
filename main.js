@@ -39,6 +39,7 @@ const main = () => {
   };
 
   const game = new Game(mockPlayers(), handlers, controllers, utilities);
+
   game.initTerritories();
 
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
