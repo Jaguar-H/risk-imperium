@@ -2,7 +2,7 @@ import { beforeEach, describe } from "@std/testing/bdd";
 import { FortificationController } from "../../src/handlers/fortification_controller.js";
 import { ContinentsHandler } from "../../src/models/continents_handler.js";
 import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../../src/handlers/initialreinforcement_controller.js";
+import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
 import { mockPlayers } from "../../src/mock_data.js";

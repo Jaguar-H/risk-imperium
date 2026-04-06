@@ -54,8 +54,24 @@ export class Game {
     this.#versionId++;
   }
 
+  isTurnOf(id) {
+    return this.#activePlayerId === id;
+  }
+
   isLatestId(id) {
     return this.#versionId === id;
+  }
+
+  get lastUpdate() {
+    return structuredClone(this.#lastUpdate);
+  }
+
+  get activePlayerId() {
+    return this.#activePlayerId;
+  }
+
+  get players() {
+    return this.#players;
   }
 
   getUpdates(id, playerId) {
@@ -65,8 +81,8 @@ export class Game {
     return structuredClone(this.#lastUpdate);
   }
 
-  updateGame(action, data) {
-    this.#lastUpdate = { action, data };
+  updateGame(action, data, playerId) {
+    this.#lastUpdate = { action, data, playerId };
     this.#updateId();
   }
 
@@ -229,10 +245,16 @@ export class Game {
   initialReinforcement(territoryId) {
     const troopsLeft = this.#initialReinforcementController.addOne(territoryId);
 
-    this.updateGame(STATES.INITIAL_REINFORCEMENT, {
-      playerId: this.#activePlayerId,
-      territoryId,
-    });
+    const data = {
+      action: this.#state,
+      data: {
+        updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+          territoryId,
+        ),
+        remainingTroops: troopsLeft,
+      },
+    };
+    this.updateGame(STATES.INITIAL_REINFORCEMENT, data, this.#activePlayerId);
 
     if (this.#initialReinforcementController.isDone) {
       this.#updateState(STATES.REINFORCE);
@@ -319,13 +341,17 @@ export class Game {
         defenderTerritoryId,
         attackerTroops,
       );
+      const defenderId = this.#territoriesHandler.getOwnerOf(
+        defenderTerritoryId,
+      );
 
       this.updateGame(STATES.INVASION, {
-        playerId: this.#activePlayerId,
+        attackerId: this.#activePlayerId,
+        defenderId,
         attackerTerritoryId,
         defenderTerritoryId,
         attackerTroops,
-      });
+      }, this.#activePlayerId);
 
       this.#state = STATES.DEFEND;
       return { newState: this.#state, data: {} };
@@ -337,10 +363,6 @@ export class Game {
 
   defend({ troopCount }) {
     const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-    console.log(
-      { defenderTerritoryId },
-      this.#invasionController.invadeDetails,
-    );
 
     const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
     try {
