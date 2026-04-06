@@ -1,5 +1,7 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { STYLES } from "../configs/styles.js";
 import { TERRITORY_CARD } from "../configs/territory_card.js";
+
 import { addListenersToPlayerIcon } from "../listeners.js";
 import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
 import { addGlow } from "../utilities/highlight.js";
@@ -65,8 +67,8 @@ export const addListenerToCard = (gameState, cardContainer) => {
     if (selectedCards[id]) {
       delete selectedCards[id];
       card.className = "";
-      card.className = "card";
-      addGlow(cardContainer, selectedCards, "glow");
+      card.className = STYLES.CARD;
+      addGlow(cardContainer, selectedCards, STYLES.GLOW);
       return;
     }
 
@@ -79,7 +81,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
     }
 
     gameState.selectedCards[id] = cards[cardId];
-    card.className = "card glow";
+    card.className = STYLES.GLOW;
     canBeTraded(gameState.selectedCards, cardContainer);
   };
 };
@@ -87,7 +89,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
 const createCardElement = (card, i) => {
   const cardElement = document.createElement("div");
   cardElement.dataset.cardType = TERRITORY_CARD[card];
-  cardElement.dataset.values = card;
+  cardElement.textContent = TERRITORY_CARD[card];
   cardElement.classList.add("card");
   cardElement.id = `card-${i}`;
   return cardElement;

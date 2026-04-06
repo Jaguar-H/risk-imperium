@@ -4,6 +4,7 @@ import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { delay, updateTroopsInTerritories } from "../utilities.js";
 import { captureTerritory } from "./captureTerritory.js";
+import { STYLES } from "../configs/styles.js";
 
 const updateDiceTray = (selector, diceValues) => {
   const dieElements = document.querySelectorAll(`${selector} .die-slot`);
@@ -13,12 +14,12 @@ const updateDiceTray = (selector, diceValues) => {
 
     if (rollValue) {
       dice.innerHTML = `&#${9855 + rollValue};`;
-      dice.classList.add("dice-roll");
+      dice.classList.add(STYLES.ROLL_DICE);
       dice.addEventListener(
         "animationend",
         (e) => {
           if (e.animationName === "roll") {
-            dice.classList.remove("dice-roll");
+            dice.classList.remove(STYLES.ROLL_DICE);
             dice.innerHTML = `&#${9855 + rollValue};`;
           }
         },

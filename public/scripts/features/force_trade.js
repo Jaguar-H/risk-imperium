@@ -11,11 +11,10 @@ const closeTradeBox = (gameState, tradeBox) => () => {
 export const forceTrade = (gameState) => {
   showNotification("YOU HAVE MORE THAN 5 CARDS TRADE TO CONITINUE");
   const tradeBox = document.querySelector("#force-trade");
-  const cardArea = tradeBox.querySelector("div");
   const trade = tradeBox.querySelector("button");
   const playerCards = gameState.player.cards;
   const close = closeTradeBox(gameState, tradeBox);
-  updateCards(playerCards, cardArea);
+  updateCards(playerCards, "#force-trade");
   addListenerToTrade(gameState, trade, close);
   addListenerToCard(gameState, tradeBox);
   tradeBox.showModal();

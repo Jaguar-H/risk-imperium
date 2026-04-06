@@ -14,7 +14,7 @@ body {
 
 .continent-outline {
   fill: none;
-  stroke-width: 3px;
+  stroke-width: 5px;
   opacity: 1;
 }
 
@@ -52,26 +52,41 @@ body {
 .territory-outline {
   fill: var(--color-surface);
   stroke: var(--color-map-stroke);
-  stroke-width: 2px;
+  stroke-width: 1.5px;
   vector-effect: non-scaling-stroke;
   transition: all 0.3s ease;
 }
 
 .territory-name {
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 600;
   text-transform: uppercase;
   text-anchor: middle;
   fill: var(--text-primary);
   pointer-events: none;
-}
-
-circle {
-  fill: hsl(0, 2%, 91%);
+  /* stroke: #ffffff;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)); */
 }
 
 text {
   font-size: 8px;
+}
+
+/* #northwest-territory text {
+  letter-spacing: 0.2px;
+  font-size: 7.5px;
+} */
+
+circle {
+  fill: transparent;
+}
+
+.troop-count {
+  font-size: 1em;
+  fill: rgba(222, 222, 222, 0.3);
 }
 
 #continent-asia .troop-count-container,

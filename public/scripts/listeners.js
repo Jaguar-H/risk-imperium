@@ -1,4 +1,5 @@
 import { STATES } from "./configs/game_states.js";
+import { STYLES } from "./configs/styles.js";
 import {
   removeCardAreaListener,
   renderTradeIndicator,
@@ -23,11 +24,11 @@ export const addListenersToPlayerIcon = () => {
   );
 
   playerIcon.addEventListener("click", () => {
-    playerDetailsDialog.classList.toggle("hidden");
+    playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
   });
 
   closeButton.addEventListener("click", () => {
-    playerDetailsDialog.classList.toggle("hidden");
+    playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
   });
 };
 
@@ -44,8 +45,8 @@ export const addListenerToCardIcon = (player) => {
 
   cardIcon.addEventListener("click", () => {
     const alert = cardIcon.querySelector("circle");
-    alert.classList.remove("card-alert");
-    cardArea.classList.toggle("hidden");
+    alert.classList.remove(STYLES.CARD_ALERT);
+    cardArea.classList.toggle(STYLES.HIDDEN);
   });
 };
 

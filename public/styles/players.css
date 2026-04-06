@@ -46,62 +46,78 @@
   border: 2px var(--player-6);
 }
 
-#close-player-details-button {
+#player-details-container {
   position: absolute;
-  bottom: 0.5em;
-  margin-left: 1em;
-  width: 20em;
-  padding: 0.12em;
-  font-size: 14px;
-  background-color: rgb(230, 229, 229);
-  border: 1px black solid;
+  inset: 12% 3% 12% auto;
+  width: 18em;
+  padding: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
 }
 
 #player-details-container {
-  position: absolute;
-  inset: 10% 68%;
-  border: none;
-  width: 20em;
-  padding: 0.8em 0.8em 2.2em 0.8em;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 10;
-  border-radius: 12px;
-  transition: all 0.6s ease-in;
-  background-color: rgba(184, 220, 244, 0.832);
-}
-
-.player-deatils {
-  display: flex;
-  border: 1px solid rgb(224, 224, 224);
-  padding: 6px;
-  height: 5em;
-  gap: 14px;
-  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.62);
+  border: 1px solid #8b7d6a;
+  border-radius: 6px;
+  transition: transform 0.4s ease-out;
 }
 
 .avatar {
-  border: 1px solid rgb(0, 0, 0);
-  width: 4.5em;
-  aspect-ratio: 1;
+  border: 2px solid #c4a75c;
+  width: 3.5em;
+  height: 3.5em;
   border-radius: 50%;
+  background-color: #1a1a1a;
+}
+
+#close-player-details-button {
+  width: 100%;
+  padding: 0.6em;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-family: var(--secondary-font);
+}
+
+#close-player-details-button {
+  color: #f1f5f9;
+  background-color: #8b2626;
+  border: 1px solid #5a1a1a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#close-player-details-button:hover {
+  background-color: #a52a2a;
+  transform: translateY(-1px);
+}
+
+.player-deatils {
+  gap: 14px;
+  height: auto;
   display: flex;
-  justify-content: center;
+  padding: 10px 0;
   align-items: center;
+  border-bottom: 1px solid rgba(139, 125, 106, 0.3);
+}
+
+.player-deatils:last-of-type {
+  border-bottom: none;
 }
 
 .player-info {
-  font-family: sans-serif;
-  line-height: 1.2em;
+  font-family:
+    var(--secondary-font), serif;
+  color: #635432;
+  line-height: 1.4em;
+  font-size: 1.1em;
 }
 
 .player-info .name {
-  line-height: 2em;
-  font-weight: 700;
-}
-
-.username-display {
-  font-family: sans-serif;
-  font-size: 1.4em;
+  font-size: 1.1em;
+  color: #c99000;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }

@@ -1,6 +1,6 @@
 .sidebar-left {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 40px;
   transform: translateY(-50%);
   display: flex;
@@ -14,30 +14,27 @@
   top: 20px;
   width: 60px;
   height: 60px;
-  /* border: var(--ui-border);
-  border-radius: 50%; */
-  /* background: var(--color-surface); */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .army-stats {
+  font-family: sans-serif;
   display: flex;
   align-items: center;
 }
 
 .stat-box {
   border: var(--ui-border);
-  padding: 8px 18px;
+  padding: 8px 14px;
   background: var(--color-surface);
   font-weight: bold;
   color: var(--text-primary);
 }
 
 .stat-box.large {
-  padding: 12px 24px;
-  font-size: 1.4em;
+  font-size: 1.2em;
   z-index: 2;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
@@ -57,43 +54,34 @@
   border: var(--ui-border);
   border-radius: 8px;
   padding: 10px 15px;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-align: center;
   color: white;
 }
 
 .pill-na {
-  background: var(--cont-north-america);
+  background: var(--cont-north-america-dark);
 }
 
 .pill-sa {
-  background: var(--cont-south-america);
+  background: var(--cont-south-america-dark);
 }
 
 .pill-eu {
-  background: var(--cont-europe);
+  background: var(--cont-europe-dark);
 }
 
 .pill-af {
-  background: var(--cont-africa);
+  background: var(--cont-africa-dark);
 }
 
 .pill-as {
-  background: var(--cont-asia);
+  background: var(--cont-asia-dark);
 }
 
 .pill-au {
-  background: var(--cont-australia);
-}
-
-.dice-controls {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 9.5rem;
+  background: var(--cont-australia-dark);
 }
 
 .dice-group-label {
@@ -114,27 +102,30 @@
   margin-top: 4px;
 }
 
+.dice-controls {
+  position: absolute;
+  bottom: 6em;
+  left: 51%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 22em;
+}
+
 .dice-tray {
   display: flex;
-  gap: 10px;
+  gap: 0.1em;
 }
 
 .die-slot {
   position: relative;
   display: flex;
+  width: 3rem;
+  line-height: 1;
+  font-size: 4em;
+  aspect-ratio: 1 / 1;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  aspect-ratio: 1 / 1;
-  font-size: 2.2rem;
-  border: var(--ui-border);
-  border-radius: 0.4rem;
-  background: var(--color-surface);
-  line-height: 1;
-}
-
-#defender-dice {
-  margin-left: 6rem;
+  background: transparent;
 }
 
 .action-menu {
@@ -184,7 +175,7 @@
 
 .highlight-card-icon {
   background-color: var(--color-highlight-icon);
-  animation: infinite jump 1s ease;
+  /* animation: infinite jump 1s ease; */
 }
 
 .icon {
@@ -197,15 +188,19 @@
   0% {
     transform: translateY(0);
   }
+
   30% {
     transform: translateY(-10px);
   }
+
   50% {
     transform: translateY(0);
   }
+
   70% {
     transform: translateY(-5px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -239,7 +234,8 @@
     0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-#card-area, #force-trade {
+#card-area,
+#force-trade {
   position: absolute;
   inset: 30% 40%;
   height: 20em;
@@ -255,15 +251,16 @@
 
   border-radius: 12px;
   z-index: 10;
-
   transition: all 0.6s ease-in;
 }
 
 .hidden {
-  transform: translateX(2000px);
+  opacity: 0;
+  transform: translateX(800px);
 }
 
-#card-area button, #force-trade button {
+#card-area button,
+#force-trade button {
   position: absolute;
   top: 88%;
   left: calc(50% - 3em);
@@ -271,7 +268,8 @@
   width: 3em;
 }
 
-#card-area > div, #force-trade div {
+#card-area > div,
+#force-trade div {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 10em;
@@ -284,39 +282,49 @@
 }
 
 .card {
+  display: flex;
+  justify-content: center;
   align-items: center;
   height: 14em;
   width: 9em;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    rgba(107, 220, 220, 0.475),
-    rgba(107, 220, 220, 0.1)
-  );
-  backdrop-filter: blur(2px);
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  border: 1px solid black;
+  transition: all 0.4s ease;
+  width: 100%;
+}
 
-  border-radius: 12px;
+[data-card-type="canon"] {
+  background-image: url(../assets/canon.svg);
+  background-position: center;
+}
 
-  border: 1px solid rgba(239, 238, 238, 0.2);
+[data-card-type="soldier"] {
+  background-image: url(../assets/soldier.svg);
+  background-position: center;
+}
 
-  transition: all 0.25s ease;
-  cursor: pointer;
+[data-card-type="knight"] {
+  background-image: url(../assets/knight.svg);
+  background-position: center;
+}
+
+[data-card-type="wild"] {
+  background-image: url(../assets/wild.svg);
+  background-position: center;
 }
 
 #game-state-container {
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  position: fixed;
   top: 20px;
   left: 20px;
-  padding: 0.6em;
-  background-color: hsl(0, 0%, 95%);
-  color: rgb(0, 0, 0);
   z-index: 100;
+  padding: 0.6em;
+  position: fixed;
   font-size: 1.3em;
-  text-transform: uppercase;
   font-weight: 600;
-  border-radius: 12px;
   font-family: sans-serif;
+  text-transform: uppercase;
 }
 
 .notification {
@@ -513,6 +521,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .d-none {
   transform: translateY(-60em);
 }
+
 .remove-events {
   pointer-events: none;
 }

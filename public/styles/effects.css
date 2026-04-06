@@ -1,3 +1,5 @@
+@import url(root.css);
+
 body {
   display: flex;
   justify-content: center;
@@ -7,9 +9,12 @@ body {
 }
 
 #game {
-  background: var(--color-surface);
+  width: 100vw;
+  height: 100vh;
+  background: var(--map-background);
   border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 1);
 }
 
 .continent > g {
@@ -22,9 +27,9 @@ body {
 .selected > .territory-outline {
   stroke: green;
   stroke-opacity: 1;
-  fill: rgb(8, 204, 8);
+  fill: var(--color-selection);
   fill-opacity: 0.5;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  filter: var(--selection-shadow);
 }
 
 .reinforce-from-selected > .territory-outline {
@@ -32,14 +37,15 @@ body {
   stroke-opacity: 1;
   fill: darkgreen;
   fill-opacity: 0.5;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  filter: var(--selection-shadow);
 }
 
 .highlight > .territory-outline {
   stroke: rgb(136, 0, 0);
   stroke-width: 4px;
   stroke-opacity: 0.5;
-  fill: hsl(0, 80%, 75%);
+  fill: var(--color-target);
+  transition: fill 0.3s ease-in-out;
 }
 
 .dice-roll {
