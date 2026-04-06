@@ -14,7 +14,6 @@ import { InvasionController } from "./src/handlers/invasion_controller.js";
 
 const main = () => {
   const handlers = {
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
     continentsHandler: new ContinentsHandler(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
@@ -24,6 +23,7 @@ const main = () => {
   const utilities = { random: Math.random };
 
   const controllers = {
+    fortificationController: new FortificationController(CONFIG.TERRITORIES),
     initialReinforcementController: new InitialReinforcementController(
       1,
       handlers.territoriesHandler,

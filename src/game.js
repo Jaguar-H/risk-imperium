@@ -11,7 +11,7 @@ export class Game {
   #state;
   #randomFunction;
   #cards;
-  #fortificationHandler;
+  #fortificationController;
   #cavalry;
   #territoriesHandler;
   #initialReinforcementController;
@@ -33,10 +33,11 @@ export class Game {
     this.#players = players;
     this.#cards = handlers.cardsHandler;
     this.#continentsHandler = handlers.continentsHandler;
-    this.#fortificationHandler = handlers.fortificationHandler;
     this.#cavalry = handlers.cavalry;
     this.#state = STATES.SETUP;
     this.#hasCaptured = false;
+    this.#fortificationController = controllers.fortificationController;
+
     this.#initialReinforcementController =
       controllers.initialReinforcementController;
     this.#reinforcementController = controllers.reinforcementController;
@@ -267,7 +268,9 @@ export class Game {
   resolveCombat() {
     const updatedTerritoriesIds = this.#invasionController.resolve();
     const updatedTerritories = this.#territoriesHandler
-      .getTerritoryAndTroopsCount(...updatedTerritoriesIds);
+      .getTerritoryAndTroopsCount(
+        ...updatedTerritoriesIds,
+      );
 
     const { attackerDice, defenderDice, defenderTerritoryId } =
       this.#invasionController.invadeDetails;
@@ -364,7 +367,13 @@ export class Game {
       const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
         this.#activePlayerId,
       );
-      this.#fortificationHandler.moveTroops(from, to, count, playerTerritories);
+
+      this.#fortificationController.moveTroops(
+        from,
+        to,
+        count,
+        playerTerritories,
+      );
 
       const updatedTerritories = this.#territoriesHandler.moveTroops(
         from,
@@ -374,7 +383,9 @@ export class Game {
 
       this.#updateState(STATES.GET_CARD);
       return updatedTerritories;
-    } catch {
+    } catch (e) {
+      console.log(e);
+
       return [];
     }
   }
@@ -417,7 +428,7 @@ export class Game {
 
     this.#state = state;
     this.#cavalry = handlers.cavalry;
-    this.#fortificationHandler = handlers.fortificationHandler;
+    this.#fortificationController = handlers.fortificationHandler;
   }
 
   moveIn(troopCount) {
@@ -428,7 +439,9 @@ export class Game {
 
     const hasEliminated = this.#isEliminated(defenderId);
     const updatedTerritories = this.#territoriesHandler
-      .getTerritoryAndTroopsCount(...updatedTerritoriesId);
+      .getTerritoryAndTroopsCount(
+        ...updatedTerritoriesId,
+      );
     return {
       action: this.#state,
       data: {
