@@ -1,5 +1,4 @@
 import { combat } from "../server_calls.js";
-
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { delay, updateTroopsInTerritories } from "../utilities.js";
@@ -12,8 +11,8 @@ import {
 } from "../utilities/animate_dice.js";
 
 export const handleCombat = async (prevData, _action, gameState) => {
-  const overlay = prepareOverlay();
   const { action: newState, data } = await combat(prevData);
+  const overlay = prepareOverlay();
   showDiceAnimations(
     overlay,
     data.attackerDice,
