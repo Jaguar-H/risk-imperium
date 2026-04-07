@@ -1,80 +1,19 @@
-import { STATES } from "../config.js";
+import { STATES, TIMEOUT } from "../config.js";
 import { getCardHandler, tradeCardHandler } from "./card_handler.js";
 import { fortificationHandler } from "../models/fortification_handler.js";
-import { sendDataToPlayer, sendUpdatesToPlayers } from "../utilities.js";
 import { getCookie, setCookie } from "hono/cookie";
 
 const USER_ACTIONS = {
-  REINFORCE: (game, data, currentPlayerId = 0, opponents = []) => {
-    const res = game.reinforce(data);
-    const lastUpdate = game.lastUpdate;
+  REINFORCE: (game, data) => game.reinforce(data),
 
-    if (game.isTurnOf(currentPlayerId)) {
-      sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
-      return res;
-    }
+  SETUP: (game) => game.setupNextPhase(),
 
-    const passivePlayers = opponents.filter((player) =>
-      game.isTurnOf(player.id)
-    );
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, passivePlayers);
+  INVADE: (game, data) => game.invade(data),
 
-    const newActivePlayer = opponents.find((player) =>
-      game.isTurnOf(player.id)
-    );
-    sendDataToPlayer(newActivePlayer, STATES.INITIAL_REINFORCEMENT, lastUpdate);
+  DEFEND: (game, data) => game.defend(data),
 
-    return res;
-  },
-
-  SETUP: (game, _data, _currentPlayerId = 0, opponents = []) => {
-    const result = game.setupNextPhase();
-
-    const lastUpdate = game.lastUpdate;
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
-
-    return result;
-  },
-
-  INVADE: (game, data, _currentPlayerId = 0, opponents = []) => {
-    const result = game.invade(data);
-    const lastUpdate = game.lastUpdate;
-
-    const defenderId = lastUpdate.data.defenderId;
-
-    const passivePlayers = opponents.filter((player) =>
-      player.id !== defenderId
-    );
-    const defender = opponents.find((player) => player.id === defenderId);
-
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, passivePlayers);
-    sendDataToPlayer(defender, STATES.DEFEND, lastUpdate);
-
-    return result;
-  },
-  DEFEND: (game, data, _currentPlayerId = 0, opponents = []) => {
-    const result = game.defend(data);
-    const lastUpdate = game.lastUpdate;
-
-    const passivePlayers = opponents.filter((player) =>
-      game.isTurnOf(player.id)
-    );
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, passivePlayers);
-
-    const activePlayer = opponents.find((player) => game.isTurnOf(player.id));
-    sendDataToPlayer(activePlayer, STATES.RESOLVE_COMBAT, lastUpdate);
-
-    return result;
-  },
-
-  RESOLVE_COMBAT: (game, _data, currentPlayerId = 0, opponents = []) => {
+  RESOLVE_COMBAT: (game, _data, currentPlayerId = 0) => {
     const { action, data } = game.resolveCombat();
-    const lastUpdate = game.lastUpdate;
-
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
-
-    const activePlayer = opponents.find((player) => game.isTurnOf(player.id));
-    sendDataToPlayer(activePlayer, STATES.RESOLVE_COMBAT, lastUpdate);
     if (
       game.isTurnOf(currentPlayerId) && game.getGameState() === STATES.MOVE_IN
     ) {
@@ -83,11 +22,9 @@ const USER_ACTIONS = {
     return { action, data };
   },
 
-  GET_MOVE_IN_DATA: (game, _data, _currentPlayer = 0, _opponents = []) => {
-    return { data: game.lastUpdate };
-  },
+  GET_MOVE_IN_DATA: (game) => ({ data: game.lastUpdate }),
 
-  SKIP_FORTIFICATION: (game, _data, _currentPlayerId = 0, opponents = []) => {
+  SKIP_FORTIFICATION: (game) => {
     const state = game.getGameState();
     if (state !== STATES.FORTIFICATION) {
       return { action: state, data: [] };
@@ -95,16 +32,13 @@ const USER_ACTIONS = {
 
     game.skipFortification();
     const newState = game.getGameState();
-    const lastUpdate = game.lastUpdate;
-
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
 
     return { action: newState, data: [] };
   },
 
   GET_CARD: getCardHandler,
 
-  SKIP_INVASION: (game, _data, _currentPlayerId, opponents) => {
+  SKIP_INVASION: (game) => {
     const state = game.getGameState();
 
     if (state !== STATES.INVASION) {
@@ -113,21 +47,25 @@ const USER_ACTIONS = {
     game.skipInvasion();
     const newState = game.getGameState();
 
-    const lastUpdate = game.lastUpdate;
-
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
     return { action: newState, data: [] };
   },
 
   FORTIFICATION: fortificationHandler,
   TRADE_CARD: tradeCardHandler,
-  CAPTURE: (game, data, _currentPlayerId, opponents) => {
+  CAPTURE: (game, data) => {
     const result = game.moveIn(data);
-    const lastUpdate = game.lastUpdate;
-
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
     return result;
   },
+};
+
+const broadCastNewUpdates = (players) => {
+  players.forEach((player) => {
+    const resolver = player.resolve;
+    if (resolver) {
+      resolver();
+    }
+    player.resolve = null;
+  });
 };
 
 export const handleUserActions = async (context) => {
@@ -144,6 +82,7 @@ export const handleUserActions = async (context) => {
     const result = actionToPerform(game, data, activePlayerId, opponents);
     const gameVersion = game.version;
     setCookie(context, "game-version", gameVersion);
+    broadCastNewUpdates(players);
 
     return context.json(result);
   } catch (e) {
@@ -188,26 +127,35 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
   return { action: STATES.WAITING, data, lastAction: game.lastUpdate };
 };
 
+const serveUpdatesToPlayer = (c, game, playerId, gameVersionId) => {
+  const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
+  const gameVersion = game.version;
+  setCookie(c, "game-version", gameVersion);
+  return result;
+};
+
 export const handleWaiting = async (c) => {
   const gameVersionId = Number(getCookie(c, "game-version"));
   const game = c.get("game");
   const playerId = Number(getCookie(c, "playerId"));
   if (!game.isLatestId(gameVersionId)) {
-    const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
-    const gameVersion = game.version;
-    setCookie(c, "game-version", gameVersion);
+    const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
     return c.json(result);
   }
 
-  await delay(1000);
+  const player = game.players.find((player) => player.id === playerId);
 
-  return c.text(null, 204);
-};
-
-const delay = (time) => {
-  return new Promise((resolve) => {
+  const response = await new Promise((resolve, reject) => {
+    player.resolve = resolve;
     setTimeout(() => {
-      resolve(1);
-    }, time);
+      reject(1);
+    }, TIMEOUT);
+  }).then(() => {
+    const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
+    return c.json(result);
+  }).catch(() => {
+    return c.text(null, 204);
   });
+
+  return response;
 };

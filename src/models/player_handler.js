@@ -2,7 +2,7 @@ export class Player {
   #id;
   #name;
   #cards;
-
+  #resolver;
   constructor(id, name, cards = []) {
     this.#id = id;
     this.#name = name;
@@ -25,6 +25,14 @@ export class Player {
   }
   getBasicDetails() {
     return { id: this.#id, name: this.#name };
+  }
+
+  set resolve(resolve) {
+    this.#resolver = resolve;
+  }
+
+  get resolve() {
+    return this.#resolver;
   }
 
   getSaveableData() {

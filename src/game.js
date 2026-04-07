@@ -98,10 +98,7 @@ export class Game {
   }
 
   getUpdates(_id, playerId) {
-    // if (this.#versionId - id > 1) {
     return this.getSetup(playerId);
-    // }
-    // return structuredClone(this.#lastUpdate);
   }
 
   updateGame(action, data, playerId) {
@@ -122,8 +119,10 @@ export class Game {
     return state;
   }
 
-  #setReinforcements() {
-    this.#reinforcementController.setToReinforce(this.#activePlayerId);
+  #setReinforcementsIfNotExists() {
+    if (this.#reinforcementController.isDone) {
+      this.#reinforcementController.setToReinforce(this.#activePlayerId);
+    }
   }
 
   #getPlayerByTerritoryId(territoryId) {
@@ -190,6 +189,7 @@ export class Game {
         to,
         troopCount: count,
       }, this.#activePlayerId);
+
       this.#updateState(STATES.GET_CARD);
 
       return updatedTerritories;
@@ -200,7 +200,6 @@ export class Game {
 
   skipInvasion() {
     this.#updateState(STATES.FORTIFICATION);
-
     this.updateGame(STATES.SKIP_INVASION, {}, this.#activePlayerId);
   }
 
@@ -276,7 +275,6 @@ export class Game {
 
     if (this.#initialReinforcementController.isDone) {
       this.#updateState(STATES.REINFORCE);
-      this.#setReinforcements();
     }
 
     return {
@@ -343,6 +341,7 @@ export class Game {
     }
 
     if (this.#state === STATES.REINFORCE) {
+      this.#setReinforcementsIfNotExists();
       return {
         action: this.#state,
         data: { troopsToReinforce: this.#reinforcementController.remaining },
@@ -498,15 +497,16 @@ export class Game {
   passToNextPlayer() {
     this.#state = STATES.REINFORCE;
     this.#changeTurn();
+    this.#updateId();
   }
 
   getCard() {
     this.#state = STATES.REINFORCE;
+
     const card = this.#cards.drawCard();
     const activePlayer = this.#activePlayer;
     activePlayer.cards.push(card);
     this.#hasCaptured = false;
-    this.#setReinforcements();
 
     this.updateGame(
       STATES.GET_CARD,
