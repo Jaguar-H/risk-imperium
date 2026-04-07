@@ -1,7 +1,17 @@
+export const renderAvatar = (name) => {
+  const avatar = document.createElement("playful-avatar");
+  avatar.setAttribute("name", name);
+  return avatar;
+};
+
 const createPlayerElement = (name) => {
-  const nameContainer = document.createElement("div");
-  nameContainer.textContent = name;
-  return nameContainer;
+  const profileContainer = document.createElement("div");
+  const playerName = document.createElement("div");
+  playerName.textContent = name;
+  const avatar = renderAvatar(name);
+  profileContainer.append(avatar, playerName);
+
+  return profileContainer;
 };
 
 const updatePlayers = (container, players) => {
@@ -10,6 +20,7 @@ const updatePlayers = (container, players) => {
     fragment.appendChild(createPlayerElement(player))
   );
   container.replaceChildren(fragment);
+  console.log(container);
 };
 
 const updateLobby = async (playerContainer, id) => {

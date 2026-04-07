@@ -2,6 +2,7 @@ import { updateCavalry } from "../features/cavalry_update.js";
 import { STYLES } from "../configs/styles.js";
 
 import { getAllPlayersDetail } from "../utilities.js";
+import { renderAvatar } from "../lobby.js";
 
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
   const troopCount = territory.querySelector(".troop-count tspan");
@@ -25,8 +26,14 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
     "#current-player-name",
   );
+  const currentPlayerAvatarHolder = document.querySelector(
+    "#current-player-avatar",
+  );
+
   const currentPlayer = players[currentPlayerId];
 
+  const avatar = renderAvatar(currentPlayer);
+  currentPlayerAvatarHolder.append(avatar);
   currentPlayerNameHolder.textContent = currentPlayer.name;
 };
 
