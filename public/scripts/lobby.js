@@ -1,7 +1,12 @@
 const createPlayerElement = (name) => {
-  const nameContainer = document.createElement("div");
-  nameContainer.textContent = name;
-  return nameContainer;
+  const profileContainer = document.createElement("div");
+  const avatar = document.createElement("player-avatar");
+  const playerName = document.createElement("div");
+  avatar.className = name;
+  playerName.textContent = name;
+  profileContainer.append(avatar, playerName);
+  console.log(profileContainer);
+  return profileContainer;
 };
 
 const updatePlayers = (container, players) => {
