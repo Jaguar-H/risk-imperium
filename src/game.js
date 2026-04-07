@@ -307,24 +307,18 @@ export class Game {
       },
     };
   }
+  get canGetCard() {
+    return this.#hasCaptured;
+  }
 
   getCard() {
-    let card;
-    if (this.#hasCaptured) {
-      card = this.#cards.drawCard();
-      const activePlayer = this.#activePlayer;
-      activePlayer.cards.push(card);
-      this.#hasCaptured = false;
-    }
     this.#state = STATES.REINFORCE;
+    const card = this.#cards.drawCard();
+    const activePlayer = this.#activePlayer;
+    activePlayer.cards.push(card);
+    this.#hasCaptured = false;
     this.#setReinforcements();
-
-    return {
-      action: STATES.REINFORCE,
-      data: {
-        card,
-      },
-    };
+    return card;
   }
 
   removePlayerCards(cards) {
@@ -343,7 +337,7 @@ export class Game {
     if (!isValidCombo || !isPlayerCards) {
       throw new Error("INVALID CARDS COMBO");
     }
-
+    this.#state = STATES.REINFORCE;
     const troops = this.#cavalry.getCurrentCount();
 
     this.#reinforcementController.addExtraTroops(troops);
@@ -401,6 +395,7 @@ export class Game {
       reinforce: this.#reinforcementController.saveableState(),
       invasion: this.#invasionController.saveableState(),
       cavalry: this.#cavalry.lastPos,
+      hasCaptured: this.#hasCaptured,
     };
   }
 
@@ -414,6 +409,7 @@ export class Game {
     }
 
     this.#invasionController = controller.invasionController;
+
     this.#invasionController.loadState(gameState.invasion);
 
     this.#reinforcementController = controller.reinforcementController;
@@ -428,6 +424,8 @@ export class Game {
 
     this.#state = state;
     this.#cavalry = handlers.cavalry;
+    this.#cards = handlers.cardsHandler;
+    this.#hasCaptured = gameState.hasCaptured;
     this.#fortificationController = handlers.fortificationHandler;
   }
 

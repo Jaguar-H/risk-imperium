@@ -3,7 +3,6 @@ export const highlightTerritories = (territories, className = "selected") => {
     const territoryElement = document.querySelector(
       `[data-territory-id="${territory}"]`,
     );
-
     territoryElement.classList.add(className);
   });
 };
@@ -18,7 +17,6 @@ export const removeHighlights = (className) => {
 export const addGlow = (cardContainer, selectedCards, glow) => {
   for (const card in selectedCards) {
     const cardElement = cardContainer.querySelector(`#${card}`);
-    cardElement.className = "";
     cardElement.className = "card " + glow;
   }
 };
