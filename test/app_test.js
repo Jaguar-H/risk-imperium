@@ -3,7 +3,7 @@ import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
-import { CONFIG } from "../src/config.js";
+import { CONFIG, STATES } from "../src/config.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { mockPlayers } from "../src/mock_data.js";
 import { Cavalry } from "../src/models/cavalry.js";
@@ -105,7 +105,7 @@ describe("App Handler", () => {
       const { action, data } = await response.json();
       assertEquals(response.status, 200);
       assertEquals(response.ok, true);
-      assertEquals(action, "INITIAL_REINFORCEMENT");
+      assertEquals(action, STATES.WAITING);
       assertEquals(data.updatedTerritory.length, 1);
       const updatedTerritory = data.updatedTerritory[0];
       assertEquals(updatedTerritory.territoryId, 37);

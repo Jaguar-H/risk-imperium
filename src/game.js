@@ -273,7 +273,9 @@ export class Game {
         remainingTroops: troopsLeft,
       },
     };
+
     this.updateGame(STATES.INITIAL_REINFORCEMENT, data, this.#activePlayerId);
+    this.#changeTurn();
 
     if (this.#initialReinforcementController.isDone) {
       this.#updateState(STATES.REINFORCE);
@@ -281,7 +283,7 @@ export class Game {
     }
 
     return {
-      action: this.#state,
+      action: STATES.WAITING,
       data: {
         updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
           territoryId,
@@ -374,8 +376,7 @@ export class Game {
 
       this.#state = STATES.DEFEND;
       return { newState: STATES.WAITING, data: {} };
-    } catch (e) {
-      console.log(e);
+    } catch {
       throw new Error("Invalid Attack");
     }
   }
@@ -498,6 +499,11 @@ export class Game {
     };
   }
 
+  passToNextPlayer() {
+    this.#state = STATES.REINFORCE;
+    this.#changeTurn();
+  }
+
   getCard() {
     this.#state = STATES.REINFORCE;
     const card = this.#cards.drawCard();
@@ -555,6 +561,7 @@ export class Game {
 
   getSavableGameState() {
     return {
+      activePlayerIndex: this.#activePlayerIndex,
       activePlayerId: this.#activePlayerId,
       territories: this.#territoriesHandler.getTerritories(),
       players: this.#players.map((player) => player.getSaveableData()),
@@ -569,7 +576,7 @@ export class Game {
   }
 
   loadGameState(gameState, handlers = {}, controller = {}) {
-    const { activePlayerId, players, state } = gameState;
+    const { players, state, activePlayerIndex } = gameState;
 
     for (let index = 0; index < players.length; index++) {
       const player = this.#players[index];
@@ -588,7 +595,7 @@ export class Game {
       controller.initialReinforcementController;
     this.#initialReinforcementController.loadGameState(gameState.initReinforce);
 
-    this.#activePlayerIndex = activePlayerId - 1;
+    this.#activePlayerIndex = activePlayerIndex;
     this.#territoriesHandler = handlers.territoriesHandler;
 
     this.#state = state;

@@ -16,7 +16,7 @@ describe("FORTIFICATION CONTROLLER ", () => {
   let fortificationController;
   const territoryHandler = new TerritoriesHandler(fortification.territories);
   const player = fortification.players.find(
-    ({ id }) => fortification.activePlayerId === id,
+    ({ id }) => fortification.activePlayerIndex === id - 1,
   );
   const playerTerritory = territoryHandler.getTerritoriesOf(player.id);
 

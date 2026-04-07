@@ -5,6 +5,7 @@ import {
   tradeCardHandler,
 } from "../src/handlers/card_handler.js";
 import { Player } from "../src/models/player_handler.js";
+import { STATES } from "../src/config.js";
 
 describe("card handler tests", () => {
   it("should return action and data", () => {
@@ -24,9 +25,10 @@ describe("card handler tests", () => {
       getGameState: () => 2,
       canGetCard: true,
       isTurnOf: () => false,
+      passToNextPlayer: () => {},
     };
     const result = getCardHandler(game, "", 1, [new Player()]);
-    const expected = { action: 2, data: { card: 1 } };
+    const expected = { action: STATES.WAITING, data: { card: 1 } };
     assertEquals(result, expected);
   });
 });

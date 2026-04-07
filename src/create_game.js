@@ -22,8 +22,9 @@ export const createGame = (players = mockPlayers()) => {
   const controllers = {
     fortificationController: new FortificationController(CONFIG.TERRITORIES),
     initialReinforcementController: new InitialReinforcementController(
-      1,
+      players.length,
       handlers.territoriesHandler,
+      2,
     ),
     reinforcementController: new ReinforcementController(
       handlers.territoriesHandler,

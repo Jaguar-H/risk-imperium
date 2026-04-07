@@ -1,5 +1,5 @@
 {
-  "activePlayerId": 1,
+  "activePlayerIndex": 0,
   "territories": {
     "1": {
       "name": "Alaska",

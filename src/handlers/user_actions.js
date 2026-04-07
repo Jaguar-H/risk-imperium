@@ -156,10 +156,16 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
   const data = game.getUpdates(gameVersionId, playerId);
   const isActive = game.isTurnOf(playerId);
   const isReinforce = game.getGameState() === STATES.REINFORCE;
+  const isInitialReinforcement =
+    game.getGameState() === STATES.INITIAL_REINFORCEMENT;
   const isDefending = game.isPlayerDefending(playerId);
 
   if (isActive && isReinforce) {
     return { action: STATES.REINFORCE, data };
+  }
+
+  if (isActive && isInitialReinforcement) {
+    return { action: STATES.INITIAL_REINFORCEMENT, data };
   }
 
   if (isActive) {

@@ -26,7 +26,7 @@ describe("INITIAL REINFORCEMENT", () => {
       troopCount: 1,
     });
 
-    assertEquals(action, STATES.INITIAL_REINFORCEMENT);
+    assertEquals(action, STATES.WAITING);
     assertEquals(data.updatedTerritory.length, 1);
     const updatedTerritory = data.updatedTerritory[0];
     assertEquals(updatedTerritory.territoryId, 37);
@@ -43,6 +43,6 @@ describe("INITIAL REINFORCEMENT", () => {
     );
     const { action, data } = game.reinforce({ territoryId: 28, troopCount: 1 });
     assertEquals(data.remainingTroops, 0);
-    assertEquals(action, STATES.REINFORCE);
+    assertEquals(action, STATES.WAITING);
   });
 });

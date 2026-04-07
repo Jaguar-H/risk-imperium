@@ -94,6 +94,7 @@ describe("Game", () => {
 
       const expectedParameters = [
         "activePlayerId",
+        "activePlayerIndex",
         "territories",
         "players",
         "continents",
@@ -116,6 +117,7 @@ describe("Game", () => {
       const gameState = game.getSavableGameState();
       const expectedParameters = [
         "activePlayerId",
+        "activePlayerIndex",
         "territories",
         "players",
         "continents",

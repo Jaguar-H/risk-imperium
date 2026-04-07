@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert";
-import fortificationState from "../../data/states/fortification.json" with {
+import fortificationState from "../../data/tests/fortification_2.json" with {
   type: "json",
 };
 import { Game } from "../../src/game.js";

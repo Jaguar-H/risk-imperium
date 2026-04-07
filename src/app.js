@@ -46,19 +46,6 @@ export const createApp = (
 
   app.get("/get-lobby-data", sendLobbyData);
 
-  if (isDevMode) {
-    app.get(
-      "/load/:state",
-      setGame,
-      (c) => handleLoadGameState(c, readTextFile),
-    );
-
-    app.get(
-      "/save/:name",
-      setGame,
-      (c) => handleSaveGameState(c, writeTextFile, game),
-    );
-  }
   app.get(
     "/login.html",
     redirectLoggedInPlayer,
@@ -76,6 +63,20 @@ export const createApp = (
     rejectIfNotInGame,
     serveStatic({ root: "./public" }),
   );
+
+  if (isDevMode) {
+    app.get(
+      "/load/:state",
+      setGame,
+      (c) => handleLoadGameState(c, readTextFile),
+    );
+
+    app.get(
+      "/save/:name",
+      setGame,
+      (c) => handleSaveGameState(c, writeTextFile),
+    );
+  }
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };

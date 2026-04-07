@@ -23,8 +23,9 @@ export const getCardHandler = (game, _data, _currentPlayerId, opponents) => {
   if (game.canGetCard) {
     card = game.getCard();
   }
+  game.passToNextPlayer();
 
-  const action = game.getGameState();
+  const action = STATES.WAITING;
   const lastUpdate = game.lastUpdate;
 
   const passivePlayers = opponents.filter((player) =>
