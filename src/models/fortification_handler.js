@@ -1,5 +1,4 @@
 import { STATES } from "../config.js";
-import { sendUpdatesToPlayers } from "../utilities.js";
 
 const isValidTerritoryForFortification = (to, from, game) => {
   if (!game.isCurrentUserTerritory(to)) {
@@ -12,12 +11,7 @@ const isValidTerritoryForFortification = (to, from, game) => {
   return to !== from;
 };
 
-export const fortificationHandler = (
-  game,
-  data,
-  _currentPlayerId,
-  opponents,
-) => {
+export const fortificationHandler = (game, data) => {
   const state = game.getGameState();
   if (state !== STATES.FORTIFICATION) {
     return { action: state, data: [] };
@@ -33,9 +27,6 @@ export const fortificationHandler = (
   const updatedTerritories = game.fortification(from, to, troopCount);
 
   const newState = game.getGameState();
-  const lastUpdate = game.lastUpdate;
-
-  sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
 
   return { action: newState, data: updatedTerritories };
 };

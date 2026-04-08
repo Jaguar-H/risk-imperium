@@ -173,3 +173,5 @@ export const STATES = {
   TRADE_CARD: "TRADE_CARD",
   MOVE_IN: "MOVE_IN",
 };
+
+export const TIMEOUT = 10000;

@@ -1,3 +1,4 @@
+import { Cards } from "../models/cards.js";
 import { Cavalry } from "../models/cavalry.js";
 import { ContinentsHandler } from "../models/continents_handler.js";
 import { TerritoriesHandler } from "../models/territoryHandler.js";
@@ -8,8 +9,6 @@ import { ReinforcementController } from "./reinforcement_controller.js";
 
 export const handleLoadGameState = async (c, readTextFile) => {
   const game = c.get("game");
-  console.log({ game });
-
   const { state } = c.req.param();
   return await readTextFile(`./data/states/${state}.json`).then((data) => {
     const savedState = JSON.parse(data);
@@ -19,6 +18,7 @@ export const handleLoadGameState = async (c, readTextFile) => {
       territoriesHandler: new TerritoriesHandler(savedState.territories),
       fortificationHandler: new FortificationController(savedState.territories),
       continentsHandler: new ContinentsHandler(),
+      cardsHandler: new Cards(),
     };
 
     const controllers = {
