@@ -1,7 +1,7 @@
 import { STATES, TIMEOUT } from "../config.js";
 import { getCardHandler, tradeCardHandler } from "./card_handler.js";
 import { fortificationHandler } from "../models/fortification_handler.js";
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 const USER_ACTIONS = {
   REINFORCE: (game, data) => game.reinforce(data),
@@ -13,6 +13,7 @@ const USER_ACTIONS = {
 
   RESOLVE_COMBAT: (game, _data, currentPlayerId = 0) => {
     const { action, data } = game.resolveCombat();
+
     if (
       game.isTurnOf(currentPlayerId) && game.getGameState() === STATES.MOVE_IN
     ) {
@@ -84,6 +85,10 @@ export const handleUserActions = async (
     const opponents = players.filter((player) => player.id !== activePlayerId);
 
     const result = actionToPerform(game, data, activePlayerId, opponents);
+    if (result.action === STATES.WON) {
+      deleteCookie(context, "gameId");
+      deleteCookie(context, "lobbyId");
+    }
     const gameVersion = game.version;
     setCookieFn(context, "game-version", gameVersion);
     broadCastNewUpdates(players);
@@ -142,12 +147,23 @@ export const handleWaiting = async (c) => {
   const gameVersionId = Number(getCookie(c, "game-version"));
   const game = c.get("game");
   const playerId = Number(getCookie(c, "playerId"));
+  const player = game.players.find((player) => player.id === playerId);
+
+  if (!player) {
+    deleteCookie(c, "gameId");
+    deleteCookie(c, "lobbyId");
+    deleteCookie(c, "gameId");
+    return c.json({
+      action: STATES.ELIMINATED,
+      data: {},
+      lastAction: game.lastUpdate,
+    });
+  }
+
   if (!game.isLatestId(gameVersionId)) {
     const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
     return c.json(result);
   }
-
-  const player = game.players.find((player) => player.id === playerId);
 
   const response = await new Promise((resolve, reject) => {
     player.resolve = resolve;

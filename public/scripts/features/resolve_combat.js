@@ -33,6 +33,5 @@ export const handleCombat = async (gameState) => {
 
   updateTroopsInTerritories(gameState, data.updatedTerritories);
   showNotification(data.notifyMsg.msg, data.notifyMsg.status);
-
   setUpNextPhase(gameState, newState);
 };

@@ -1,5 +1,4 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
-import { STYLES } from "../configs/styles.js";
 import { sendCaptureRequest } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
@@ -57,15 +56,6 @@ const handleElimination = (defender, gameState, combatResult) => {
   showNotification(msg, NOTIFICATION_TYPES.WARNING);
 };
 
-const showWinner = (player) => {
-  const glassBox = document.querySelector("#glass-box");
-  glassBox.classList.remove(STYLES.DISPLAY_NONE);
-  const actionMenu = document.querySelector(".action-menu");
-  actionMenu.classList.add(STYLES.REMOVE_EVENTS);
-  const playerElement = document.querySelector("#winner-name");
-  playerElement.textContent = `${player},the great`;
-};
-
 const handlePostCapture = async (gameState, defender, troopCount) => {
   const { action, data } = await sendCaptureRequest(troopCount);
   updateTroopsInTerritories(gameState, data.updatedTerritories);
@@ -76,9 +66,6 @@ const handlePostCapture = async (gameState, defender, troopCount) => {
   }
 
   renderPlayersDetails(gameState);
-  if (data.hasWon) {
-    return showWinner(gameState.player.name);
-  }
 };
 
 export const captureTerritory = (

@@ -18,8 +18,8 @@ export const moveToLobby = (context) => {
   const username = players[playerId];
 
   const player = new Player(+playerId, username);
-  let lobby = [...lobbies.values()].find((l) =>
-    l.players.length < 3 && l.status === "waiting"
+  let lobby = [...lobbies.values()].find((lobby) =>
+    lobby.players.length < 3 && lobby.status === "waiting"
   );
 
   if (!lobby) {

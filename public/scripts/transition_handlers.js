@@ -181,6 +181,17 @@ const handleMoveIn = async (gameState) => {
   );
 };
 
+const handleElimination = (_gameState) => {
+  const dialoge = document.querySelector("#elimination-box");
+  dialoge.classList.toggle("d-none");
+  dialoge.classList.add("glass-box");
+};
+
+const handleWin = (_gameState) => {
+  const dialoge = document.querySelector("#glass-box");
+  dialoge.classList.toggle("d-none");
+};
+
 export const SETUP_TRANSITION = {
   [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
   [STATES.REINFORCE]: setupReinforcePhase,
@@ -191,6 +202,8 @@ export const SETUP_TRANSITION = {
   [STATES.MOVE_IN]: handleMoveIn,
   [STATES.GET_CARD]: handleGetCard,
   [STATES.WAITING]: handleWaiting,
+  [STATES.ELIMINATED]: handleElimination,
+  [STATES.WON]: handleWin,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

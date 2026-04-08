@@ -134,16 +134,21 @@ export class Game {
     attacker.cards.push(...defender.cards);
   }
 
-  #eliminatePlayer(defender) {
-    const index = this.#players.findIndex((player) => player === defender);
+  #eliminatePlayer(defenderId) {
+    const index = this.#players.findIndex((player) => player.id === defenderId);
+    const defender = this.#players[index];
     const attacker = this.#activePlayer;
     this.#getDefenderCards(attacker, defender);
     this.#players.splice(index, 1);
+    if (index < this.#activePlayerIndex) {
+      this.#activePlayerIndex -= 1;
+    }
   }
 
   #isEliminated(playerId) {
     const territoryCount =
       this.#territoriesHandler.getTerritoriesOf(playerId).length;
+
     return territoryCount <= 0;
   }
 
@@ -401,21 +406,23 @@ export class Game {
   }
 
   resolveCombat() {
+    const { defenderTerritoryId } = this.#invasionController.invadeDetails;
+    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
     const updatedTerritoriesIds = this.#invasionController.resolve();
+
+    const { attackerDice, defenderDice } =
+      this.#invasionController.invadeDetails;
+
     const updatedTerritories = this.#territoriesHandler
       .getTerritoryAndTroopsCount(
         ...updatedTerritoriesIds,
       );
 
-    const { attackerDice, defenderDice, defenderTerritoryId } =
-      this.#invasionController.invadeDetails;
-    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
-
     const isCurrentCaptured = this.#invasionController.isCaptured;
     const isEliminated = this.#isEliminated(defenderId);
 
     if (isEliminated) {
-      this.#eliminatePlayer(defender);
+      this.#eliminatePlayer(defenderId);
     }
 
     const isWon = this.#hasPlayerWon();

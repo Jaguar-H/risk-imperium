@@ -172,6 +172,7 @@ export const STATES = {
   WON: "WON",
   TRADE_CARD: "TRADE_CARD",
   MOVE_IN: "MOVE_IN",
+  ELIMINATED: "ELIMINATED",
 };
 
 export const TIMEOUT = 10000;
