@@ -31,8 +31,6 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
   );
 
   const currentPlayer = players[currentPlayerId];
-
-  console.log(currentPlayer.name);
   const avatar = renderAvatar(currentPlayer.name);
   currentPlayerAvatarHolder.textContent = "";
   currentPlayerAvatarHolder.append(avatar);
