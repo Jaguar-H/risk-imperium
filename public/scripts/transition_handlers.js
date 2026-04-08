@@ -186,9 +186,11 @@ const handleMoveIn = async (gameState) => {
 };
 
 const handleElimination = (_gameState) => {
-  const dialoge = document.querySelector("#elimination-box");
-  dialoge.classList.toggle("d-none");
-  dialoge.classList.add("glass-box");
+  setTimeout(() => {
+    const dialoge = document.querySelector("#elimination-box");
+    dialoge.classList.toggle("d-none");
+    dialoge.classList.add("glass-box");
+  }, 2000);
 };
 
 const handleWin = (_gameState) => {

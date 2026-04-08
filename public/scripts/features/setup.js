@@ -15,7 +15,7 @@ const renderPlayerDetails = (player, continents) => {
   const clone = playerDetailsTemplate.content.cloneNode(true);
   const playerDetailsContainer = clone.querySelector(".player-details");
 
-  playerDetailsContainer.dataset.playerId = player.id;
+  playerDetailsContainer.dataset.player = player.id;
 
   const nameElement = clone.querySelector(".name");
   const avatarElement = clone.querySelector(".avatar");

@@ -35,7 +35,8 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
     gameState.territories,
     defenderTerritoryId,
   );
-  territoryElement.setAttribute("data-player", gameState.player.id);
+  territoryElement.dataset.player = gameState.player.id;
+  console.log("here", territoryElement);
 };
 
 const showCapturedMsg = (gameState, defenderTerritoryId) => {
@@ -56,6 +57,7 @@ const handleElimination = (defender, gameState, combatResult) => {
 
 const handlePostCapture = async (gameState, defender, troopCount) => {
   const { action, data } = await sendCaptureRequest(troopCount);
+  console.log(action, data);
   updateTroopsInTerritories(gameState, data.updatedTerritories);
   setUpNextPhase(gameState, action);
 
@@ -85,10 +87,14 @@ export const captureTerritory = (
   updatePlayerTerritories(defender, defenderTerritoryId, gameState);
   addPlayerIdToTerritory(gameState, defenderTerritoryId);
   showCapturedMsg(gameState, defenderTerritoryId);
+  const maxLimit = gameState.territories[attackerTerritoryId].troopCount - 1;
+
+  if (maxLimit <= 0) return handlePostCapture(gameState, defender, maxLimit);
+
   setTroopLimit(
-    gameState.territories[attackerTerritoryId].troopCount - 1,
+    maxLimit,
     0,
-    0,
+    maxLimit,
   );
 
   addListenerTroopSelector((troopCount) =>

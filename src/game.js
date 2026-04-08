@@ -607,6 +607,7 @@ export class Game {
     for (let index = 0; index < players.length; index++) {
       const player = this.#players[index];
       const playerCards = players[index].cards;
+      console.log({ this: this.#players, players, index });
       player.loadSaveGame(playerCards);
     }
 
