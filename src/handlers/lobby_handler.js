@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { Player } from "../models/player_handler.js";
 import { createGame } from "../create_game.js";
 
@@ -23,7 +23,7 @@ export const moveToLobby = (context) => {
   );
 
   if (!lobby) {
-    const lobbyId = Date.now() % 10000000;
+    const lobbyId = Date.now();
     lobby = createLobby(lobbyId);
     lobbies.set(lobbyId, lobby);
   }
@@ -57,4 +57,24 @@ export const sendLobbyData = (context) => {
   }
 
   return context.json(data);
+};
+
+export const leaveLobbyHandler = (context) => {
+  const lobbies = context.get("lobbies");
+  const lobbyId = getCookie(context, "lobbyId");
+
+  const lobby = lobbies.get(Number(lobbyId));
+  const playerId = Number(getCookie(context, "playerId"));
+  const response = { data: {} };
+  if (lobby.status === "waiting") {
+    const playerIdx = lobby.players.findIndex((player) =>
+      player.id === playerId
+    );
+    lobby.players.splice(playerIdx, 1);
+    response.action = "LEAVE";
+    response.data = { success: true };
+    deleteCookie(context, "lobbyId");
+  }
+
+  return context.json(response);
 };

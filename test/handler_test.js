@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "@std/assert";
+import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { handleGameSetup } from "../src/handler.js";
 import { handleUserActions } from "../src/handlers/user_actions.js";
@@ -410,8 +410,9 @@ describe("Api Handler", () => {
       assertEquals(headers.get("location"), "/");
       assertStringIncludes(headers.get("set-cookie"), "playerId");
     });
-
-    it("post  /start game should redirect to lobby and add the player to waiting list", async () => {
+  });
+  describe("LOBBY TESTS", () => {
+    it("post  /quick-play should redirect to lobby and add the player to waiting list", async () => {
       const players = { "1": "alex" };
       const lobbies = new Map();
       const app = createApp({}, false, players, lobbies);
@@ -424,7 +425,7 @@ describe("Api Handler", () => {
       assertEquals(res.status, 302);
       assertEquals(res.headers.get("location"), "/lobby.html");
     });
-    it("post  /start game should create game if  waiting list is equal 3", async () => {
+    it("post  /quick-play should create game if  waiting list is equal 3", async () => {
       const players = { "1": "alex", "2": "lisa" };
       const lobbies = new Map();
       lobbies.set(1, {
@@ -483,6 +484,33 @@ describe("Api Handler", () => {
         playerList: ["alex", "alice", "resso"],
         start: true,
       });
+    });
+
+    it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
+      const players = { "1": "alex", "2": "lisa" };
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ id: 3 }, { id: 1 }, { id: 2 }],
+        status: "waiting",
+      });
+
+      const gamesRepo = new Map();
+      const app = createApp(gamesRepo, false, players, lobbies);
+      const res = await app.request("/leave-lobby", {
+        method: "POST",
+        headers: {
+          cookie: "playerId=1;lobbyId=1",
+        },
+      });
+
+      const headers = res.headers;
+
+      assertEquals(res.status, 200);
+      const { action, data } = await res.json();
+      assertEquals(action, "LEAVE");
+      assert(data.success);
+      assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
     });
   });
 });

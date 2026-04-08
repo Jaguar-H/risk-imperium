@@ -38,12 +38,27 @@ const updateLobby = async (playerContainer, id) => {
   }
 };
 
+const leaveLobby = async (_event) => {
+  const response = await fetch("/leave-lobby", { method: "post" });
+  const { action, data } = await response.json();
+  if (action === "LEAVE" && data.success) {
+    return globalThis.location = "/";
+  }
+};
+
+const addListenerToLeave = () => {
+  const leaveButton = document.querySelector("#leave-button");
+  leaveButton.addEventListener("click", leaveLobby);
+};
+
 const main = () => {
   const playersContainer = document.querySelector("#players-container");
   updateLobby(playersContainer);
   const id = setInterval(() => {
     updateLobby(playersContainer, id);
   }, 2000);
+
+  addListenerToLeave();
 };
 
 globalThis.onload = main;

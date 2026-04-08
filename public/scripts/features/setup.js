@@ -83,7 +83,6 @@ export const addListenerToCard = (gameState, cardContainer) => {
     }
 
     gameState.selectedCards[id] = cards[cardId];
-    console.log({ gameState: gameState.selectedCards, cards, id });
 
     card.classList.add(STYLES.GLOW);
     canBeTraded(gameState.selectedCards, cardContainer);
@@ -95,7 +94,6 @@ const createCardElement = (card, i) => {
   cardElement.dataset.cardType = TERRITORY_CARD[card];
   cardElement.textContent = TERRITORY_CARD[card];
   cardElement.classList.add("card");
-  console.log(i);
 
   cardElement.id = `card-${i}`;
   return cardElement;

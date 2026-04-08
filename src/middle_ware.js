@@ -25,7 +25,6 @@ export const redirectLoggedInPlayer = (
 export const rejectUnknownUser = (context, next, getCookieFn = getCookie) => {
   const playerId = getCookieFn(context, "playerId");
   const players = context.get("players");
-  console.log(playerId, players);
 
   if (!players[playerId]) {
     return context.redirect("/login.html");
