@@ -1,6 +1,6 @@
 {
   "activePlayerIndex": 1,
-  "activePlayerId": 1,
+  "activePlayerId": 2,
   "territories": {
     "1": {
       "name": "Alaska",
@@ -95,7 +95,7 @@
     "16": {
       "name": "Ukraine",
       "neighbours": [15, 18, 20, 23, 28, 35],
-      "troopCount": 3,
+      "troopCount": 2,
       "ownerId": 3
     },
     "17": {
@@ -107,7 +107,7 @@
     "18": {
       "name": "Northern Europe",
       "neighbours": [15, 16, 17, 19, 20],
-      "troopCount": 1,
+      "troopCount": 8,
       "ownerId": 2
     },
     "19": {
@@ -256,21 +256,9 @@
     }
   },
   "players": [
-    {
-      "id": 2,
-      "name": "reger",
-      "cards": ["4", "4", "4"]
-    },
-    {
-      "id": 1,
-      "name": "Himanshuj",
-      "cards": ["4", "4", "4"]
-    },
-    {
-      "id": 3,
-      "name": "Iron man",
-      "cards": []
-    }
+    { "id": 1, "name": "User 1", "cards": ["4", "4", "4"] },
+    { "id": 2, "name": "Uer 2", "cards": [] },
+    { "id": 3, "name": "Uer 3", "cards": [] }
   ],
   "continents": {
     "1": {
@@ -298,35 +286,29 @@
       "territories": [14, 15, 16, 17, 18, 19, 20],
       "armies": 5
     },
-    "6": {
-      "name": "Australia",
-      "territories": [39, 40, 41, 42],
-      "armies": 2
-    }
+    "6": { "name": "Australia", "territories": [39, 40, 41, 42], "armies": 2 }
   },
-  "state": "REINFORCE",
+  "state": "FORTIFICATION",
   "initReinforce": {
     "round": 6,
     "troops": 2,
     "isDone": true,
     "playersCount": 3
   },
-  "reinforce": {
-    "remainingReinforce": 4
-  },
+  "reinforce": { "remainingReinforce": 0 },
   "invasion": {
-    "isDone": true,
+    "isDone": false,
     "attackerId": 2,
-    "attackFrom": 28,
-    "attackTo": 36,
+    "attackFrom": 18,
+    "attackTo": 16,
     "attackerTroopsCount": 3,
-    "defenderTroopsCount": 1,
-    "state": "moved-in",
-    "isCaptured": true,
-    "isAttackSuccessful": true,
-    "attackerDice": [4, 2, 1],
-    "defenderDice": [2]
+    "defenderTroopsCount": 2,
+    "state": "resolved",
+    "isCaptured": false,
+    "isAttackSuccessful": false,
+    "attackerDice": [5, 4, 3],
+    "defenderDice": [5, 2]
   },
-  "cavalry": 0,
+  "cavalry": 1,
   "hasCaptured": false
 }

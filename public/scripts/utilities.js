@@ -108,3 +108,8 @@ export const getPlayerById = (players, territoryId) =>
 
 export const getIndexOf = (collection, target) =>
   collection.findIndex((element) => element === target);
+
+export const getTerritoryName = (gameState, territoryId) =>
+  gameState.territories[territoryId].name;
+
+export const descendingSort = (array) => array.sort((a, b) => b - a);

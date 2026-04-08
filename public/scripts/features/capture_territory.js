@@ -39,10 +39,8 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
 };
 
 const showCapturedMsg = (gameState, defenderTerritoryId) => {
-  const msg = `${gameState.player.name} captured ${
-    gameState.territories[defenderTerritoryId].name
-  }`;
-  showNotification(msg);
+  const msg = `You captured ${gameState.territories[defenderTerritoryId].name}`;
+  showNotification(msg, NOTIFICATION_TYPES.SUCCESS);
 };
 
 const handleElimination = (defender, gameState, combatResult) => {

@@ -30,7 +30,7 @@ import { renderTerritoriesAndTroops } from "./features/initial_territory_allocat
 import { handleCombat } from "./features/resolve_combat.js";
 import { captureTerritory } from "./features/capture_territory.js";
 import { showNotification } from "./utilities/notifications.js";
-import { NOTIFICATION_TYPES } from "./configs/notification_config.js";
+import { SPECTATOR_MSGs } from "./configs/spectator_messages.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -136,27 +136,29 @@ const updateGameState = (gameState, newState) => {
 };
 
 const showLastUpdates = (gameState, lastAction) => {
-  const { action, _data, playerId } = lastAction;
+  const { action, data, playerId } = lastAction;
 
   const player = gameState.opponents[playerId];
-  if (!player) {
+
+  if (!player || !action) {
     return;
   }
-  showNotification(
-    `Player: ${player.name} | Action: ${action}`,
-    NOTIFICATION_TYPES.INFO,
-    1000,
-  );
+
+  const messageFormatter = SPECTATOR_MSGs[action];
+
+  if (messageFormatter) {
+    const message = messageFormatter(gameState, player.name, data);
+    showNotification(message);
+  }
 };
 
 const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
+    console.log(lastAction);
     newState = action;
-
     updateGameState(gameState, data);
-    showLastUpdates(gameState, lastAction);
 
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
@@ -165,6 +167,8 @@ const handleWaiting = async (gameState) => {
       gameState.territories,
       gameState.opponents,
     );
+
+    showLastUpdates(gameState, lastAction);
   }
 
   gameState.state = STATES.WAITING;

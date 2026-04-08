@@ -1,37 +1,20 @@
 import { combat } from "../server_calls.js";
-import { showNotification } from "../utilities/notifications.js";
+import {
+  resolveCombatMsg,
+  showNotification,
+} from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { delay, updateTroopsInTerritories } from "../utilities.js";
-
-import {
-  ATTACKER_DICE_CONFIGS,
-  DEFENDER_DICE_CONFIGS,
-  prepareOverlay,
-  showDiceAnimations,
-} from "../utilities/animate_dice.js";
 
 export const handleCombat = async (gameState) => {
   const { action: newState, data } = await combat();
 
-  const overlay = prepareOverlay();
-
-  showDiceAnimations(
-    overlay,
-    data.attackerDice,
-    ATTACKER_DICE_CONFIGS,
-    "attacker",
-  );
-
-  showDiceAnimations(
-    overlay,
-    data.defenderDice,
-    DEFENDER_DICE_CONFIGS,
-    "defender",
-  );
-
+  const message = resolveCombatMsg(gameState, "you", data);
   await delay(2000);
 
   updateTroopsInTerritories(gameState, data.updatedTerritories);
-  showNotification(data.notifyMsg.msg, data.notifyMsg.status);
+
+  showNotification(message, data.notifyMsg.status);
+
   setUpNextPhase(gameState, newState);
 };

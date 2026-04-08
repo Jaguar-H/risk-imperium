@@ -84,7 +84,7 @@ export const animateDice = (cube, targetValue, spinDir) => {
   );
 };
 
-export const prepareOverlay = () => {
+const prepareOverlay = () => {
   const overlay = getOverlay();
   overlay.innerHTML = "";
   return overlay;
@@ -173,12 +173,7 @@ const createDiceCube = (overlay, config, playerType) => {
   return { wrapper, cube };
 };
 
-export const showDiceAnimations = (
-  overlay,
-  diceValues,
-  configs,
-  playerType,
-) => {
+const showDiceAnimations = (overlay, diceValues, configs, playerType) => {
   const cubes = [];
   const direction = playerType === "attacker" ? "left" : "right";
 
@@ -198,4 +193,11 @@ export const showDiceAnimations = (
   });
 
   triggerExitAnimation(cubes, overlay);
+};
+
+export const displayDiceAnimations = (attackerDice, defenderDice) => {
+  const overlay = prepareOverlay();
+
+  showDiceAnimations(overlay, attackerDice, ATTACKER_DICE_CONFIGS, "attacker");
+  showDiceAnimations(overlay, defenderDice, DEFENDER_DICE_CONFIGS, "defender");
 };

@@ -15,7 +15,8 @@ const USER_ACTIONS = {
     const { action, data } = game.resolveCombat();
 
     if (
-      game.isTurnOf(currentPlayerId) && game.getGameState() === STATES.MOVE_IN
+      game.isTurnOf(currentPlayerId) &&
+      game.getGameState() === STATES.MOVE_IN
     ) {
       return { action: STATES.MOVE_IN, data };
     }
@@ -137,8 +138,8 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
 };
 
 const serveUpdatesToPlayer = (c, game, playerId, gameVersionId) => {
-  const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
   const gameVersion = game.version;
+  const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
   setCookie(c, "game-version", gameVersion);
   return result;
 };
@@ -170,12 +171,17 @@ export const handleWaiting = async (c) => {
     setTimeout(() => {
       reject(1);
     }, TIMEOUT);
-  }).then(() => {
-    const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
-    return c.json(result);
-  }).catch(() => {
-    return c.text(null, 204);
-  });
+  })
+    .then(() => {
+      if (gameVersionId === game.version) {
+        return c.text(null, 204);
+      }
+      const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
+      return c.json(result);
+    })
+    .catch(() => {
+      return c.text(null, 204);
+    });
 
   return response;
 };
