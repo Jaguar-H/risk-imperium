@@ -5,7 +5,11 @@ import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
 import { loginHandler } from "./handlers/login_handler.js";
-import { moveToLobby, sendLobbyData } from "./handlers/lobby_handler.js";
+import {
+  leaveLobbyHandler,
+  moveToLobby,
+  sendLobbyData,
+} from "./handlers/lobby_handler.js";
 import {
   redirectInGamePlayer,
   redirectInLobbyPlayer,
@@ -19,7 +23,7 @@ export const createApp = (
   gamesRepo,
   isDevMode,
   players,
-  lobby,
+  lobbies,
   { logger, readTextFile, writeTextFile } = {},
 ) => {
   const app = new Hono();
@@ -31,7 +35,7 @@ export const createApp = (
   app.use(async (context, next) => {
     context.set("gamesRepo", gamesRepo);
     context.set("players", players);
-    context.set("lobbies", lobby);
+    context.set("lobbies", lobbies);
     return await next();
   });
 
@@ -90,6 +94,13 @@ export const createApp = (
     rejectUnknownUser,
     redirectInGamePlayer,
     serveStatic({ root: "./public" }),
+  );
+
+  app.post(
+    "/leave-lobby",
+    rejectUnknownUser,
+    redirectInGamePlayer,
+    leaveLobbyHandler,
   );
 
   if (isDevMode) {
