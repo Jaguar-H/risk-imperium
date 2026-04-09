@@ -283,7 +283,10 @@ export class Game {
       this.#updateState(STATES.REINFORCE);
     }
 
-    return { action: STATES.WAITING, data };
+    return {
+      action: STATES.WAITING,
+      data: { ...data, currentPlayerId: this.#activePlayerId },
+    };
   }
 
   reinforce({ territoryId, troopCount }) {
