@@ -36,6 +36,8 @@ export const createGame = (players = mockPlayers()) => {
     ),
   };
 
+  players.forEach((player, index) => player.color = index + 1);
+
   const game = new Game(players, handlers, controllers, utilities);
   game.initTerritories();
   return game;

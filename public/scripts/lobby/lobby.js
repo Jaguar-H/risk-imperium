@@ -23,7 +23,8 @@ const startQuickGame = (id) => {
 const startHostGame = (id) => {
   const startBtn = renderStartButton();
   startBtn.addEventListener("click", async () => {
-    await fetch("/start-game");
+    const res = await fetch("/start-game").then((x) => x.json());
+    if (!res.ok) return;
     globalThis.location = "/game.html";
     clearInterval(id);
     return;
@@ -40,7 +41,6 @@ const renderStartButton = () => {
   navigationsContainer.replaceChildren(clone);
   return startBtn;
 };
-
 const createPlayerElement = (name, playerTemplate) => {
   const clone = playerTemplate.content.cloneNode(true);
   const playerNameContainer = clone.querySelector(".player-name-container");
@@ -65,7 +65,7 @@ const updatePlayers = (container, players, lobbyId) => {
   container.replaceChildren(fragment);
 };
 
-const updateLobby = async (playerContainer, id) => {
+const updateLobby = async (playerContainer, id, nav) => {
   const response = await fetch("/get-lobby-data");
   const playerId = await cookieStore.get("playerId");
 
@@ -74,15 +74,15 @@ const updateLobby = async (playerContainer, id) => {
     updatePlayers(playerContainer, playerDetails, data.id);
   }
 
-  if (
-    data.status === "in-game" && data.roomType === "public" ||
-    (data.status === "game-started")
-  ) {
+  if (data.status === "in-game" && data.roomType === "public") {
     return startQuickGame(id);
   }
 
   if (data.status === "in-game" && isHost(data, playerId)) {
     return startHostGame(id);
+  }
+  if (data.status !== "in-game" && isHost(data, playerId)) {
+    return nav.textContent = "";
   }
 
   // if (data.status === "game-started") {
@@ -106,9 +106,10 @@ const addListenerToLeave = () => {
 
 const main = () => {
   const playersContainer = document.querySelector("#players-container");
-  updateLobby(playersContainer);
+  const nav = document.querySelector("#navigations");
+  updateLobby(playersContainer, "", nav);
   const id = setInterval(() => {
-    updateLobby(playersContainer, id);
+    updateLobby(playersContainer, id, nav);
   }, 2000);
 
   addListenerToLeave();

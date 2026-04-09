@@ -36,7 +36,7 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
     gameState.territories,
     defenderTerritoryId,
   );
-  territoryElement.dataset.player = gameState.player.id;
+  territoryElement.dataset.player = gameState.player.colorId;
 };
 
 const showCapturedMsg = (gameState, defenderTerritoryId) => {
