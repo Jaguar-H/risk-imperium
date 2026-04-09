@@ -4,7 +4,7 @@ import { handleUserActions, handleWaiting } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
-import { loginHandler } from "./handlers/login_handler.js";
+import { logoutHandler, loginHandler } from "./handlers/login_handler.js";
 import {
   leaveLobbyHandler,
   moveToLobby,
@@ -56,6 +56,7 @@ export const createApp = (
   );
 
   app.post("/login", redirectLoggedInPlayer, loginHandler);
+  app.post("/logout", rejectUnknownUser, logoutHandler);
 
   app.post(
     "/quick-play",
@@ -104,16 +105,12 @@ export const createApp = (
   );
 
   if (isDevMode) {
-    app.get(
-      "/load/:state",
-      setGame,
-      (c) => handleLoadGameState(c, readTextFile),
+    app.get("/load/:state", setGame, (c) =>
+      handleLoadGameState(c, readTextFile),
     );
 
-    app.get(
-      "/save/:name",
-      setGame,
-      (c) => handleSaveGameState(c, writeTextFile),
+    app.get("/save/:name", setGame, (c) =>
+      handleSaveGameState(c, writeTextFile),
     );
   }
   app.get("*", serveStatic({ root: "./public" }));
