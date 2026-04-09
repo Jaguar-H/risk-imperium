@@ -1,7 +1,6 @@
 @import url(root.css);
 
 .continent > g {
-  cursor: pointer;
   transform-box: fill-box;
   transform-origin: center;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -15,11 +14,21 @@
 }
 
 .selected > .territory-outline {
+  /* 
+  stroke-width: 3;
+  filter: var(--selection-shadow);
+  fill-opacity: 0.5;
+  filter: brightness(1.3) saturate(1.2);
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.7));
+  stroke: #fff;
+  */
+
   stroke: rgb(74, 74, 74);
   stroke-width: 3px;
 }
 
 .highlight > .territory-outline {
+  cursor: pointer;
   stroke: var(--color-highlight);
   stroke-width: 2px;
   stroke-opacity: 0.5;

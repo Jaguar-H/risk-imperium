@@ -221,11 +221,21 @@ export const SETUP_TRANSITION = {
   [STATES.WON]: handleWin,
 };
 
+const removeTerritoryHighlights = () => {
+  const territoryElements = document.querySelectorAll(".territory");
+  territoryElements.forEach((territory) => {
+    territory.classList.remove("selected");
+    territory.classList.remove("highlight");
+  });
+};
+
 export const setUpNextPhase = (gameState, nextState) => {
   if (gameState.state === nextState) {
     return;
   }
+
   gameState.state = nextState;
+  removeTerritoryHighlights();
   renderGameState(gameState);
 
   if (nextState in SETUP_TRANSITION) {
