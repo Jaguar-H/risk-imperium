@@ -103,10 +103,6 @@ main {
 }
 
 #logout-button {
-  background-size: 30px 30px;
-  background-repeat: no-repeat;
-  background-position: center;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,10 +114,21 @@ main {
   transform: rotate(360deg);
 }
 
+#logout-svg {
+  width: 100%;
+  height: 100%;
+  height: 34px;
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+}
+
 #logout-button:hover {
   background-color: #222;
-  fill: white;
   transform: rotate(360deg);
+  #logout-svg {
+    stroke: white;
+  }
 }
 
 #game-heading {
