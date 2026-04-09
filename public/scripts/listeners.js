@@ -1,4 +1,5 @@
 import { STATES } from "./configs/game_states.js";
+import { NOTIFICATION_MESSAGES } from "./configs/notification_config.js";
 import { STYLES } from "./configs/styles.js";
 import {
   removeCardAreaListener,
@@ -43,7 +44,7 @@ export const addListenerToCardIcon = (player) => {
 };
 
 const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
-  showNotification("Traded the card ");
+  showNotification(NOTIFICATION_MESSAGES.TRADED_CARD);
   const selectedCards = Object.values(gameState.selectedCards);
   const selected = [...selectedCards];
   const { action, data } = await tradeCard(selected);
