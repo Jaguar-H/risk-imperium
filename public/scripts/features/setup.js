@@ -1,4 +1,7 @@
-import { NOTIFICATION_MESSAGES, NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import {
+  NOTIFICATION_MESSAGES,
+  NOTIFICATION_TYPES,
+} from "../configs/notification_config.js";
 import { STYLES } from "../configs/styles.js";
 import { TERRITORY_CARD } from "../configs/territory_card.js";
 import { addListenersToPlayerIcon } from "../listeners.js";
@@ -76,7 +79,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
 
     if (Object.entries(selectedCards).length === 3) {
       showNotification(
-      NOTIFICATION_MESSAGES.DESELECT_CARD,
+        NOTIFICATION_MESSAGES.DESELECT_CARD,
         NOTIFICATION_TYPES.WARNING,
       );
       return;
