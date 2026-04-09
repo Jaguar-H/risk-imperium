@@ -17,6 +17,7 @@ form.addEventListener("submit", async (event) => {
   const roomId = formData.get("roomId");
 
   const response = await sendPostRequest("/join-room", { roomId });
+
   if (response.success) {
     globalThis.location = "/lobby.html";
     return;

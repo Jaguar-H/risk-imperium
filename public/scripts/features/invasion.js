@@ -54,8 +54,8 @@ const handleAttack = async (
   });
 
   showNotification(
-    "Wait for defender to choose troop count",
-    "info",
+    NOTIFICATION_MESSAGES.WAIT_FOR_DEFENDER,
+    NOTIFICATION_TYPES.INFO,
     5000,
   );
 
