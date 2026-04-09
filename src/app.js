@@ -21,6 +21,7 @@ import {
   rejectUnknownUser,
   setGame,
 } from "./middle_ware.js";
+import { setCookie } from "hono/cookie";
 
 export const createApp = (
   gamesRepo,
@@ -112,6 +113,8 @@ export const createApp = (
   );
 
   if (isDevMode) {
+    let id = 1;
+
     app.get(
       "/load/:state",
       setGame,
@@ -123,6 +126,20 @@ export const createApp = (
       setGame,
       (c) => handleSaveGameState(c, writeTextFile),
     );
+
+    app.get("/dev", (c) => {
+      return c.redirect("/dev.html");
+    });
+
+    app.post("/dev/login", async (c) => {
+      const { name } = await c.req.json();
+      const players = c.get("players");
+      const playerId = id++;
+      players[playerId] = name;
+
+      setCookie(c, "playerId", playerId);
+      return c.json("Done");
+    });
   }
   app.get("*", serveStatic({ root: "./public" }));
   return app;
