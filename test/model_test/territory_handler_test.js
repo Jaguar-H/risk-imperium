@@ -1,8 +1,3 @@
-//   85 |   updateOwner(id, newOwnerId) {
-//   86 |     this.#territories[id].ownerId = newOwnerId;
-//   87 |     return newOwnerId;
-//   88 |   }
-
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert/equals";
 import { TerritoriesHandler } from "../../src/models/territoryHandler.js";

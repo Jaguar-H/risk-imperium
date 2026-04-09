@@ -84,11 +84,6 @@ const updateLobby = async (playerContainer, id) => {
   if (data.status === "in-game" && isHost(data, playerId)) {
     return startHostGame(id);
   }
-
-  // if (data.status === "game-started") {
-  //   globalThis.location = "/game.html";
-  //   clearInterval(id);
-  // }
 };
 
 const leaveLobby = async (_event) => {

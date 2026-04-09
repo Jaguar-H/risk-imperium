@@ -70,7 +70,7 @@
           <h2>About</h2>
           <p>
             A strategy game of world domination. Capture territories, grow your
-            armies, and eliminate opponents to control the entire map.
+            armies, and eliminate opponents to control the entire world.
           </p>
         </article>
 
@@ -84,15 +84,15 @@
           <p>Each turn:</p>
           <ol>
             <li>
-              <strong>Reinforce</strong> - Get armies (territories ÷ 3, min 3 +
-              continent bonuses + cards)
+              <strong>Reinforce</strong> - Get armies (territories ÷ 3, [ min 3
+              ] + continent bonuses + cards)
             </li>
             <li>
-              <strong>Attack</strong> - Invade adjacent territories using dice
+              <strong>Attack</strong> - Invade adjacent territories using troops
             </li>
             <li>
-              <strong>Fortify</strong> - Move armies between your territories
-              (once)
+              <strong>Fortify</strong> - Move armies between your connected
+              territories (once)
             </li>
           </ol>
         </article>
@@ -100,10 +100,17 @@
         <article id="combat">
           <h2>Combat</h2>
           <ol>
-            <li>Attack with up to 3 dice (need 2+ armies)</li>
-            <li>Defender rolls up to 2 dice</li>
-            <li>Highest dice win → loser removes 1 army</li>
-            <li>Capture territory when enemy reaches 0</li>
+            <li>Attack with up to 3 troops (need 3+ army)</li>
+            <li>Defender defends with up to 2 troops ( need 1+ army )</li>
+            <li>
+              Highest dice win → loser loses the number of troops they
+              attacked/defended with
+            </li>
+            <li>
+              In case of tie → attacker loses the number of troops they attacked
+              with
+            </li>
+            <li>Capture territory when enemy has no army left</li>
           </ol>
         </article>
 
@@ -111,8 +118,10 @@
           <h2>Cards</h2>
           <ol>
             <li>Gain 1 card if you capture a territory</li>
-            <li>Trade sets for bonus armies</li>
-            <li>Max 4 cards → must trade</li>
+            <li>
+              Trade sets for bonus armies [ all 3 unique/distinct set of cards ]
+            </li>
+            <li>Max 5 cards → must trade [ force trade ]</li>
             <li>Eliminating a player gives you their cards</li>
           </ol>
         </article>

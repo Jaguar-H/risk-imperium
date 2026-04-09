@@ -86,22 +86,6 @@
   color: var(--australia-outline);
 }
 
-/* @media (min-width: 800px) {
-  .continent-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(5em, 6em));
-    gap: 12px;
-  }∑
-}
-
-@media (min-width: 1024px) {
-  .continent-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(8em, 1fr));
-    gap: 12px;
-  }
-} */
-
 .action-menu {
   position: absolute;
   bottom: 40px;

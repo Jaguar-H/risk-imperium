@@ -232,18 +232,14 @@ header h2 {
   top: 0;
   right: 0;
   width: 50%;
-  height: 100vh;
-
+  height: 100%;
   padding: 60px 50px;
-
   display: flex;
   flex-direction: column;
   gap: 25px;
-
   transform: translateX(100%);
-  pointer-events: none;
-
   transition: transform 1s ease-in, opacity 0.6s ease;
+  overflow-y: scroll;
 }
 
 main.show-info #game-information {
