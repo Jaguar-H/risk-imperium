@@ -5,15 +5,14 @@ import { mockPlayers } from "./mock_data.js";
 
 export class Game {
   #activePlayerIndex;
-  #territories;
   #players;
-  #continentsHandler;
+  #continents;
   #state;
   #randomFunction;
   #cards;
   #fortificationController;
   #cavalry;
-  #territoriesHandler;
+  #territories;
   #initialReinforcementController;
   #reinforcementController;
   #invasionController;
@@ -34,10 +33,10 @@ export class Game {
     this.#randomFunction = utilities.random;
     this.#activePlayerIndex = 0;
 
-    this.#territoriesHandler = handlers.territoriesHandler;
+    this.#territories = handlers.territoriesHandler;
     this.#players = players;
     this.#cards = handlers.cardsHandler;
-    this.#continentsHandler = handlers.continentsHandler;
+    this.#continents = handlers.continentsHandler;
     this.#cavalry = handlers.cavalry;
     this.#state = STATES.SETUP;
     this.#hasCaptured = false;
@@ -59,7 +58,7 @@ export class Game {
   }
 
   dropOneTroop(territoryId) {
-    this.#territoriesHandler.addTroops(territoryId, 1);
+    this.#territories.addTroops(territoryId, 1);
     this.#round++;
 
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
@@ -87,13 +86,10 @@ export class Game {
   }
 
   get activePlayerTerritory() {
-    return this.#territoriesHandler.getTerritoriesOf(this.#activePlayerId);
+    return this.#territories.getTerritoriesOf(this.#activePlayerId);
   }
   setTroops(territoryId, count) {
-    return this.#territoriesHandler.setTroops(
-      territoryId,
-      count,
-    );
+    return this.#territories.setTroops(territoryId, count);
   }
 
   moveCavalry() {
@@ -104,32 +100,31 @@ export class Game {
     return this.#cavalry.getPositions();
   }
 
-  //     const positions = this.#cavalry.getPositions();{}
   updateOwner(territoryId, ownerId) {
-    this.#territoriesHandler.updateOwner(territoryId, ownerId);
+    this.#territories.updateOwner(territoryId, ownerId);
   }
 
   getAllTerritories() {
-    return this.#territoriesHandler.territories;
+    return this.#territories.territories;
   }
   setNewState(state) {
     this.#state = state;
   }
 
   isTerritoryBarren(territoryId) {
-    return this.#territoriesHandler.isBarren(territoryId);
+    return this.#territories.isBarren(territoryId);
   }
 
   addTroops(territoryId, troopCount) {
-    this.#territoriesHandler.addTroops(territoryId, troopCount);
+    this.#territories.addTroops(territoryId, troopCount);
   }
 
   decreaseTroops(territoryId, troopCount) {
-    this.#territoriesHandler.decreaseTroops(territoryId, troopCount);
+    this.#territories.decreaseTroops(territoryId, troopCount);
   }
 
   getTerritoriesDetails(...territoryIds) {
-    return this.#territoriesHandler.getTerritoryAndTroopsCount(...territoryIds);
+    return this.#territories.getTerritoryAndTroopsCount(...territoryIds);
   }
 
   getPlayerTerritory(playerId) {
@@ -137,11 +132,11 @@ export class Game {
       throw ERROR_MESSAGE.INVALID_PARAMETERS;
     }
 
-    return this.#territoriesHandler.getTerritoriesOf(playerId);
+    return this.#territories.getTerritoriesOf(playerId);
   }
 
   getOwnerOfTerritory(territoryId) {
-    return this.#territoriesHandler.getOwnerOf(territoryId);
+    return this.#territories.getOwnerOf(territoryId);
   }
 
   updateRemainingTroopCount(troopCount) {
@@ -154,24 +149,21 @@ export class Game {
   }
 
   isTerritoryOwnBy(territoryId, ownerId) {
-    return this.#territoriesHandler.isTerritoryOwnBy(territoryId, ownerId);
+    return this.#territories.isTerritoryOwnBy(territoryId, ownerId);
   }
 
   troopCountAtTerritory(territoryId) {
-    return this.#territoriesHandler.getTroopsCount(territoryId);
+    return this.#territories.getTroopsCount(territoryId);
   }
 
   isNeighbouringTerritory(territoryId1, territoryId2) {
-    const neighbours = this.#territoriesHandler.getNeighbours(
-      territoryId1,
-    );
+    const neighbours = this.#territories.getNeighbours(territoryId1);
 
     return neighbours.includes(territoryId2);
   }
 
   isEliminated(playerId) {
-    const territoryCount =
-      this.#territoriesHandler.getTerritoriesOf(playerId).length;
+    const territoryCount = this.#territories.getTerritoriesOf(playerId).length;
 
     return territoryCount <= 0;
   }
@@ -188,7 +180,7 @@ export class Game {
   }
 
   hasPlayerWon() {
-    return this.#territoriesHandler.isConquered;
+    return this.#territories.isConquered;
   }
 
   changeTurn() {
@@ -245,7 +237,7 @@ export class Game {
     }
     const defenderTerritoryId = this.stateDetails.defenderTerritoryId;
 
-    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
+    const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
 
     return defenderId === playerId;
   }
@@ -278,11 +270,6 @@ export class Game {
     }
   }
 
-  #getPlayerByTerritoryId(territoryId) {
-    const playerId = this.#territoriesHandler.getOwnerOf(territoryId);
-    return this.#players.find((player) => playerId === player.id);
-  }
-
   #getDefenderCards(attacker, defender) {
     attacker.cards.push(...defender.cards);
   }
@@ -298,8 +285,7 @@ export class Game {
     }
   }
   #isEliminated(playerId) {
-    const territoryCount =
-      this.#territoriesHandler.getTerritoriesOf(playerId).length;
+    const territoryCount = this.#territories.getTerritoriesOf(playerId).length;
     return territoryCount <= 0;
   }
 
@@ -310,7 +296,7 @@ export class Game {
   }
 
   #hasPlayerWon() {
-    return this.#territoriesHandler.isConquered;
+    return this.#territories.isConquered;
   }
 
   getGameState() {
@@ -323,15 +309,11 @@ export class Game {
   }
 
   moveTroops(from, to, count) {
-    return this.#territoriesHandler.moveTroops(
-      from,
-      to,
-      count,
-    );
+    return this.#territories.moveTroops(from, to, count);
   }
   fortification(from, to, count) {
     try {
-      const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
+      const playerTerritories = this.#territories.getTerritoriesOf(
         this.#activePlayerId,
       );
 
@@ -342,7 +324,7 @@ export class Game {
         playerTerritories,
       );
 
-      const updatedTerritories = this.#territoriesHandler.moveTroops(
+      const updatedTerritories = this.#territories.moveTroops(
         from,
         to,
         count,
@@ -375,7 +357,7 @@ export class Game {
   #getOpponentsDetail(playerId) {
     return this.#players.reduce((opponents, player) => {
       if (player.id !== playerId) {
-        const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
+        const playerTerritories = this.#territories.getTerritoriesOf(
           player.id,
         );
         const playerBasicDetails = player.getBasicDetails();
@@ -392,7 +374,7 @@ export class Game {
   getSetup(playerId) {
     if (!playerId) {
       return {
-        territories: this.#territoriesHandler.getTerritories(),
+        territories: this.#territories.getTerritories(),
         opponents: this.#getOpponentsDetail(-1),
         player: { territories: [] },
       };
@@ -404,12 +386,12 @@ export class Game {
     const cards = currentPlayer.cards;
     const basicDetails = currentPlayer.getBasicDetails();
 
-    const territories = this.#territoriesHandler.getTerritoriesOf(playerId);
+    const territories = this.#territories.getTerritoriesOf(playerId);
     const currentPlayerDetails = { ...basicDetails, territories, cards };
     const playerState = this.isTurnOf(playerId) ? this.#state : STATES.WAITING;
     return {
-      continents: this.#continentsHandler.getContinents(),
-      territories: this.#territoriesHandler.getTerritories(),
+      continents: this.#continents.getContinents(),
+      territories: this.#territories.getTerritories(),
       player: currentPlayerDetails,
       opponents: opponents,
       currentPlayer: this.#activePlayerId,
@@ -419,8 +401,8 @@ export class Game {
   }
 
   initTerritories() {
-    this.#territoriesHandler.setInitTroops();
-    this.#territoriesHandler.assignRandomTerritories(
+    this.#territories.setInitTroops();
+    this.#territories.assignRandomTerritories(
       this.#players.map((player) => player.id),
       this.#randomFunction,
     );
@@ -429,7 +411,7 @@ export class Game {
 
     return {
       players: this.#players,
-      territories: this.#territoriesHandler.territories,
+      territories: this.#territories.territories,
     };
   }
 
@@ -437,7 +419,7 @@ export class Game {
     const troopsLeft = this.#initialReinforcementController.addOne(territoryId);
 
     const data = {
-      updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+      updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
         territoryId,
       ),
       remainingTroops: troopsLeft,
@@ -483,7 +465,7 @@ export class Game {
       return {
         action: this.#state,
         data: {
-          updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+          updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
             territoryId,
           ),
           remainingTroops: remainingTroopToDeploy,
@@ -495,7 +477,7 @@ export class Game {
       return {
         action: this.#state,
         data: {
-          updatedTerritory: this.#territoriesHandler.getTerritoryAndTroopsCount(
+          updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
             territoryId,
           ),
           remainingTroops: 0,
@@ -532,9 +514,7 @@ export class Game {
         defenderTerritoryId,
         attackerTroops,
       );
-      const defenderId = this.#territoriesHandler.getOwnerOf(
-        defenderTerritoryId,
-      );
+      const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
 
       this.updateGame(
         STATES.INVASION,
@@ -558,7 +538,7 @@ export class Game {
 
   defend({ troopCount }) {
     const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
+    const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
     try {
       this.#invasionController.setDefenderTroops(troopCount);
       this.updateGame(
@@ -587,16 +567,15 @@ export class Game {
 
   resolveCombat() {
     const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
+    const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
     const updatedTerritoriesIds = this.#invasionController.resolve();
 
     const { attackerDice, defenderDice } =
       this.#invasionController.invadeDetails;
 
-    const updatedTerritories = this.#territoriesHandler
-      .getTerritoryAndTroopsCount(
-        ...updatedTerritoriesIds,
-      );
+    const updatedTerritories = this.#territories.getTerritoryAndTroopsCount(
+      ...updatedTerritoriesIds,
+    );
 
     const isCurrentCaptured = this.#invasionController.isCaptured;
     const isEliminated = this.#isEliminated(defenderId);
@@ -663,10 +642,9 @@ export class Game {
 
     const hasEliminated = this.#isEliminated(defenderId);
 
-    const updatedTerritories = this.#territoriesHandler
-      .getTerritoryAndTroopsCount(
-        ...updatedTerritoriesId,
-      );
+    const updatedTerritories = this.#territories.getTerritoryAndTroopsCount(
+      ...updatedTerritoriesId,
+    );
 
     this.updateGame(
       STATES.MOVE_IN,
@@ -765,7 +743,7 @@ export class Game {
   }
 
   isCurrentUserTerritory(territoryId) {
-    return this.#territoriesHandler.isTerritoryOwnBy(
+    return this.#territories.isTerritoryOwnBy(
       territoryId,
       this.#activePlayerId,
     );
@@ -775,9 +753,9 @@ export class Game {
     return {
       activePlayerIndex: this.#activePlayerIndex,
       activePlayerId: this.#activePlayerId,
-      territories: this.#territoriesHandler.getTerritories(),
+      territories: this.#territories.getTerritories(),
       players: this.#players.map((player) => player.getSaveableData()),
-      continents: this.#continentsHandler.getContinents(),
+      continents: this.#continents.getContinents(),
       state: this.#state,
       initReinforce: this.#initialReinforcementController.saveableState(),
       reinforce: this.#reinforcementController.saveableState(),
@@ -796,12 +774,6 @@ export class Game {
   loadGameState(gameState, handlers = {}, controller = {}) {
     const { players, state, activePlayerIndex } = gameState;
 
-    for (let index = 0; index < players.length; index++) {
-      const player = this.#players[index];
-      const playerCards = players[index].cards;
-      player.loadSaveGame(playerCards);
-    }
-
     this.#invasionController = controller.invasionController;
 
     this.#invasionController.loadState(gameState.invasion);
@@ -814,7 +786,7 @@ export class Game {
     this.#initialReinforcementController.loadGameState(gameState.initReinforce);
 
     this.#activePlayerIndex = activePlayerIndex;
-    this.#territoriesHandler = handlers.territoriesHandler;
+    this.#territories = handlers.territoriesHandler;
 
     this.#state = state;
     this.#cavalry = handlers.cavalry;
@@ -826,5 +798,14 @@ export class Game {
     this.#troops = gameState.troops;
     this.#playersCount = gameState.playersCount;
     this.stateDetails = gameState.stateDetails;
+
+    for (let index = 0; index < players.length; index++) {
+      const player = this.#players[index];
+      const previousPlayer = players[index];
+      const playerCards = previousPlayer.cards;
+      player.loadSaveGame(playerCards);
+
+      this.#territories.updateOwnerId(previousPlayer.id, player.id);
+    }
   }
 }

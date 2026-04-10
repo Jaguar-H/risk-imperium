@@ -1,4 +1,4 @@
-export class TerritoriesHandler {
+export class Territories {
   #territories;
 
   constructor(territories) {
@@ -35,15 +35,15 @@ export class TerritoriesHandler {
   }
 
   addTroops(id, count) {
-    return this.#territories[id].troopCount += count;
+    return (this.#territories[id].troopCount += count);
   }
 
   decreaseTroops(id, count) {
-    return this.#territories[id].troopCount -= count;
+    return (this.#territories[id].troopCount -= count);
   }
 
   setTroops(id, count) {
-    return this.#territories[id].troopCount = count;
+    return (this.#territories[id].troopCount = count);
   }
   isBarren(id) {
     return this.#territories[id].troopCount === 0;
@@ -94,10 +94,18 @@ export class TerritoriesHandler {
     return this.getTerritoryAndTroopsCount(fromId, toId);
   }
 
+  updateOwnerId(prevOwnerId, newOwnerId) {
+    Object.values(this.#territories)
+      .filter(({ ownerId }) => ownerId === prevOwnerId)
+      .forEach((territories) => {
+        territories.ownerId = newOwnerId;
+      });
+  }
+
   get isConquered() {
     const firstOwnerId = this.#territories[1].ownerId;
-    return Object.values(this.#territories).every(({ ownerId }) =>
-      ownerId === firstOwnerId
+    return Object.values(this.#territories).every(
+      ({ ownerId }) => ownerId === firstOwnerId,
     );
   }
 }

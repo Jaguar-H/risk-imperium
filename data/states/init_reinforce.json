@@ -59,7 +59,7 @@
     "10": {
       "name": "Venezuela",
       "neighbours": [9, 11, 12],
-      "troopCount": 3,
+      "troopCount": 1,
       "ownerId": 1775804103807
     },
     "11": {
@@ -191,7 +191,7 @@
     "32": {
       "name": "Kamchatka",
       "neighbours": [1, 30, 31, 33, 34],
-      "troopCount": 3,
+      "troopCount": 1,
       "ownerId": 1775804103152
     },
     "33": {
@@ -221,7 +221,7 @@
     "37": {
       "name": "India",
       "neighbours": [35, 36, 38, 23],
-      "troopCount": 3,
+      "troopCount": 1,
       "ownerId": 1775804090315
     },
     "38": {
@@ -288,7 +288,7 @@
     },
     "6": { "name": "Australia", "territories": [39, 40, 41, 42], "armies": 2 }
   },
-  "state": "REINFORCE",
+  "state": "INITIAL_REINFORCEMENT",
   "initReinforce": {
     "round": 0,
     "troops": 13,
@@ -311,8 +311,8 @@
   },
   "cavalry": 0,
   "hasCaptured": false,
-  "round": 6,
+  "round": 0,
   "troops": 2,
   "playersCount": 3,
-  "stateDetails": { "remainingTroopsCount": 4, "hasCaptured": false }
+  "stateDetails": { "remainingTroopsCount": 0, "hasCaptured": false }
 }

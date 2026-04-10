@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert/equals";
-import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
+import { Territories } from "../../src/models/territory.js";
 import { assert } from "@std/assert/assert";
 import { assertFalse } from "@std/assert/false";
 
@@ -10,7 +10,7 @@ describe("Territory handler", () => {
     const territories = {
       1: { name: "Territory 1", troopCount: 0, ownerId: 1 },
     };
-    territoryHandler = new TerritoriesHandler(territories);
+    territoryHandler = new Territories(territories);
   });
 
   describe(".get method", () => {

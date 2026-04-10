@@ -2,8 +2,8 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert/equals";
 import { Game } from "../../src/game.js";
 import { mockPlayers } from "../../src/mock_data.js";
-import { ContinentsHandler } from "../../src/models/continents_handler.js";
-import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
+import { Continents } from "../../src/models/continents.js";
+import { Territories } from "../../src/models/territory.js";
 import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { CONFIG, STATES } from "../../src/config.js";
@@ -21,10 +21,10 @@ describe("SET REINFORCEMENTS", () => {
 
   beforeEach(() => {
     const handlers = {
-      continentsHandler: new ContinentsHandler(),
+      continentsHandler: new Continents(),
       cardsHandler: new Cards(),
       cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+      territoriesHandler: new Territories(CONFIG.TERRITORIES),
     };
 
     const utilities = { random: Math.random };
@@ -64,10 +64,10 @@ describe("REINFORCE", () => {
 
   beforeEach(() => {
     const handlers = {
-      continentsHandler: new ContinentsHandler(),
+      continentsHandler: new Continents(),
       cardsHandler: new Cards(),
       cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+      territoriesHandler: new Territories(CONFIG.TERRITORIES),
     };
 
     const utilities = { random: Math.random };

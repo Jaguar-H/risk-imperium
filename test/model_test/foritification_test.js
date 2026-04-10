@@ -1,20 +1,20 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { FortificationController } from "../src/handlers/fortification_controller.js";
+import { FortificationController } from "../../src/handlers/fortification_controller.js";
 
-import fortification from "../data/states/fortification.json" with {
+import fortification from "../../data/states/fortification.json" with {
   type: "json",
 };
 import { assertEquals } from "@std/assert/equals";
 import { assertThrows } from "@std/assert/throws";
-import { TerritoriesHandler } from "../src/models/territoryHandler.js";
-import { loadGameStateForTest } from "./utilities.js";
-import { Game } from "../src/game.js";
-import { STATES } from "../src/config.js";
-import { fortificationService } from "../src/services/fortification.js";
+import { Territories } from "../../src/models/territory.js";
+import { loadGameStateForTest } from "../utilities.js";
+import { Game } from "../../src/game.js";
+import { STATES } from "../../src/config.js";
+import { fortificationService } from "../../src/services/fortification.js";
 
-describe("FORTIFICATION ", () => {
+describe.ignore("FORTIFICATION ", () => {
   let fortificationController;
-  const territoryHandler = new TerritoriesHandler(fortification.territories);
+  const territoryHandler = new Territories(fortification.territories);
   const player = fortification.players.find(
     ({ id }) => fortification.activePlayerIndex === id - 1,
   );

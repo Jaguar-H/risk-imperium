@@ -1,5 +1,5 @@
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { Player } from "../models/player_handler.js";
+import { Player } from "../models/player.js";
 import { createGame } from "../create_game.js";
 
 const createLobby = (id, roomType = "public") => {
@@ -89,8 +89,8 @@ export const moveToLobby = (context) => {
   const lobbies = context.get("lobbies");
 
   const player = createPlayer(context);
-  let lobby = [...lobbies.values()].find((l) =>
-    l.players.length < 3 && l.status === "waiting"
+  let lobby = [...lobbies.values()].find(
+    (l) => l.players.length < 3 && l.status === "waiting",
   );
 
   if (!lobby) {
@@ -145,8 +145,8 @@ export const leaveLobbyHandler = (context) => {
     lobby.status === "waiting" ||
     (lobby.roomType === "private" && lobby.status === "in-game")
   ) {
-    const playerIdx = lobby.players.findIndex((player) =>
-      player.id === playerId
+    const playerIdx = lobby.players.findIndex(
+      (player) => player.id === playerId,
     );
     lobby.players.splice(playerIdx, 1);
     lobby.status = "waiting";

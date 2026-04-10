@@ -7,17 +7,17 @@ import { ReinforcementController } from "./handlers/reinforcement_controller.js"
 import { mockPlayers } from "./mock_data.js";
 import { Cards } from "./models/cards.js";
 import { Cavalry } from "./models/cavalry.js";
-import { ContinentsHandler } from "./models/continents_handler.js";
-import { TerritoriesHandler } from "./models/territoryHandler.js";
+import { Continents } from "./models/continents.js";
+import { Territories } from "./models/territory.js";
 
 export const createGame = (players = mockPlayers()) => {
   const utilities = { random: Math.random };
   const territories = { ...CONFIG.TERRITORIES };
   const handlers = {
-    continentsHandler: new ContinentsHandler(),
+    continentsHandler: new Continents(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
-    territoriesHandler: new TerritoriesHandler({ ...territories }),
+    territoriesHandler: new Territories({ ...territories }),
   };
 
   const controllers = {
@@ -37,7 +37,7 @@ export const createGame = (players = mockPlayers()) => {
     ),
   };
 
-  players.forEach((player, index) => player.color = index + 1);
+  players.forEach((player, index) => (player.color = index + 1));
 
   const game = new Game(players, handlers, controllers, utilities);
   game.initTerritories();

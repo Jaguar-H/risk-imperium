@@ -1,7 +1,7 @@
 import { beforeEach, describe } from "@std/testing/bdd";
 import { FortificationController } from "../../src/handlers/fortification_controller.js";
-import { ContinentsHandler } from "../../src/models/continents_handler.js";
-import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
+import { Continents } from "../../src/models/continents.js";
+import { Territories } from "../../src/models/territory.js";
 import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
@@ -15,10 +15,10 @@ describe("WIN CONDITION", () => {
   beforeEach(() => {
     const handlers = {
       fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new ContinentsHandler(),
+      continentsHandler: new Continents(),
       cardsHandler: new Cards(),
       cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+      territoriesHandler: new Territories(CONFIG.TERRITORIES),
     };
 
     const utilities = { random: () => 1 };

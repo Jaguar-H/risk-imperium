@@ -1,13 +1,13 @@
 import { assertEquals } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { ContinentsHandler } from "../src/models/continents_handler.js";
-import { CONFIG } from "../src/config.js";
+import { CONFIG } from "../../src/config.js";
+import { Continents } from "../../src/models/continents.js";
 
 describe(" CONTINENTS HANDLER", () => {
   let continentsHandler;
 
   beforeEach(() => {
-    continentsHandler = new ContinentsHandler();
+    continentsHandler = new Continents();
   });
 
   it("get continents should return the continents list", () => {

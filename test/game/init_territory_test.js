@@ -1,9 +1,9 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { FortificationController } from "../../src/handlers/fortification_controller.js";
-import { ContinentsHandler } from "../../src/models/continents_handler.js";
+import { Continents } from "../../src/models/continents.js";
 import { Cards } from "../../src/models/cards.js";
 import { Cavalry } from "../../src/models/cavalry.js";
-import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
+import { Territories } from "../../src/models/territory.js";
 import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
@@ -17,10 +17,10 @@ describe("Game - Initial Reinforcement", () => {
   const utilities = { random: Math.random };
   const handlers = {
     fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    continentsHandler: new ContinentsHandler(),
+    continentsHandler: new Continents(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
-    territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+    territoriesHandler: new Territories(CONFIG.TERRITORIES),
   };
 
   const controllers = {
@@ -52,14 +52,10 @@ describe("Game - Initial Reinforcement", () => {
       );
 
       assertEquals(
-        Object.values(players).every(
-          ({ id }) => {
-            const territories = handlers.territoriesHandler.getTerritoriesOf(
-              id,
-            );
-            return territories.length === 7;
-          },
-        ),
+        Object.values(players).every(({ id }) => {
+          const territories = handlers.territoriesHandler.getTerritoriesOf(id);
+          return territories.length === 7;
+        }),
         true,
       );
     });

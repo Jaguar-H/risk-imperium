@@ -2,20 +2,19 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
 import { assert, assertEquals, assertFalse } from "@std/assert";
 import { CONFIG, STATES } from "../src/config.js";
-
-import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { FortificationController } from "../src/handlers/fortification_controller.js";
 
 import { Cards } from "../src/models/cards.js";
 import { mockPlayers } from "../src/mock_data.js";
 import { Cavalry } from "../src/models/cavalry.js";
-import { TerritoriesHandler } from "../src/models/territoryHandler.js";
 import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../src/handlers/invasion_controller.js";
 
 import aboutToWon from "../data/tests/about-to-win.json" with { type: "json" };
 import { loadGameStateForTest } from "./utilities.js";
+import { Continents } from "../src/models/continents.js";
+import { Territories } from "../src/models/territory.js";
 
 describe("Game", () => {
   let game;
@@ -23,10 +22,10 @@ describe("Game", () => {
   beforeEach(() => {
     const handlers = {
       fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new ContinentsHandler(),
+      continentsHandler: new Continents(),
       cardsHandler: new Cards(),
       cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+      territoriesHandler: new Territories(CONFIG.TERRITORIES),
     };
 
     const utilities = { random: Math.random };
@@ -152,10 +151,10 @@ describe("Game", () => {
   describe("LOAD GAME STATE", () => {
     const handlers = {
       fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new ContinentsHandler(),
+      continentsHandler: new Continents(),
       cardsHandler: new Cards(),
       cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+      territoriesHandler: new Territories(CONFIG.TERRITORIES),
     };
 
     const utilities = { random: Math.random };

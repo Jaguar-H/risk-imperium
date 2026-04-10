@@ -1,6 +1,6 @@
 import { CONFIG } from "../config.js";
 
-export class ContinentsHandler {
+export class Continents {
   #continents;
   constructor(continents = CONFIG.CONTINENTS) {
     this.#continents = continents;
@@ -23,11 +23,10 @@ export class ContinentsHandler {
   }
 
   getOwnedContients = (territoryIds) => {
-    return Object.values(this.#continents).filter(
-      (continent) =>
-        continent.territories.every((territoryId) =>
-          territoryIds.includes(territoryId)
-        ),
+    return Object.values(this.#continents).filter((continent) =>
+      continent.territories.every((territoryId) =>
+        territoryIds.includes(territoryId)
+      )
     );
   };
 
