@@ -53,8 +53,6 @@ const createPlayerElement = (name, playerTemplate) => {
   return clone;
 };
 
-const isHost = (data, playerId) => data.host === Number(playerId.value);
-
 const updatePlayers = (container, players, lobbyId) => {
   displayRoomId(lobbyId);
   const fragment = document.createDocumentFragment();
@@ -68,24 +66,27 @@ const updatePlayers = (container, players, lobbyId) => {
 
 const updateLobby = async (playerContainer, id, nav) => {
   const response = await fetch("/get-lobby-data");
-  const playerId = await cookieStore.get("playerId");
 
-  const { playerDetails, data } = await response.json();
+  const { playerDetails, data, isHost } = await response.json();
   if (response.status === 200) {
     updatePlayers(playerContainer, playerDetails, data.id);
   }
 
-  if (data.status === "in-game" && data.roomType === "public") {
+  if (
+    data.status === "in-game" && data.roomType === "public" ||
+    (data.status === "game-started")
+  ) {
     return startQuickGame(id);
   }
 
-  if (data.status === "in-game" && isHost(data, playerId)) {
+  if (data.status === "in-game" && isHost) {
     return startHostGame(id);
   }
-  if (data.status !== "in-game" && isHost(data, playerId)) {
+  if (data.status !== "in-game" && isHost) {
     return nav.textContent = "";
   }
 };
+
 const leaveLobby = async (_event) => {
   const response = await fetch("/leave-lobby", { method: "post" });
   const { action, data } = await response.json();

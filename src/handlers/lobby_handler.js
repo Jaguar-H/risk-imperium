@@ -114,8 +114,10 @@ export const moveToLobby = (context) => {
 
 export const sendLobbyData = (context) => {
   const lobbies = context.get("lobbies");
+  const playerId = Number(getCookie(context, "playerId"));
   const lobbyId = getCookie(context, "lobbyId");
   const lobby = lobbies.get(Number(lobbyId));
+  console.log(playerId);
 
   if (lobby.status === "in-game" && lobby.roomType === "public") {
     setCookie(context, "gameId", lobby.id);
@@ -127,6 +129,7 @@ export const sendLobbyData = (context) => {
   const data = {
     playerDetails: lobby.players.map((p) => p.name),
     data: lobby,
+    isHost: playerId === lobby.host,
   };
 
   return context.json(data);

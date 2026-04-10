@@ -473,6 +473,7 @@ describe("Api Handler", () => {
           players: [{ name: "alex" }, { name: "alice" }],
           status: "waiting",
         },
+        isHost: false,
       });
     });
     it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
@@ -489,14 +490,16 @@ describe("Api Handler", () => {
 
       assertEquals(res.status, 200);
       const data = await res.json();
-      assertEquals(data, {
+      const expected = {
         playerDetails: ["alex", "alice", "resso"],
         data: {
           id: 1,
           players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
           status: "in-game",
         },
-      });
+        isHost: false,
+      };
+      assertEquals(data, expected);
     });
 
     it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {

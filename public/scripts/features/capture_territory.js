@@ -41,21 +41,12 @@ const showCapturedMsg = (gameState, defenderTerritoryId) => {
   const msg = `You captured ${gameState.territories[defenderTerritoryId].name}`;
   showNotification(msg, NOTIFICATION_TYPES.SUCCESS);
 };
-const updateUserInfo = (playerID) => {
-  console.log("in-update", playerID);
-  const playerDetailsDialog = document.querySelector("#players-info");
-  const playerElement = playerDetailsDialog.querySelector(
-    `"[data-player=${playerID}]"`,
-  );
-  console.log(playerElement);
-  playerElement.classList.add("eliminated-player");
-};
 
 const handlePostElimination = (defender, gameState, combatResult) => {
   gameState.player.cards = combatResult.newCards;
   updateCards(gameState.player.cards);
   console.log("before update");
-  updateUserInfo(defender.id);
+  // updateUserInfo(defender.id);
   addCardAlert();
   renderTradeIndicator(gameState);
   delete gameState.opponents[defender.id];
@@ -72,7 +63,7 @@ const handlePostCapture = async (gameState, defender, troopCount) => {
   console.log("not eliminates", data.hasEliminated);
   if (data.hasEliminated) {
     console.log("eliminates");
-    return handlePostElimination(defender, gameState, data);
+    handlePostElimination(defender, gameState, data);
   }
 
   console.log("no on e eliminates");
