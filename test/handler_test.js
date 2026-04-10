@@ -142,6 +142,7 @@ describe("Api Handler", () => {
         defenderTerritoryId: 28,
         attackerTroops: 3,
         defenderTroops: 1,
+        defenderId: 2,
         attackerDice: null,
         defenderDice: null,
       };
@@ -380,7 +381,7 @@ describe("Api Handler", () => {
       };
 
       const expectedData = {
-        hasEliminated: false,
+        hasEliminated: true,
         hasWon: false,
         newCards: [],
         updatedTerritories: [

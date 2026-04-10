@@ -7,7 +7,11 @@ import {
   tradeCard,
 } from "./features/cards.js";
 import { updateCavalry } from "./features/cavalry_update.js";
-import { onMapAction } from "./features/map_events.js";
+import {
+  hideCards,
+  hidePlayersDetails,
+  onMapAction,
+} from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
 import { setUpNextPhase } from "./transition_handlers.js";
 import { setTroopLimit } from "./utilities.js";
@@ -21,6 +25,7 @@ export const addListenersToPlayerIcon = () => {
   );
 
   playerIcon.addEventListener("click", () => {
+    hideCards();
     playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
   });
 };
@@ -37,6 +42,7 @@ export const addListenerToCardIcon = (player) => {
   updateCards(player.cards);
 
   cardIcon.addEventListener("click", () => {
+    hidePlayersDetails();
     const alert = cardIcon.querySelector("circle");
     alert.classList.remove(STYLES.CARD_ALERT);
     cardArea.classList.toggle(STYLES.HIDDEN);

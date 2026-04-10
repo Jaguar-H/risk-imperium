@@ -12,15 +12,23 @@ const GAME_STATES = {
   [STATES.FORTIFICATION]: handleFortified,
 };
 
-const hideCards = () => {
+export const hideCards = () => {
   const cardArea = document.querySelector("#card-area");
   if (!cardArea.classList.contains("hidden")) {
     cardArea.classList.toggle("hidden");
   }
 };
 
+export const hidePlayersDetails = () => {
+  const playerDetailsArea = document.querySelector("#player-details-container");
+  if (!playerDetailsArea.classList.contains("hidden")) {
+    playerDetailsArea.classList.toggle("hidden");
+  }
+};
+
 export const onMapAction = (event, gameState) => {
   const territory = event.target.closest(".territory");
+  hidePlayersDetails();
   hideCards();
   if (!territory) return;
 

@@ -148,7 +148,6 @@ export class Game {
   #isEliminated(playerId) {
     const territoryCount =
       this.#territoriesHandler.getTerritoriesOf(playerId).length;
-
     return territoryCount <= 0;
   }
 
@@ -495,9 +494,8 @@ export class Game {
   moveIn(troopCount) {
     const updatedTerritoriesId = this.#invasionController.moveIn(troopCount);
 
-    const { defenderTerritoryId, attackerTerritoryId } =
+    const { defenderId, attackerTerritoryId, defenderTerritoryId } =
       this.#invasionController.invadeDetails;
-    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
 
     const hasEliminated = this.#isEliminated(defenderId);
     const updatedTerritories = this.#territoriesHandler

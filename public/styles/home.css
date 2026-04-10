@@ -103,10 +103,6 @@ main {
 }
 
 #logout-button {
-  background-size: 30px 30px;
-  background-repeat: no-repeat;
-  background-position: center;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,10 +114,21 @@ main {
   transform: rotate(360deg);
 }
 
+#logout-svg {
+  width: 100%;
+  height: 100%;
+  height: 34px;
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+}
+
 #logout-button:hover {
   background-color: #222;
-  fill: white;
   transform: rotate(360deg);
+  #logout-svg {
+    stroke: white;
+  }
 }
 
 #game-heading {
@@ -225,18 +232,14 @@ header h2 {
   top: 0;
   right: 0;
   width: 50%;
-  height: 100vh;
-
+  height: 100%;
   padding: 60px 50px;
-
   display: flex;
   flex-direction: column;
   gap: 25px;
-
   transform: translateX(100%);
-  pointer-events: none;
-
   transition: transform 1s ease-in, opacity 0.6s ease;
+  overflow-y: scroll;
 }
 
 main.show-info #game-information {

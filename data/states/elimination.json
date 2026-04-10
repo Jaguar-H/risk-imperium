@@ -257,8 +257,8 @@
   },
   "players": [
     { "id": 1, "name": "Himanshuj", "cards": [] },
-    { "id": 2, "name": "siddhu", "cards": [] },
-    { "id": 3, "name": "Iron man", "cards": [] }
+    { "id": 2, "name": "siddhu", "cards": ["2", "2", "3"] },
+    { "id": 3, "name": "Iron man", "cards": ["2", "2"] }
   ],
   "continents": {
     "1": {

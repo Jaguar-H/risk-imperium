@@ -30,8 +30,17 @@
 
         <div id="join-room" class="disable-join">
           <form action="/join-room" method="post" id="join-form">
-            <input type="text" name="roomId">
-            <button type="submit">Enter</button>
+            <label for="roomId-text" id="room-title">Room-Id : </label>
+            <input
+              type="text"
+              name="roomId"
+              id="roomId-text"
+              required
+              autofocus
+            ><br>
+            <div id="joinBtn-container">
+              <button type="submit">Join</button>
+            </div>
           </form>
         </div>
 
@@ -56,16 +65,9 @@
         <div class="game-info">
           <form action="/logout" method="post">
             <button id="logout-button" type="submit">
-              <svg
-                width="30px"
-                height="30px"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg viewBox="0 0 24 24" id="logout-svg">
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M2 6.5C2 4.01472 4.01472 2 6.5 2H12C14.2091 2 16 3.79086 16 6V7C16 7.55228 15.5523 8 15 8C14.4477 8 14 7.55228 14 7V6C14 4.89543 13.1046 4 12 4H6.5C5.11929 4 4 5.11929 4 6.5V17.5C4 18.8807 5.11929 20 6.5 20H12C13.1046 20 14 19.1046 14 18V17C14 16.4477 14.4477 16 15 16C15.5523 16 16 16.4477 16 17V18C16 20.2091 14.2091 22 12 22H6.5C4.01472 22 2 19.9853 2 17.5V6.5ZM18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289L22.7071 11.2929C23.0976 11.6834 23.0976 12.3166 22.7071 12.7071L19.7071 15.7071C19.3166 16.0976 18.6834 16.0976 18.2929 15.7071C17.9024 15.3166 17.9024 14.6834 18.2929 14.2929L19.5858 13L11 13C10.4477 13 10 12.5523 10 12C10 11.4477 10.4477 11 11 11L19.5858 11L18.2929 9.70711C17.9024 9.31658 17.9024 8.68342 18.2929 8.29289Z"
+                  d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2 M9 12h12l-3 -3 M18 15l3 -3"
                 />
               </svg>
             </button>
@@ -77,7 +79,7 @@
           <h2>About</h2>
           <p>
             A strategy game of world domination. Capture territories, grow your
-            armies, and eliminate opponents to control the entire map.
+            armies, and eliminate opponents to control the entire world.
           </p>
         </article>
 
@@ -91,15 +93,15 @@
           <p>Each turn:</p>
           <ol>
             <li>
-              <strong>Reinforce</strong> - Get armies (territories ÷ 3, min 3 +
-              continent bonuses + cards)
+              <strong>Reinforce</strong> - Get armies (territories ÷ 3, [ min 3
+              ] + continent bonuses + cards)
             </li>
             <li>
-              <strong>Attack</strong> - Invade adjacent territories using dice
+              <strong>Attack</strong> - Invade adjacent territories using troops
             </li>
             <li>
-              <strong>Fortify</strong> - Move armies between your territories
-              (once)
+              <strong>Fortify</strong> - Move armies between your connected
+              territories (once)
             </li>
           </ol>
         </article>
@@ -107,10 +109,17 @@
         <article id="combat">
           <h2>Combat</h2>
           <ol>
-            <li>Attack with up to 3 dice (need 2+ armies)</li>
-            <li>Defender rolls up to 2 dice</li>
-            <li>Highest dice win → loser removes 1 army</li>
-            <li>Capture territory when enemy reaches 0</li>
+            <li>Attack with up to 3 troops (need 3+ army)</li>
+            <li>Defender defends with up to 2 troops ( need 1+ army )</li>
+            <li>
+              Highest dice win → loser loses the number of troops they
+              attacked/defended with
+            </li>
+            <li>
+              In case of tie → attacker loses the number of troops they attacked
+              with
+            </li>
+            <li>Capture territory when enemy has no army left</li>
           </ol>
         </article>
 
@@ -118,8 +127,10 @@
           <h2>Cards</h2>
           <ol>
             <li>Gain 1 card if you capture a territory</li>
-            <li>Trade sets for bonus armies</li>
-            <li>Max 4 cards → must trade</li>
+            <li>
+              Trade sets for bonus armies [ all 3 unique/distinct set of cards ]
+            </li>
+            <li>Max 5 cards → must trade [ force trade ]</li>
             <li>Eliminating a player gives you their cards</li>
           </ol>
         </article>

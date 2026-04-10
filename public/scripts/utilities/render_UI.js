@@ -26,11 +26,12 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
     "#current-player-name",
   );
+  const currentPlayerContainer = document.querySelector(".username-display");
   const currentPlayerAvatarHolder = document.querySelector(
     "#current-player-avatar",
   );
-
   const currentPlayer = players[currentPlayerId];
+  currentPlayerContainer.dataset.playerId = currentPlayerId;
 
   const avatar = renderAvatar(currentPlayer.name);
   currentPlayerAvatarHolder.textContent = "";
@@ -46,5 +47,6 @@ export const renderCurrentPlayerName = (gameState) => {
 export const renderGameState = (gameState) => {
   updateCavalry(gameState.cavalryPositions);
   const stateNameElement = document.querySelector("#game-state-name");
-  stateNameElement.textContent = `Phase: ${gameState.state}`;
+  const phase = gameState.state.replaceAll("_", " ");
+  stateNameElement.textContent = `Phase: ${phase}`;
 };

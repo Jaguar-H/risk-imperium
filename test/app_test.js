@@ -181,7 +181,6 @@ describe("App Handler", () => {
       const result = await response.json();
       assertEquals(response.status, 200);
       assertEquals(result.data.notifyMsg.status, "fail");
-      // assertEquals(result.action, STATES.`INVASION`);
     });
   });
 
@@ -218,18 +217,6 @@ describe("App Handler", () => {
   });
 
   describe("DEV Mode", () => {
-    // let app;
-    // let game;
-    // beforeEach(() => {
-    //   game = createGame()
-    //   game.initTerritories();
-
-    //   const gamesRepo = {
-    //     get: () => game
-    //   }
-
-    //   app = createApp(gamesRepo, true, [], [], {logger, });
-    // })
     describe("Load Game", () => {
       it("should provide a path for /;pad/:state for valid states in dev mode", async () => {
         const configName = "start-no-setup";

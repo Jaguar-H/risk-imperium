@@ -21,8 +21,6 @@ const dialogPositions = (territoryElement) => {
 
   const x = element.left;
   const y = element.bottom;
-  // if(y < 0)
-  //   y = element.bottom;
   return { x, y };
 };
 

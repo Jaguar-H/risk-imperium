@@ -36,7 +36,8 @@ const renderStartButton = () => {
   const clone = template.content.cloneNode("true");
   const navigationsContainer = document.querySelector("#navigations");
   const startBtn = document.createElement("button");
-  startBtn.textContent = "start";
+  startBtn.className = "startBtn";
+  startBtn.textContent = "Start";
   clone.appendChild(startBtn);
   navigationsContainer.replaceChildren(clone);
   return startBtn;
@@ -84,13 +85,7 @@ const updateLobby = async (playerContainer, id, nav) => {
   if (data.status !== "in-game" && isHost(data, playerId)) {
     return nav.textContent = "";
   }
-
-  // if (data.status === "game-started") {
-  //   globalThis.location = "/game.html";
-  //   clearInterval(id);
-  // }
 };
-
 const leaveLobby = async (_event) => {
   const response = await fetch("/leave-lobby", { method: "post" });
   const { action, data } = await response.json();
