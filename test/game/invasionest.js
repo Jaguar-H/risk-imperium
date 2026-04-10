@@ -1,16 +1,18 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertThrows } from "@std/assert/throws";
-import invasionState from "../../data/tests/invasion.json" with {type:"json"};
+import invasionState from "../../data/tests/invasion.json" with {
+  type: "json",
+};
 import { Game } from "../../src/game.js";
 
-    // players = mockPlayers(),
-    // handlers = {},
-    // controllers = {},
-    // utilities = {},
+// players = mockPlayers(),
+// handlers = {},
+// controllers = {},
+// utilities = {},
 
 describe.ignore("Invade", () => {
   beforeEach(() => {
-    const game = new Game({},{},{},{});
+    const game = new Game({}, {}, {}, {});
     const gameState = invasionState;
     game.loadGameState(gameState);
   });

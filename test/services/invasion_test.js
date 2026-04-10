@@ -257,7 +257,7 @@ describe("===> RESOLVE  COMBAT WIN STATE", () => {
       };
     };
     const actualResult = resolveCombatService(game, random([1, 1, 1, 0, 0]));
-    assertEquals(actualResult.action, "WON")
+    assertEquals(actualResult.action, "WON");
     assertEquals(actualResult.data.notifyMsg.status, "success");
     assertEquals(actualResult.data.hasEliminated, true);
     assertEquals(actualResult.data.hasWon, true);
