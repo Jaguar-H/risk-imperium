@@ -5,7 +5,7 @@ import {
 } from "./listeners.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { getSetup } from "./server_calls.js";
-import { SETUP_TRANSITION } from "./transition_handlers.js";
+import { playIntroReveal, SETUP_TRANSITION } from "./transition_handlers.js";
 import {
   renderCurrentPlayerName,
   renderGameState,
@@ -17,6 +17,7 @@ globalThis.onload = async () => {
   const gameState = await getSetup();
   gameState.selectedCards = {};
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
+
   renderTerritoriesAndTroops(
     players,
     gameState.territories,
@@ -25,6 +26,8 @@ globalThis.onload = async () => {
   setupListeners(gameState);
   renderCurrentPlayerName(gameState);
   renderGameState(gameState);
+
+  await playIntroReveal(gameState);
 
   setup(gameState);
   addListenerToTrade(gameState);

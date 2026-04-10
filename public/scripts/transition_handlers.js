@@ -36,6 +36,10 @@ import { handleCombat } from "./features/resolve_combat.js";
 import { captureTerritory } from "./features/capture_territory.js";
 import { showNotification } from "./utilities/notifications.js";
 import { SPECTATOR_MSGs } from "./configs/spectator_messages.js";
+import {
+  NOTIFICATION_MESSAGES,
+  NOTIFICATION_TYPES,
+} from "./configs/notification_config.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -97,9 +101,11 @@ const setupInvasionPhase = (gameState) => {
 
   addInvasionSkipButton(gameState);
   removeHighlights("selected");
+  removeHighlights("highlight");
+  removeHighlights("target");
 
   removeCardAreaListener(gameState);
-  highlightTerritories(attackableTerritories);
+  highlightTerritories(attackableTerritories, "can-attack");
 };
 
 const createSkipButtonElement = () => {
@@ -116,10 +122,15 @@ export const setupFortification = (gameState) => {
   const skipButtonElement = createSkipButtonElement();
   const fortifiableTerritory = territoryToFortifyFrom(gameState);
 
-  highlightTerritories(fortifiableTerritory.flat());
+  removeHighlights("selected");
+  removeHighlights("target");
+  removeHighlights("can-attack");
+
+  highlightTerritories(fortifiableTerritory.flat(), "can-fortify");
 
   skipButtonElement.addEventListener("click", async () => {
     const { action: newState } = await skipFortificationRequest();
+    removeHighlights("can-fortify");
     setUpNextPhase(gameState, newState);
     removeSkipButton();
   });
@@ -226,7 +237,31 @@ const removeTerritoryHighlights = () => {
   territoryElements.forEach((territory) => {
     territory.classList.remove("selected");
     territory.classList.remove("highlight");
+    territory.classList.remove("target");
+    territory.classList.remove("can-attack");
   });
+};
+
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const playIntroReveal = async (gameState) => {
+  const mapSvg = document.getElementById("map-svg");
+  const myTerritories = gameState.player.territories;
+
+  showNotification(
+    NOTIFICATION_MESSAGES.TERRITORY_ALLOCATED,
+    NOTIFICATION_TYPES.INFO,
+    3000,
+  );
+
+  mapSvg.classList.add("intro-dim");
+
+  highlightTerritories(myTerritories, "intro-flash");
+  await sleep(2500);
+
+  mapSvg.classList.remove("intro-dim");
+  removeHighlights("intro-flash");
+  await sleep(800);
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

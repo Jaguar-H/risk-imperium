@@ -4,6 +4,9 @@ export const highlightTerritories = (territories, className = "selected") => {
       `[data-territory-id="${territory}"]`,
     );
     territoryElement.classList.add(className);
+    const parent = territoryElement.parentElement;
+    parent.removeChild(territoryElement);
+    parent.append(territoryElement);
   });
 };
 
