@@ -29,6 +29,7 @@ import {
 } from "../src/handlers/passivePlayers.js";
 import { mockPlayers } from "../src/mock_data.js";
 import { createApp } from "../src/app.js";
+import { logoutHandler } from "../src/handlers/auth.js";
 
 describe("Api Handler", () => {
   let game;
@@ -826,7 +827,7 @@ describe("Api Handler", () => {
         assertEquals(await response, null);
       });
 
-      it.ignore(
+      (it.ignore(
         "Handle waiting should send null when resolve fn is called and version ids are not same",
         async () => {
           loadGameStateForTest(game, reinforce);
@@ -891,9 +892,13 @@ describe("Api Handler", () => {
           const data = await res.json();
 
           const expected = {
-            playerDetails: [{ name: "alex" }, { name: "alice" }, {
-              name: "resso",
-            }],
+            playerDetails: [
+              { name: "alex" },
+              { name: "alice" },
+              {
+                name: "resso",
+              },
+            ],
             data: {
               id: 1,
               players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
@@ -903,205 +908,238 @@ describe("Api Handler", () => {
             isHost: false,
           };
           assertEquals(data, expected);
-        });
-      it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
-        const lobbies = new Map();
-        lobbies.set(1, {
+        }));
+    });
+  });
+
+  describe("Lobby testing", () => {
+    it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+        status: "game-started",
+      });
+      const app = createApp({}, false, [], lobbies);
+      const res = await app.request("/get-lobby-data", {
+        headers: { cookie: "lobbyId=1" },
+      });
+
+      assertEquals(res.status, 200);
+      const data = await res.json();
+
+      const expected = {
+        playerDetails: [
+          { name: "alex" },
+          { name: "alice" },
+          {
+            name: "resso",
+          },
+        ],
+        data: {
           id: 1,
           players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
           status: "game-started",
-        });
-        const app = createApp({}, false, [], lobbies);
-        const res = await app.request("/get-lobby-data", {
-          headers: { cookie: "lobbyId=1" },
-        });
+        },
+        isHost: false,
+      };
+      assertEquals(data, expected);
+    });
 
-        assertEquals(res.status, 200);
-        const data = await res.json();
-
-        const expected = {
-          playerDetails: [{ name: "alex" }, { name: "alice" }, {
-            name: "resso",
-          }],
-          data: {
-            id: 1,
-            players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
-            status: "game-started",
-          },
-          isHost: false,
-        };
-        assertEquals(data, expected);
+    it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
+      const players = { 1: "alex", 2: "lisa" };
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ id: 3 }, { id: 1 }, { id: 2 }],
+        status: "waiting",
       });
 
-      it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
-        const players = { 1: "alex", 2: "lisa" };
-        const lobbies = new Map();
-        lobbies.set(1, {
-          id: 1,
-          players: [{ id: 3 }, { id: 1 }, { id: 2 }],
-          status: "waiting",
-        });
-
-        const gamesRepo = new Map();
-        const app = createApp(gamesRepo, false, players, lobbies);
-        const res = await app.request("/leave-lobby", {
-          method: "POST",
-          headers: {
-            cookie: "playerId=1;lobbyId=1",
-          },
-        });
-
-        const headers = res.headers;
-
-        assertEquals(res.status, 200);
-        const { action, data } = await res.json();
-        assertEquals(action, "LEAVE");
-        assert(data.success);
-        assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
-      });
-      it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
-        const players = { 1: "alex", 2: "lisa" };
-        const lobbies = new Map();
-        lobbies.set(1, {
-          id: 1,
-          players: [{ id: 3 }, { id: 1 }, { id: 2 }],
-          status: "in-game",
-          roomType: "private",
-        });
-
-        const gamesRepo = new Map();
-        const app = createApp(gamesRepo, false, players, lobbies);
-        const res = await app.request("/leave-lobby", {
-          method: "POST",
-          headers: {
-            cookie: "playerId=1;lobbyId=1",
-          },
-        });
-
-        const headers = res.headers;
-
-        assertEquals(res.status, 200);
-        const { action, data } = await res.json();
-        assertEquals(action, "LEAVE");
-        assert(data.success);
-        assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
+      const gamesRepo = new Map();
+      const app = createApp(gamesRepo, false, players, lobbies);
+      const res = await app.request("/leave-lobby", {
+        method: "POST",
+        headers: {
+          cookie: "playerId=1;lobbyId=1",
+        },
       });
 
-      it("should create the lobby and set thee player as host ", async () => {
-        const lobbies = new Map();
-        const counter = { value: 1 };
-        const app = createApp({}, "", { 1: "alex" }, lobbies, { counter });
-        const res = await app.request("/create-room", {
-          method: "post",
-          headers: {
-            cookie: "playerId=1",
-          },
-        });
+      const headers = res.headers;
 
-        assertEquals(res.status, 302);
-        assertEquals(res.headers.get("location"), "/lobby.html");
+      assertEquals(res.status, 200);
+      const { action, data } = await res.json();
+      assertEquals(action, "LEAVE");
+      assert(data.success);
+      assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
+    });
+
+    it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
+      const players = { 1: "alex", 2: "lisa" };
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ id: 3 }, { id: 1 }, { id: 2 }],
+        status: "in-game",
+        roomType: "private",
       });
 
-      it("should setthe game id and game status to game started  if lobby status is not waiting ", async () => {
-        const lobbies = new Map();
-        const gamesRepo = new Map();
-        lobbies.set(1, {
-          id: 1,
-          status: "",
-          players: [],
-        });
-        const app = createApp(gamesRepo, false, {}, lobbies);
-        const res = await app.request("/start-game", {
-          headers: {
-            cookie: "lobbyId=1",
-          },
-        });
+      const gamesRepo = new Map();
+      const app = createApp(gamesRepo, false, players, lobbies);
+      const res = await app.request("/leave-lobby", {
+        method: "POST",
+        headers: {
+          cookie: "playerId=1;lobbyId=1",
+        },
+      });
 
-        assertEquals(res.status, 200);
-        const { ok } = await res.json();
-        assert(ok);
-      });
-      it("should not  setthe game id and game status to game started  if lobby status is waiting ", async () => {
-        const lobbies = new Map();
-        const gamesRepo = new Map();
-        lobbies.set(1, {
-          id: 1,
-          status: "waiting",
-          players: [],
-        });
-        const app = createApp(gamesRepo, false, {}, lobbies);
-        const res = await app.request("/start-game", {
-          headers: {
-            cookie: "lobbyId=1",
-          },
-        });
+      const headers = res.headers;
 
-        assertEquals(res.status, 200);
-        const { ok } = await res.json();
-        assertFalse(ok);
+      assertEquals(res.status, 200);
+      const { action, data } = await res.json();
+      assertEquals(action, "LEAVE");
+      assert(data.success);
+      assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
+    });
+
+    it("should create the lobby and set thee player as host ", async () => {
+      const lobbies = new Map();
+      const counter = { value: 1 };
+      const app = createApp({}, "", { 1: "alex" }, lobbies, { counter });
+      const res = await app.request("/create-room", {
+        method: "post",
+        headers: {
+          cookie: "playerId=1",
+        },
       });
-      it("should not join the room not available  ", async () => {
-        const lobbies = new Map();
-        const gamesRepo = new Map();
-        lobbies.set(1, {
-          id: 1,
-          status: "waiting",
-          players: [],
-        });
-        const app = createApp(gamesRepo, false, {}, lobbies);
-        const res = await app.request("/join-room", {
-          method: "post",
-          body: JSON.stringify({ roomId: 2 }),
-          headers: {},
-        });
-        assertEquals(res.status, 200);
-        const { success } = await res.json();
-        assertFalse(success);
+
+      assertEquals(res.status, 302);
+      assertEquals(res.headers.get("location"), "/lobby.html");
+    });
+
+    it("should setthe game id and game status to game started  if lobby status is not waiting ", async () => {
+      const lobbies = new Map();
+      const gamesRepo = new Map();
+      lobbies.set(1, {
+        id: 1,
+        status: "",
+        players: [],
       });
-      it("should join the room if not filled  ", async () => {
-        const lobbies = new Map();
-        const gamesRepo = new Map();
-        lobbies.set(1, {
-          id: 1,
-          status: "waiting",
-          players: [],
-        });
-        const app = createApp(gamesRepo, false, {}, lobbies);
-        const res = await app.request("/join-room", {
-          method: "post",
-          body: JSON.stringify({ roomId: 1 }),
-          headers: {
-            cookie: "playerId=1",
-          },
-        });
-        assertEquals(res.status, 200);
-        assertStringIncludes(res.headers.get("set-cookie"), "lobbyId");
-        const { success } = await res.json();
-        assert(success);
+      const app = createApp(gamesRepo, false, {}, lobbies);
+      const res = await app.request("/start-game", {
+        headers: {
+          cookie: "lobbyId=1",
+        },
       });
-      it("should join the room if not filled  and should set lobby status to in game if player length = 3 ", async () => {
-        const lobbies = new Map();
-        const gamesRepo = new Map();
-        lobbies.set(1, {
-          id: 1,
-          status: "waiting",
-          players: [{}, {}],
-        });
-        const app = createApp(gamesRepo, false, {}, lobbies);
-        const res = await app.request("/join-room", {
-          method: "post",
-          body: JSON.stringify({ roomId: 1 }),
-          headers: {
-            cookie: "playerId=1",
-          },
-        });
-        const lobby = lobbies.get(1);
-        assertEquals(lobby.status, "in-game");
-        assertEquals(res.status, 200);
-        assertStringIncludes(res.headers.get("set-cookie"), "lobbyId");
-        const { success } = await res.json();
-        assert(success);
+
+      assertEquals(res.status, 200);
+      const { ok } = await res.json();
+      assert(ok);
+    });
+
+    it("should not  setthe game id and game status to game started  if lobby status is waiting ", async () => {
+      const lobbies = new Map();
+      const gamesRepo = new Map();
+      lobbies.set(1, {
+        id: 1,
+        status: "waiting",
+        players: [],
       });
+      const app = createApp(gamesRepo, false, {}, lobbies);
+      const res = await app.request("/start-game", {
+        headers: {
+          cookie: "lobbyId=1",
+        },
+      });
+
+      assertEquals(res.status, 200);
+      const { ok } = await res.json();
+      assertFalse(ok);
+    });
+
+    it("should not join the room not available  ", async () => {
+      const lobbies = new Map();
+      const gamesRepo = new Map();
+      lobbies.set(1, {
+        id: 1,
+        status: "waiting",
+        players: [],
+      });
+      const app = createApp(gamesRepo, false, {}, lobbies);
+      const res = await app.request("/join-room", {
+        method: "post",
+        body: JSON.stringify({ roomId: 2 }),
+        headers: {},
+      });
+      assertEquals(res.status, 200);
+      const { success } = await res.json();
+      assertFalse(success);
+    });
+
+    it("should join the room if not filled  ", async () => {
+      const lobbies = new Map();
+      const gamesRepo = new Map();
+      lobbies.set(1, {
+        id: 1,
+        status: "waiting",
+        players: [],
+      });
+      const app = createApp(gamesRepo, false, {}, lobbies);
+      const res = await app.request("/join-room", {
+        method: "post",
+        body: JSON.stringify({ roomId: 1 }),
+        headers: {
+          cookie: "playerId=1",
+        },
+      });
+      assertEquals(res.status, 200);
+      assertStringIncludes(res.headers.get("set-cookie"), "lobbyId");
+      const { success } = await res.json();
+      assert(success);
+    });
+
+    it("should join the room if not filled  and should set lobby status to in game if player length = 3 ", async () => {
+      const lobbies = new Map();
+      const gamesRepo = new Map();
+      lobbies.set(1, {
+        id: 1,
+        status: "waiting",
+        players: [{}, {}],
+      });
+      const app = createApp(gamesRepo, false, {}, lobbies);
+      const res = await app.request("/join-room", {
+        method: "post",
+        body: JSON.stringify({ roomId: 1 }),
+        headers: {
+          cookie: "playerId=1",
+        },
+      });
+      const lobby = lobbies.get(1);
+      assertEquals(lobby.status, "in-game");
+      assertEquals(res.status, 200);
+      assertStringIncludes(res.headers.get("set-cookie"), "lobbyId");
+      const { success } = await res.json();
+      assert(success);
+    });
+  });
+
+  describe("Logout tests", () => {
+    it("logout should delete cookies and redirect to login.html if valid user", () => {
+      const cookies = {
+        playerId: 1,
+      };
+
+      const mockDeleteCookieFn = (context, key) => delete context.cookies[key];
+
+      const mockContext = {
+        get: (key) => store[key],
+        cookies,
+        redirect: (location) => location,
+      };
+
+      assertEquals(
+        logoutHandler(mockContext, () => {}, mockDeleteCookieFn),
+        "/login.html",
+      );
     });
   });
 });

@@ -318,4 +318,24 @@ describe("Game", () => {
       assertEquals(loadedGameState.state, STATES.INITIAL_REINFORCEMENT);
     });
   });
+
+  describe("Testing pass next player", () => {
+    it("passToNextPlayer should change the state to reinforce change turn and update the version", () => {
+      game.passToNextPlayer();
+      assertEquals(game.getGameState(), STATES.REINFORCE);
+    });
+  });
+
+  describe("Testing Get Card", () => {
+    it("get card should return a random card", () => {
+      assertEquals(
+        game.getCard(() => 1),
+        "4",
+      );
+    });
+
+    it("can get card should return true if has captured is true", () => {
+      assertEquals(game.canGetCard, game.stateDetails.hasCaptured);
+    });
+  });
 });
