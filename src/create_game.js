@@ -9,12 +9,12 @@ import { Territories } from "./models/territory.js";
 
 export const createGame = (players = mockPlayers()) => {
   const utilities = { random: Math.random };
-  const territories = { ...CONFIG.TERRITORIES };
+  const territories = structuredClone(CONFIG.TERRITORIES);
   const handlers = {
     continentsHandler: new Continents(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
-    territoriesHandler: new Territories({ ...territories }),
+    territoriesHandler: new Territories(territories),
   };
 
   players.forEach((player, index) => (player.color = index + 1));

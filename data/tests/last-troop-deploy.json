@@ -309,7 +309,7 @@
         35,
         36
       ],
-      "troopCount": 10,
+      "troopCount": 3,
       "ownerId": 1775814651460
     },
     "29": {
@@ -562,7 +562,7 @@
       "armies": 2
     }
   },
-  "state": "FORTIFICATION",
+  "state": "INITIAL_REINFORCEMENT",
   "initReinforce": {
     "round": 0,
     "troops": 13,
@@ -587,7 +587,7 @@
   },
   "cavalry": 0,
   "hasCaptured": false,
-  "round": 6,
+  "round": 5,
   "troops": 2,
   "playersCount": 3,
   "stateDetails": {

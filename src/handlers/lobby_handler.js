@@ -31,8 +31,12 @@ const createPlayer = (context) => {
 
   const playerId = Number(getCookie(context, "playerId"));
   const username = players[playerId];
+  console.log(username, playerId, getCookie(context, "playerId"), players);
+
   const playerAvatar = AVATARS.pop();
   const player = new Player(playerId, username, playerAvatar);
+  console.log(player);
+
   return player;
 };
 
@@ -92,7 +96,9 @@ export const moveToLobby = (context) => {
 
   const player = createPlayer(context);
   let lobby = [...lobbies.values()].find(
-    (l) => l.players.length < 3 && l.status === "waiting",
+    (l) =>
+      l.players.length < 3 && l.status === "waiting" &&
+      l.roomType !== "private",
   );
 
   if (!lobby) {

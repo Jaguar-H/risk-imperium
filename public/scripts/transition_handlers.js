@@ -41,6 +41,8 @@ import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
 } from "./configs/notification_config.js";
+import { SFX } from "./configs/SFX.js";
+import { renderPlayersDetails } from "./features/setup.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -50,6 +52,8 @@ const setupInitialReinforcementPhase = async (gameState) => {
   const territories = gameState.player.territories;
 
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
+
+  SFX.TURN.play();
   highlightTerritories(territories);
 };
 
@@ -63,6 +67,8 @@ const setupReinforcePhase = async (gameState) => {
   setTroopLimit(data.troopsToReinforce);
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
   highlightTerritories(territories);
+
+  SFX.TURN.play();
 
   renderTradeIndicator(gameState);
 };
@@ -192,6 +198,7 @@ const handleWaiting = async (gameState) => {
       players,
       gameState.territories,
     );
+    renderPlayersDetails(gameState);
   }
 
   gameState.state = STATES.WAITING;

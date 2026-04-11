@@ -9,10 +9,14 @@ export const loginHandler = async (context) => {
   return context.redirect("/");
 };
 
-export const logoutHandler = (context) => {
-  deleteCookie(context, "playerId");
-  deleteCookie(context, "lobbyId");
-  deleteCookie(context, "gameId");
-  deleteCookie(context, "game-version");
+export const logoutHandler = (
+  context,
+  _next,
+  deleteCookieFn = deleteCookie,
+) => {
+  deleteCookieFn(context, "playerId");
+  deleteCookieFn(context, "lobbyId");
+  deleteCookieFn(context, "gameId");
+  deleteCookieFn(context, "game-version");
   return context.redirect("/login.html");
 };
