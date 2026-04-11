@@ -47,6 +47,7 @@ const renderPlayerCard = ({ name, avatar }, id) => {
     ".player-name-container",
   );
   const playerAvatarElement = renderAvatar(avatar);
+  playerContainer.classList.remove("empty");
 
   avatarContainer.style.animation = "none";
   avatarContainer.innerHTML = "";

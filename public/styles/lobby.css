@@ -6,6 +6,9 @@
   --color-accent: #ff4c4c;
   --color-accent-hover: #ff1a1a;
 
+  --color-start: #10b981;
+  --color-start-hover: #059669;
+
   --color-player-card: rgb(237, 239, 242);
 
   --text-primary: #171717;
@@ -58,45 +61,6 @@ main {
   padding: 0 5em;
 }
 
-.player-container {
-  width: 70%;
-  height: 60%;
-  border-radius: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2em;
-  box-shadow: 2px 2px 5px rgb(127, 108, 108);
-}
-
-.player-avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-left: 2px solid gray;
-  border-radius: 50%;
-  height: 30%;
-  width: 40%;
-  animation: loading 1.5s infinite linear;
-}
-
-@keyframes loading {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.player-avatar rect {
-  height: 1em;
-}
-
-.player-name-container {
-  font-size: 30px;
-  color: lightgray;
-  font-family: "MedievalSharp", serif;
-}
-
 #lobby-details {
   flex: 1;
   display: flex;
@@ -127,12 +91,24 @@ main {
   color: var(--text-inverse);
   animation: pulse 2s infinite;
   box-shadow: var(--shadow-soft);
+}
+
+#start-btn {
+  background-color: var(--color-start);
+}
+
+#leave-button {
   background-color: var(--color-accent);
 }
 
-#leave-button:hover,
-#start-btn:hover {
+#leave-button:hover {
   background-color: var(--color-accent-hover);
+  box-shadow: var(--shadow-strong);
+  transform: scale(1.08);
+}
+
+#start-btn:hover {
+  background-color: var(--color-start-hover);
   box-shadow: var(--shadow-strong);
   transform: scale(1.08);
 }
@@ -174,11 +150,17 @@ main {
   0% {
     content: ".";
   }
-  50% {
+  25% {
     content: "..";
   }
-  100% {
+  50% {
     content: "...";
+  }
+  75% {
+    content: "....";
+  }
+  100% {
+    content: ".....";
   }
 }
 
@@ -195,9 +177,104 @@ main {
 }
 
 .player-profile {
-  width: 120px;
-  height: 120px;
+  width: 5em;
+  height: 5em;
   border-radius: 50%;
-  border: 2px black;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;
+}
+
+.player-container {
+  width: 70%;
+  height: 60%;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+
+  border: 1px solid rgba(15, 23, 42, 0.14);
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+#player-1:not(.empty) {
+  background: linear-gradient(135deg, #ffe4e6, #fda4af);
+}
+
+#player-2:not(.empty) {
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+}
+
+#player-3:not(.empty) {
+  background: linear-gradient(135deg, #fef3c7, #fcd34d);
+}
+
+#player-4:not(.empty) {
+  background: linear-gradient(135deg, #cffafe, #67e8f9);
+}
+
+#player-5:not(.empty) {
+  background: linear-gradient(135deg, #fce7f3, #f9a8d4);
+}
+
+#player-6:not(.empty) {
+  background: linear-gradient(135deg, #ffedd5, #fdba74);
+}
+
+.player-container.empty {
+  background: linear-gradient(135deg, #d8dadede, #bbc1ccde);
+
+  border: 1px solid rgba(15, 23, 42, 0.07);
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.player-avatar {
+  height: 5em;
+  width: 5em;
+  border-radius: 50%;
+}
+
+.player-container.empty .player-avatar {
+  background: linear-gradient(120deg, #adb1b9 25%, #878fa0 50%, #adb0b7 75%);
+  background-size: 200% 100%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  animation: shimmerMove 1.6s infinite linear;
+}
+
+.player-container.empty .player-name-container {
+  height: 12px;
+  width: 60%;
+  border-radius: 6px;
+
+  background: linear-gradient(120deg, #adb1b9 25%, #878fa0 50%, #adb0b7 75%);
+  background-size: 200% 100%;
+  animation: shimmerMove 1.6s infinite linear;
+}
+
+@keyframes shimmerMove {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.player-container:not(.empty):hover {
+  transform: scale(1.02);
+}
+
+.player-container:not(.empty) .player-name-container {
+  font-size: 28px;
+  font-family: var(--secondary-font);
+  font-weight: 400;
+  line-height: 1.3;
 }

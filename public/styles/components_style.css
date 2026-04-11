@@ -232,26 +232,26 @@
 }
 
 [data-card-type="canon"] {
-  background-image: url(../assets/artillary.png);
+  background-image: url(../assets/canon.png);
   background-position: center;
   background-size: cover;
 }
 
 [data-card-type="soldier"] {
-  background-image: url(../assets/infantry.png);
+  background-image: url(../assets/knight.png);
   background-size: cover;
   background-position: center;
 }
 
 [data-card-type="knight"] {
   background-size: cover;
-  background-image: url(../assets/artillary.png);
+  background-image: url(../assets/knight_on_horse.png);
   background-position: center;
 }
 
 [data-card-type="wild"] {
   background-size: cover;
-  background-image: url(../assets/wildCard.png);
+  background-image: url(../assets/wild_card.jpeg);
   background-position: center;
 }
 
@@ -281,7 +281,9 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 
   opacity: 0;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.3s ease;
   transform: translateY(20px);
   z-index: 1000;
 }
@@ -352,7 +354,9 @@
   background: linear-gradient(to bottom, #f8edcf, #e8d8b5);
 
   border-color: #c4a75c;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 6px rgba(196, 167, 92, 0.6);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.4),
+    0 0 6px rgba(196, 167, 92, 0.6);
 
   transform: translateY(-2px);
 }
