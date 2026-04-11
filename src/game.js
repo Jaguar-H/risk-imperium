@@ -347,8 +347,8 @@ export class Game {
     this.#updateId();
   }
 
-  getCard() {
-    return this.#cards.drawCard();
+  getCard(randomFn = Math.random) {
+    return this.#cards.drawCard(randomFn);
   }
 
   removePlayerCards(cards) {
