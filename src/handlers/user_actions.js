@@ -48,6 +48,7 @@ export const gameController = async (
   context,
   _next,
   setCookieFn = setCookie,
+  deleteCookieFn = deleteCookie
 ) => {
   try {
     const game = context.get("game");
@@ -56,8 +57,8 @@ export const gameController = async (
     const result = gameService(userActions, game, data);
 
     if (result.action === STATES.WON) {
-      deleteCookie(context, "gameId");
-      deleteCookie(context, "lobbyId");
+      deleteCookieFn(context, "gameId");
+      deleteCookieFn(context, "lobbyId");
     }
     const gameVersion = game.version;
     setCookieFn(context, "game-version", gameVersion);

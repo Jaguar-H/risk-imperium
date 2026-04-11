@@ -1,4 +1,5 @@
 import { LABELS } from "../configs/label.js";
+import { SFX } from "../configs/SFX.js";
 import { defend } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
@@ -41,6 +42,7 @@ export const handleDefense = (gameState) => {
     `[data-territory-id="${defenderTerritoryId}"]`,
   );
   const attackerTerritoryId = gameState.invadeDetails.attackerTerritoryId;
+  SFX.DEFEND.play()
   highlightTerritories([attackerTerritoryId], "selected");
   highlightTerritories([defenderTerritoryId], "highlight");
 

@@ -174,8 +174,8 @@
 #force-trade {
   z-index: 2;
   position: absolute;
-  inset: 55% 64%;
-  height: 20em;
+  inset: 45% 54%;
+  height: 23em;
   width: 40em;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(7px);
