@@ -143,6 +143,7 @@ export const createApp = (
     });
   }
 
+  app.use("/assets/*", serveStatic({ root: "./public" }));
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };
