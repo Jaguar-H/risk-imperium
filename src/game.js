@@ -27,7 +27,7 @@ export class Game {
     utilities = {},
     initTroops = 2,
   ) {
-    this.#randomFunction = utilities.random || Math.random;
+    this.#randomFunction = utilities.random;
     this.#activePlayerIndex = 0;
 
     this.#territories = handlers.territoriesHandler;
@@ -46,6 +46,78 @@ export class Game {
 
     this.stateDetails = { remainingTroopsCount: 0, hasCaptured: false };
     this.hasCaptured = false;
+  }
+
+  get #activePlayerId() {
+    return this.#players[this.#activePlayerIndex].id;
+  }
+
+  get #activePlayer() {
+    return this.#players[this.#activePlayerIndex];
+    // return this.#players.find((player) => player.id === this.#activePlayerId);
+  }
+
+  get activePlayerId() {
+    return this.#activePlayerId;
+  }
+
+  get activePlayer() {
+    return this.#activePlayer;
+  }
+
+  get remainingTroop() {
+    const deployedTroopsPerPlayer = this.#round / this.#playersCount;
+    return this.#troops - Math.floor(deployedTroopsPerPlayer);
+  }
+
+  get activePlayerTerritory() {
+    return this.#territories.getTerritoriesOf(this.#activePlayerId);
+  }
+
+  get cavalryPositions() {
+    return this.#cavalry.getPositions();
+  }
+
+  get lastUpdate() {
+    return structuredClone(this.#lastUpdate);
+  }
+
+  get players() {
+    return this.#players;
+  }
+
+  get version() {
+    return this.#versionId;
+  }
+
+  get invadeDetail() {
+    return this.stateDetails;
+  }
+
+  get canGetCard() {
+    return this.#hasCaptured;
+  }
+
+  #updateId() {
+    this.#versionId++;
+  }
+
+  #changeTurn() {
+    this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
+      this.#players.length;
+    return this.#activePlayerIndex;
+  }
+
+  #updateState(state) {
+    if (!(state in STATES)) {
+      throw new Error(ERROR_MESSAGE.INVALID_STATE);
+    }
+    this.#state = state;
+    return state;
+  }
+
+  #getDefenderCards(attacker, defender) {
+    attacker.cards.push(...defender.cards);
   }
 
   dropOneTroop(territoryId) {
@@ -72,24 +144,12 @@ export class Game {
     };
   }
 
-  get remainingTroop() {
-    const deployedTroopsPerPlayer = this.#round / this.#playersCount;
-    return this.#troops - Math.floor(deployedTroopsPerPlayer);
-  }
-
-  get activePlayerTerritory() {
-    return this.#territories.getTerritoriesOf(this.#activePlayerId);
-  }
   setTroops(territoryId, count) {
     return this.#territories.setTroops(territoryId, count);
   }
 
   moveCavalry() {
     this.#cavalry.moveCavalry();
-  }
-
-  get cavalryPositions() {
-    return this.#cavalry.getPositions();
   }
 
   updateOwner(territoryId, ownerId) {
@@ -100,7 +160,8 @@ export class Game {
     return this.#territories.territories;
   }
   setNewState(state) {
-    this.#state = state;
+    this.#updateState(state);
+    return state;
   }
 
   isTerritoryBarren(territoryId) {
@@ -121,7 +182,7 @@ export class Game {
 
   getPlayerTerritory(playerId) {
     if (!playerId) {
-      throw ERROR_MESSAGE.INVALID_PARAMETERS;
+      throw new Error(ERROR_MESSAGE.INVALID_PARAMETERS);
     }
 
     return this.#territories.getTerritoriesOf(playerId);
@@ -156,7 +217,6 @@ export class Game {
 
   isEliminated(playerId) {
     const territoryCount = this.#territories.getTerritoriesOf(playerId).length;
-
     return territoryCount <= 0;
   }
 
@@ -179,14 +239,6 @@ export class Game {
     this.#changeTurn();
   }
 
-  get #activePlayerId() {
-    return this.#players[this.#activePlayerIndex].id;
-  }
-
-  #updateId() {
-    this.#versionId++;
-  }
-
   isTurnOf(id) {
     return this.#activePlayerId === id;
   }
@@ -195,42 +247,12 @@ export class Game {
     return this.#versionId === id;
   }
 
-  get lastUpdate() {
-    return structuredClone(this.#lastUpdate);
-  }
-
-  get activePlayerId() {
-    return this.#activePlayerId;
-  }
-
-  get activePlayer() {
-    return this.#activePlayer;
-  }
-
-  get players() {
-    return this.#players;
-  }
-
-  get #activePlayer() {
-    return this.#players.find((player) => player.id === this.#activePlayerId);
-  }
-
-  get version() {
-    return this.#versionId;
-  }
-
-  get invadeDetail() {
-    return this.stateDetails;
-  }
-
   isPlayerDefending(playerId) {
     if (this.#state !== STATES.DEFEND) {
       return false;
     }
     const defenderTerritoryId = this.stateDetails.defenderTerritoryId;
-
     const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
-
     return defenderId === playerId;
   }
 
@@ -243,40 +265,13 @@ export class Game {
     this.#updateId();
   }
 
-  #changeTurn() {
-    this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
-      this.#players.length;
-    return this.#activePlayerIndex;
-  }
-
-  #updateState(state) {
-    if (state in STATES) {
-      this.#state = state;
-    }
-    return state;
-  }
-
-  #getDefenderCards(attacker, defender) {
-    attacker.cards.push(...defender.cards);
-  }
-
   getGameState() {
     return this.#state;
   }
 
-  // skipFortification() {
-  //   this.#updateState(STATES.GET_CARD);
-  //   this.updateGame(STATES.SKIP_FORTIFICATION, {}, this.#activePlayerId);
-  // }
-
   moveTroops(from, to, count) {
     return this.#territories.moveTroops(from, to, count);
   }
-
-  // skipInvasion() {
-  //   this.#updateState(STATES.FORTIFICATION);
-  //   this.updateGame(STATES.SKIP_INVASION, {}, this.#activePlayerId);
-  // }
 
   #getOpponentsDetail(playerId) {
     return this.#players.reduce((opponents, player) => {
@@ -301,6 +296,7 @@ export class Game {
         player: { territories: [] },
       };
     }
+
     const opponents = this.#getOpponentsDetail(playerId);
 
     const currentPlayer = this.#players.find(({ id }) => id === playerId);
@@ -335,10 +331,6 @@ export class Game {
       players: this.#players,
       territories: this.#territories.territories,
     };
-  }
-
-  get canGetCard() {
-    return this.#hasCaptured;
   }
 
   passToNextPlayer() {

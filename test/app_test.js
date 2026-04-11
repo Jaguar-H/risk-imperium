@@ -272,6 +272,43 @@ describe("App Handler", () => {
         assertEquals(actualStoringData, JSON.stringify(gameData));
       });
     });
+    describe("/dev", () => {
+      const game = {
+        getSavableGameState: () => {
+          return gameData;
+        },
+      };
+      const players = {};
+      const lobbies = new Map();
+      const gamesRepo = { get: () => game };
+
+      it("should redirect to /dev.html", async () => {
+        const app = createApp(gamesRepo, true, players, lobbies);
+        const res = await app.request(`/dev`);
+        assertEquals(res.status, 302);
+      });
+    });
+    describe("/dev/login", () => {
+      const game = {
+        getSavableGameState: () => {
+          return gameData;
+        },
+      };
+      const players = {};
+      const lobbies = new Map();
+      const gamesRepo = { get: () => game };
+
+      it("should provide path /dev/login for developer to do automated login using js script", async () => {
+        const app = createApp(gamesRepo, true, players, lobbies);
+        const res = await app.request(`/dev/login`, {
+          method: "POST",
+          body: JSON.stringify({ name: "SOME_NAME" }),
+        });
+        assertEquals(res.status, 200);
+        const data = await res.json();
+        assertEquals(data, "Done");
+      });
+    });
   });
 
   describe("auth", () => {
