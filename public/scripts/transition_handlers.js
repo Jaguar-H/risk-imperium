@@ -186,7 +186,6 @@ const handleWaiting = async (gameState) => {
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
     newState = action;
-    console.log(action, data);
 
     updateGameState(gameState, data);
 
@@ -222,8 +221,7 @@ const handleMoveIn = async (gameState) => {
 const handleElimination = (_gameState) => {
   setTimeout(() => {
     const dialoge = document.querySelector("#elimination-box");
-    dialoge.classList.toggle("d-none");
-    dialoge.classList.add("glass-box");
+    dialoge.classList.toggle("hide-screen");
   }, 1500);
 };
 
