@@ -101,6 +101,7 @@ const sourceTerritoryForAttacks = (territoryIds, gameState) => {
 };
 
 const setupInvasionPhase = (gameState) => {
+  renderTradeIndicator(gameState);
   const territoryIds = gameState.player.territories;
   const attackableTerritories = sourceTerritoryForAttacks(
     territoryIds,
@@ -111,7 +112,6 @@ const setupInvasionPhase = (gameState) => {
   removeHighlights("selected");
   removeHighlights("highlight");
   removeHighlights("target");
-
   removeCardAreaListener(gameState);
   highlightTerritories(attackableTerritories, "can-attack");
 };
@@ -185,6 +185,7 @@ const handleWaiting = async (gameState) => {
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
     newState = action;
+    console.log(action, data);
 
     updateGameState(gameState, data);
 
@@ -197,7 +198,9 @@ const handleWaiting = async (gameState) => {
       players,
       gameState.territories,
     );
-    renderPlayersDetails(gameState);
+    if (action !== STATES.WON && action !== STATES.ELIMINATED) {
+      renderPlayersDetails(gameState);
+    }
   }
 
   gameState.state = STATES.WAITING;
@@ -220,7 +223,7 @@ const handleElimination = (_gameState) => {
     const dialoge = document.querySelector("#elimination-box");
     dialoge.classList.toggle("d-none");
     dialoge.classList.add("glass-box");
-  }, 2000);
+  }, 1500);
 };
 
 const handleWin = (_gameState) => {
