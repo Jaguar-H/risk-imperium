@@ -9,6 +9,7 @@ import { renderTerritoriesAndTroops } from "./features/initial_territory_allocat
 import { getSetup } from "./server_calls.js";
 import { playIntroReveal, SETUP_TRANSITION } from "./transition_handlers.js";
 import {
+  loadMap,
   renderCurrentPlayerName,
   renderGameState,
 } from "./utilities/render_UI.js";
@@ -16,6 +17,7 @@ import { setup } from "./features/setup.js";
 import { getAllPlayersDetail } from "./utilities.js";
 
 globalThis.onload = async () => {
+  await loadMap();
   const gameState = await getSetup();
   gameState.selectedCards = {};
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);

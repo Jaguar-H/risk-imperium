@@ -4,6 +4,17 @@ import { STYLES } from "../configs/styles.js";
 import { getAllPlayersDetail } from "../utilities.js";
 import { renderAvatar } from "../lobby/lobby.js";
 
+export const loadMap = async () => {
+  const mapContainer = document.querySelector(".map-layer");
+  try {
+    const response = await fetch("/assets/map.svg");
+    const svgData = await response.text();
+    mapContainer.innerHTML = svgData;
+  } catch (error) {
+    console.error("Failed to load the war room map:", error);
+  }
+};
+
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
   const troopCount = territory.querySelector(".troop-count tspan");
   troopCount.textContent = newTroopCount;
