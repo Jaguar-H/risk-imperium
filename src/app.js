@@ -77,7 +77,7 @@ export const createApp = (
 
   app.get("/get-data", setGame, handleWaiting);
 
-  app.get("/get-lobby-data", sendLobbyData);
+  app.get("/get-lobby-data", rejectUnknownUser, sendLobbyData);
 
   app.get(
     "/login.html",

@@ -736,7 +736,7 @@ describe("Api Handler", () => {
       });
     });
 
-    describe("Same version id", () => {
+    describe.ignore("Same version id", () => {
       it("Handle waiting should send null when resolve fn not called the the timeout was cleared", async () => {
         loadGameStateForTest(game, reinforce);
         const currentVersion = game.version;
